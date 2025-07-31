@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Export Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>JSON Export Test</h1>
+        <p>This page tests the JSON export functionality that was just fixed.</p>
+        
+        <div id="status-container"></div>
+        
+        <button onclick="testJSONExport()">Test JSON Export</button>
+        <button onclick="loadMainApp()">Open Main Family Tree App</button>
+        <button onclick="clearLog()">Clear Log</button>
+        
+        <div id="log" class="log">Test log will appear here...\n</div>
+    </div>
+
+    <script type="module">
+        let logElement = document.getElementById('log');
+        let statusContainer = document.getElementById('status-container');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusContainer.innerHTML = '';
+            statusContainer.appendChild(statusDiv);
+            
+            setTimeout(() => {
+                if (statusDiv.parentNode) {
+                    statusDiv.parentNode.removeChild(statusDiv);
+                }
+            }, 5000);
+        }
+        
+        // Mock TreeCore for testing
+        class MockTreeCore {
+            constructor() {
+                this.personData = new Map();
+                this.cacheVersion = '2.1.0';
+                this.defaultColor = '#3498db';
+                this.nodeRadius = 50;
+                
+                // Add some sample people for testing
+                this.personData.set('1', {
+                    id: '1',
+                    name: 'John',
+                    surname: 'Doe',
+                    gender: 'male',
+                    dob: '1980-01-01',
+                    motherId: '',
+                    fatherId: '',
+                    spouseId: '2'
+                });
+                
+                this.personData.set('2', {
+                    id: '2', 
+                    name: 'Jane',
+                    surname: 'Doe',
+                    gender: 'female',
+                    dob: '1982-05-15',
+                    motherId: '',
+                    fatherId: '',
+                    spouseId: '1'
+                });
+                
+                log('Mock TreeCore initialized with 2 sample people');
+            }
+            
+            getCurrentState() {
+                const persons = [];
+                
+                for (const [personId, personData] of this.personData) {
+                    const person = {
+                        id: personId,
+                        name: personData.name || '',
+                        surname: personData.surname || '',
+                        dob: personData.dob || '',
+                        gender: personData.gender || '',
+                        motherId: personData.motherId || '',
+                        fatherId: personData.fatherId || '',
+                        spouseId: personData.spouseId || '',
+                        x: 300,
+                        y: 300,
+                        color: this.defaultColor,
+                        radius: this.nodeRadius
+                    };
+                    
+                    persons.push(person);
+                }
+                
+                return {
+                    version: this.cacheVersion,
+                    persons: persons,
+                    settings: {
+                        nodeRadius: this.nodeRadius,
+                        defaultColor: this.defaultColor
+                    }
+                };
+            }
+        }
+        
+        // Mock notifications for testing
+        window.notifications = {
+            warning: (title, message) => {
+                log(`WARNING: ${title} - ${message}`);
+                showStatus(`${title}: ${message}`, 'warning');
+            },
+            error: (title, message) => {
+                log(`ERROR: ${title} - ${message}`);
+                showStatus(`${title}: ${message}`, 'error');
+            },
+            success: (title, message) => {
+                log(`SUCCESS: ${title} - ${message}`);
+                showStatus(`${title}: ${message}`, 'success');
+            }
+        };
+        
+        window.testJSONExport = async function() {
+            try {
+                log('Starting JSON export test...');
+                
+                // Create mock tree core
+                const mockTreeCore = new MockTreeCore();
+                
+                // Import and setup export functionality
+                const { setupExport } = await import('./src/data/core-export.js');
+                setupExport(mockTreeCore);
+                
+                log('Export setup completed');
+                
+                // Test the saveToJSON method
+                if (mockTreeCore.saveToJSON) {
+                    log('Calling saveToJSON method...');
+                    mockTreeCore.saveToJSON();
+                    showStatus('JSON export test completed successfully! Check your downloads folder.', 'success');
+                } else {
+                    throw new Error('saveToJSON method not found on treeCore');
+                }
+                
+            } catch (error) {
+                log(`ERROR: ${error.message}`);
+                log(`Stack: ${error.stack}`);
+                showStatus(`Test failed: ${error.message}`, 'error');
+            }
+        };
+        
+        window.loadMainApp = function() {
+            window.location.href = './builder.html';
+        };
+        
+        window.clearLog = function() {
+            logElement.textContent = 'Log cleared...\n';
+            statusContainer.innerHTML = '';
+        };
+        
+        // Initialize
+        log('JSON Export Test page loaded');
+        log('Click "Test JSON Export" to test the fixed functionality');
+    </script>
+</body>
+</html>

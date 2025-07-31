@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Line Styles</title>
+    <script>
+        // Debug script to test line style preservation
+        function testLineStyleSaving() {
+            console.log('=== Testing Line Style Saving ===');
+            
+            // Simulate the initialization sequence
+            console.log('1. Creating mock treeCore with renderer...');
+            const mockTreeCore = {
+                renderer: {
+                    settings: {
+                        // Default values from renderer constructor
+                        familyLineStyle: 'solid',
+                        familyLineThickness: 2,
+                        familyLineColor: '#7f8c8d',
+                        spouseLineStyle: 'dashed',
+                        spouseLineThickness: 2,
+                        spouseLineColor: '#e74c3c',
+                        lineOnlyStyle: 'dash-dot',
+                        lineOnlyThickness: 2,
+                        lineOnlyColor: '#9b59b6'
+                    }
+                },
+                nodeRadius: 50,
+                defaultColor: '#3498db',
+                fontFamily: 'Inter',
+                fontSize: 11,
+                nameColor: '#ffffff',
+                dateColor: '#f0f0f0',
+                displayPreferences: {}
+            };
+            
+            console.log('2. Simulating user applying custom line styles...');
+            // User applies custom line styles
+            const customLineStyles = {
+                familyLineStyle: 'dotted',
+                familyLineThickness: 4,
+                familyLineColor: '#ff0000',
+                spouseLineStyle: 'solid',
+                spouseLineThickness: 3,
+                spouseLineColor: '#00ff00',
+                lineOnlyStyle: 'dashed',
+                lineOnlyThickness: 5,
+                lineOnlyColor: '#0000ff'
+            };
+            
+            // Apply to renderer (like UI does)
+            Object.assign(mockTreeCore.renderer.settings, customLineStyles);
+            mockTreeCore.lineStyleSettings = customLineStyles;
+            
+            console.log('3. Custom styles applied:', customLineStyles);
+            console.log('4. Renderer settings after apply:', mockTreeCore.renderer.settings);
+            
+            console.log('5. Simulating getCurrentState (save to JSON)...');
+            // Simulate getCurrentState() method
+            const savedState = {
+                settings: {
+                    nodeRadius: mockTreeCore.nodeRadius,
+                    defaultColor: mockTreeCore.defaultColor,
+                    fontFamily: mockTreeCore.fontFamily,
+                    fontSize: mockTreeCore.fontSize,
+                    nameColor: mockTreeCore.nameColor,
+                    dateColor: mockTreeCore.dateColor,
+                    
+                    // Line style settings - these should be the custom values
+                    familyLineStyle: mockTreeCore.renderer.settings.familyLineStyle,
+                    familyLineThickness: mockTreeCore.renderer.settings.familyLineThickness,
+                    familyLineColor: mockTreeCore.renderer.settings.familyLineColor,
+                    spouseLineStyle: mockTreeCore.renderer.settings.spouseLineStyle,
+                    spouseLineThickness: mockTreeCore.renderer.settings.spouseLineThickness,
+                    spouseLineColor: mockTreeCore.renderer.settings.spouseLineColor,
+                    lineOnlyStyle: mockTreeCore.renderer.settings.lineOnlyStyle,
+                    lineOnlyThickness: mockTreeCore.renderer.settings.lineOnlyThickness,
+                    lineOnlyColor: mockTreeCore.renderer.settings.lineOnlyColor
+                }
+            };
+            
+            console.log('6. Saved state:', savedState.settings);
+            
+            console.log('7. Simulating page refresh - renderer recreated with defaults...');
+            // Simulate renderer recreation with defaults (what happens on page refresh)
+            mockTreeCore.renderer.settings = {
+                familyLineStyle: 'solid',
+                familyLineThickness: 2,
+                familyLineColor: '#7f8c8d',
+                spouseLineStyle: 'dashed',
+                spouseLineThickness: 2,
+                spouseLineColor: '#e74c3c',
+                lineOnlyStyle: 'dash-dot',
+                lineOnlyThickness: 2,
+                lineOnlyColor: '#9b59b6'
+            };
+            
+            console.log('8. Renderer after refresh (defaults):', mockTreeCore.renderer.settings);
+            
+            console.log('9. Simulating processLoadedData (restore from cache)...');
+            // Simulate processLoadedData restoring lineStyleSettings
+            mockTreeCore.lineStyleSettings = {
+                familyLineStyle: savedState.settings.familyLineStyle,
+                familyLineThickness: savedState.settings.familyLineThickness,
+                familyLineColor: savedState.settings.familyLineColor,
+                spouseLineStyle: savedState.settings.spouseLineStyle,
+                spouseLineThickness: savedState.settings.spouseLineThickness,
+                spouseLineColor: savedState.settings.spouseLineColor,
+                lineOnlyStyle: savedState.settings.lineOnlyStyle,
+                lineOnlyThickness: savedState.settings.lineOnlyThickness,
+                lineOnlyColor: savedState.settings.lineOnlyColor
+            };
+            
+            console.log('10. Restored lineStyleSettings:', mockTreeCore.lineStyleSettings);
+            
+            console.log('11. Simulating updateRendererSettings call...');
+            // Simulate the FIXED version of updateRendererSettings
+            if (mockTreeCore.lineStyleSettings) {
+                console.log('12. Found lineStyleSettings, applying to renderer...');
+                if (mockTreeCore.lineStyleSettings.familyLineStyle !== undefined) {
+                    mockTreeCore.renderer.settings.familyLineStyle = mockTreeCore.lineStyleSettings.familyLineStyle;
+                }
+                if (mockTreeCore.lineStyleSettings.familyLineThickness !== undefined) {
+                    mockTreeCore.renderer.settings.familyLineThickness = mockTreeCore.lineStyleSettings.familyLineThickness;
+                }
+                if (mockTreeCore.lineStyleSettings.familyLineColor !== undefined) {
+                    mockTreeCore.renderer.settings.familyLineColor = mockTreeCore.lineStyleSettings.familyLineColor;
+                }
+                // ... and so on for all settings
+                Object.assign(mockTreeCore.renderer.settings, mockTreeCore.lineStyleSettings);
+            }
+            
+            console.log('13. Final renderer settings after fix:', mockTreeCore.renderer.settings);
+            
+            // Verify if custom styles were preserved
+            const preserved = 
+                mockTreeCore.renderer.settings.familyLineStyle === 'dotted' &&
+                mockTreeCore.renderer.settings.familyLineThickness === 4 &&
+                mockTreeCore.renderer.settings.familyLineColor === '#ff0000' &&
+                mockTreeCore.renderer.settings.spouseLineStyle === 'solid' &&
+                mockTreeCore.renderer.settings.spouseLineThickness === 3 &&
+                mockTreeCore.renderer.settings.spouseLineColor === '#00ff00';
+                
+            console.log('14. TEST RESULT:', preserved ? '✅ PASS - Custom line styles preserved!' : '❌ FAIL - Line styles reverted to defaults');
+            
+            if (!preserved) {
+                console.log('Expected custom styles:', customLineStyles);
+                console.log('Actual final styles:', {
+                    familyLineStyle: mockTreeCore.renderer.settings.familyLineStyle,
+                    familyLineThickness: mockTreeCore.renderer.settings.familyLineThickness,
+                    familyLineColor: mockTreeCore.renderer.settings.familyLineColor,
+                    spouseLineStyle: mockTreeCore.renderer.settings.spouseLineStyle,
+                    spouseLineThickness: mockTreeCore.renderer.settings.spouseLineThickness,
+                    spouseLineColor: mockTreeCore.renderer.settings.spouseLineColor
+                });
+            }
+            
+            return preserved;
+        }
+        
+        // Run test when page loads
+        window.addEventListener('load', () => {
+            testLineStyleSaving();
+        });
+    </script>
+</head>
+<body>
+    <h1>Debug Line Styles Test</h1>
+    <p>Check the browser console for test results.</p>
+    <button onclick="testLineStyleSaving()">Run Test Again</button>
+</body>
+</html>

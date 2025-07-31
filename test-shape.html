@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shapes Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            background: #ecf0f1;
+        }
+        
+        .success {
+            border-left-color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .error {
+            border-left-color: #e74c3c;
+            background: #fadad7;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Family Tree Shapes Test</h1>
+        <p>This page tests the shapes functionality for the family tree application.</p>
+        
+        <div id="test-results">
+            <div class="test-result">
+                <strong>Testing shapes module...</strong>
+            </div>
+        </div>
+        
+        <div>
+            <button onclick="runShapeTests()">Run Shape Tests</button>
+            <button onclick="testGrapeLayout()">Test Grape Bunch Layout</button>
+            <button onclick="testTreeBranchesLayout()">Test Tree Branches Layout</button>
+        </div>
+        
+        <div id="grape-visualization" style="margin-top: 20px; border: 1px solid #ddd; padding: 20px; background: white; min-height: 300px;">
+            <h3>Shape Visualization</h3>
+            <p>Click the test buttons above to see positioning results for different shapes.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { ShapeManager } from './src/shapes/shape-manager.js';
+        import { GrapeShape } from './src/shapes/grape-shape.js';
+        import { TreeBranchesShape } from './src/shapes/tree-branches-shape.js';
+        
+        // Mock tree core for testing
+        class MockTreeCore {
+            constructor() {
+                this.people = [
+                    { id: '1', name: 'John Doe', parents: [], spouses: ['2'] },
+                    { id: '2', name: 'Jane Doe', parents: [], spouses: ['1'] },
+                    { id: '3', name: 'Child 1', parents: ['1', '2'] },
+                    { id: '4', name: 'Child 2', parents: ['1', '2'] },
+                    { id: '5', name: 'Grandchild 1', parents: ['3'] },
+                    { id: '6', name: 'Grandchild 2', parents: ['4'] },
+                    { id: '7', name: 'Great-grandchild', parents: ['5'] }
+                ];
+                this.positions = new Map();
+            }
+            
+            getPeople() {
+                return this.people;
+            }
+            
+            updatePersonPosition(personId, x, y) {
+                this.positions.set(personId, { x, y });
+                console.log(`Updated position for ${personId}: (${x}, ${y})`);
+            }
+            
+            render() {
+                console.log('Rendering...');
+            }
+        }
+        
+        function addTestResult(message, success = true) {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${success ? 'success' : 'error'}`;
+            resultDiv.innerHTML = `<strong>${success ? '✓' : '✗'}</strong> ${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        window.runShapeTests = async function() {
+            // Clear previous results
+            document.getElementById('test-results').innerHTML = '';
+            
+            try {
+                const mockTreeCore = new MockTreeCore();
+                const shapeManager = new ShapeManager(mockTreeCore);
+                
+                addTestResult('ShapeManager created successfully');
+                
+                // Test available shapes
+                const availableShapes = shapeManager.getAvailableShapes();
+                addTestResult(`Available shapes: ${availableShapes.join(', ')}`);
+                
+                // Test grape shape creation
+                const grapeShape = new GrapeShape(mockTreeCore);
+                addTestResult('GrapeShape created successfully');
+                
+                // Test grape positioning
+                const people = mockTreeCore.getPeople();
+                const positions = await grapeShape.calculatePositions(people);
+                addTestResult(`Grape positioning calculated for ${positions.size} people`);
+                
+                // Test shape application
+                await shapeManager.applyShape('grape');
+                addTestResult('Grape shape applied successfully');
+                
+            } catch (error) {
+                addTestResult(`Test failed: ${error.message}`, false);
+                console.error('Test error:', error);
+            }
+        };
+        
+        window.testGrapeLayout = async function() {
+            try {
+                const mockTreeCore = new MockTreeCore();
+                const grapeShape = new GrapeShape(mockTreeCore);
+                
+                const people = mockTreeCore.getPeople();
+                const positions = await grapeShape.calculatePositions(people);
+                
+                // Visualize the layout
+                const visualization = document.getElementById('grape-visualization');
+                visualization.innerHTML = '<h3>Grape Shape Layout</h3>';
+                
+                // Create a simple SVG visualization
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '400');
+                svg.setAttribute('viewBox', '-300 -200 600 400');
+                svg.style.border = '1px solid #ccc';
+                
+                // Draw positions
+                positions.forEach((pos, personId) => {
+                    const person = people.find(p => p.id === personId);
+                    
+                    // Draw circle for person
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', pos.x);
+                    circle.setAttribute('cy', pos.y);
+                    circle.setAttribute('r', '20');
+                    circle.setAttribute('fill', '#9b59b6');
+                    circle.setAttribute('stroke', '#8e44ad');
+                    circle.setAttribute('stroke-width', '2');
+                    svg.appendChild(circle);
+                    
+                    // Add text label
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', pos.x);
+                    text.setAttribute('y', pos.y + 35);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '12');
+                    text.setAttribute('fill', '#2c3e50');
+                    text.textContent = person.name;
+                    svg.appendChild(text);
+                });
+                
+                visualization.appendChild(svg);
+                
+                // Add position details
+                const details = document.createElement('div');
+                details.innerHTML = '<h4>Position Details:</h4>';
+                const ul = document.createElement('ul');
+                positions.forEach((pos, personId) => {
+                    const person = people.find(p => p.id === personId);
+                    const li = document.createElement('li');
+                    li.textContent = `${person.name}: (${Math.round(pos.x)}, ${Math.round(pos.y)})`;
+                    ul.appendChild(li);
+                });
+                details.appendChild(ul);
+                visualization.appendChild(details);
+                
+            } catch (error) {
+                addTestResult(`Grape layout test failed: ${error.message}`, false);
+                console.error('Grape layout error:', error);
+            }
+        };
+        
+        window.testTreeBranchesLayout = async function() {
+            try {
+                const mockTreeCore = new MockTreeCore();
+                const treeBranchesShape = new TreeBranchesShape(mockTreeCore);
+                
+                const people = mockTreeCore.getPeople();
+                const positions = await treeBranchesShape.calculatePositions(people);
+                
+                // Visualize the layout
+                const visualization = document.getElementById('grape-visualization');
+                visualization.innerHTML = '<h3>Tree Branches Shape Layout</h3>';
+                
+                // Create a simple SVG visualization
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '400');
+                svg.setAttribute('viewBox', '-300 -200 600 400');
+                svg.style.border = '1px solid #ccc';
+                
+                // Draw positions
+                positions.forEach((pos, personId) => {
+                    const person = people.find(p => p.id === personId);
+                    
+                    // Draw circle for person
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', pos.x);
+                    circle.setAttribute('cy', pos.y);
+                    circle.setAttribute('r', '20');
+                    circle.setAttribute('fill', '#27ae60');
+                    circle.setAttribute('stroke', '#229954');
+                    circle.setAttribute('stroke-width', '2');
+                    svg.appendChild(circle);
+                    
+                    // Add text label
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', pos.x);
+                    text.setAttribute('y', pos.y + 35);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '12');
+                    text.setAttribute('fill', '#2c3e50');
+                    text.textContent = person.name;
+                    svg.appendChild(text);
+                });
+                
+                visualization.appendChild(svg);
+                
+                // Add position details
+                const details = document.createElement('div');
+                details.innerHTML = '<h4>Position Details:</h4>';
+                const ul = document.createElement('ul');
+                positions.forEach((pos, personId) => {
+                    const person = people.find(p => p.id === personId);
+                    const li = document.createElement('li');
+                    li.textContent = `${person.name}: (${Math.round(pos.x)}, ${Math.round(pos.y)})`;
+                    ul.appendChild(li);
+                });
+                details.appendChild(ul);
+                visualization.appendChild(details);
+                
+            } catch (error) {
+                addTestResult(`Tree branches layout test failed: ${error.message}`, false);
+                console.error('Tree branches layout error:', error);
+            }
+        };
+    </script>
+</body>
+</html>
