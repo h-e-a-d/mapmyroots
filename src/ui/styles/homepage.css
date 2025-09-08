@@ -1025,12 +1025,37 @@ body {
   }
   
   .hero {
-    padding: calc(var(--header-height) + 2rem) 1rem 2rem;
+    padding: calc(var(--header-height) + 1rem) 1rem 2rem;
+    min-height: 70vh;
+  }
+  
+  .hero-subtitle {
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero-buttons {
+    margin-bottom: 1rem;
   }
   
   .trust-signals {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .trust-item {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+  }
+  
+  .trust-number {
+    font-size: 1.2rem;
+  }
+  
+  .trust-label {
+    font-size: 0.8rem;
   }
   
   .about-content {
@@ -1059,6 +1084,13 @@ body {
     width: 100%;
     max-width: 300px;
     justify-content: center;
+  }
+  
+  .btn-primary {
+    padding: 1.25rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
   }
   
   .features-grid {
