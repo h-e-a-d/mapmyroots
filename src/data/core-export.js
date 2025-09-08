@@ -129,6 +129,32 @@ export function setupExport(treeCore) {
     }
   };
 
+  treeCore.exportCanvasAsPNG = function() {
+    try {
+      if (this.renderer && this.renderer.exportAsImage) {
+        // Use png with white background for regular PNG export
+        const canvas = this.renderer.exportAsImage('png');
+        canvas.toBlob((blob) => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'family-tree.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(link.href);
+        });
+      } else {
+        // Fallback to regular exportTree function
+        import('../features/export/exporter.js').then(({ exportTree }) => {
+          exportTree('png');
+        });
+      }
+    } catch (error) {
+      console.error('Error exporting PNG:', error);
+      notifications.error('Export Failed', 'Could not export PNG: ' + error.message);
+    }
+  };
+
   treeCore.exportCanvasAsPNGTransparent = function() {
     try {
       if (this.renderer && this.renderer.exportAsPNGTransparent) {

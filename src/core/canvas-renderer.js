@@ -260,6 +260,9 @@ export class CanvasRenderer {
       ctx.lineTo(toNode.x, toNode.y);
       ctx.stroke();
     }
+    
+    // Reset line dash after drawing connections
+    ctx.setLineDash([]);
   }
 
   // Draw only nodes (for export)
@@ -297,6 +300,10 @@ export class CanvasRenderer {
     if (this.settings.showNodeOutline) {
       ctx.strokeStyle = this.settings.outlineColor;
       ctx.lineWidth = this.settings.outlineThickness;
+      // Ensure solid line style for node outlines
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
       ctx.stroke();
     }
     
@@ -318,6 +325,8 @@ export class CanvasRenderer {
     if (this.settings.showNodeOutline) {
       ctx.strokeStyle = this.settings.outlineColor;
       ctx.lineWidth = this.settings.outlineThickness;
+      // Ensure solid line style for node outlines
+      ctx.setLineDash([]);
       ctx.strokeRect(node.x - width/2, node.y - height/2, width, height);
     }
     

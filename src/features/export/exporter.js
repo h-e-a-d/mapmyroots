@@ -23,6 +23,11 @@ export function exportTree(format) {
         // Remove grid lines and background if they exist
         clone.querySelectorAll('.grid-line').forEach((el) => el.remove());
         
+        // Remove any existing stroke-dasharray attributes from node outlines to ensure solid lines
+        clone.querySelectorAll('.person-group circle, .person-group rect').forEach((el) => {
+          el.removeAttribute('stroke-dasharray');
+        });
+        
         // Ensure the clone has proper styling
         const treeCore = window.treeCore;
         const showOutline = treeCore?.renderer?.settings?.showNodeOutline ?? true;
@@ -32,10 +37,10 @@ export function exportTree(format) {
         const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
         style.textContent = `
           .person-group circle { 
-            ${showOutline ? `stroke: ${outlineColor}; stroke-width: ${outlineThickness}px;` : 'stroke: none;'}
+            ${showOutline ? `stroke: ${outlineColor}; stroke-width: ${outlineThickness}px; stroke-dasharray: none;` : 'stroke: none;'}
           }
           .person-group rect { 
-            ${showOutline ? `stroke: ${outlineColor}; stroke-width: ${outlineThickness}px;` : 'stroke: none;'}
+            ${showOutline ? `stroke: ${outlineColor}; stroke-width: ${outlineThickness}px; stroke-dasharray: none;` : 'stroke: none;'}
           }
           .person-group text.name { 
             font-weight: 600; 
