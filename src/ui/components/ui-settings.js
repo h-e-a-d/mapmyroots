@@ -287,6 +287,16 @@ export function setupSettings(treeCore) {
     });
   }
 
+  // --- Template Selection Loading ---
+  const loadTemplateBtn = document.getElementById('loadTemplateBtn');
+  const templateSelect = document.getElementById('templateSelect');
+  if (loadTemplateBtn && templateSelect) {
+    loadTemplateBtn.addEventListener('click', () => {
+      const selectedTemplate = templateSelect.value;
+      openLoadTemplateModal(selectedTemplate);
+    });
+  }
+
   // Load Default Tree Modal handlers
   function openLoadDefaultModal() {
     const modal = document.getElementById('loadDefaultConfirmModal');
@@ -332,20 +342,149 @@ export function setupSettings(treeCore) {
     });
   }
 
-  // Load Default Template Function
-  async function loadDefaultTemplate(treeCore) {
+  // Load Template Modal handlers
+  function openLoadTemplateModal(templateName) {
+    // Show confirmation modal for template loading
+    const modal = document.getElementById('loadTemplateConfirmModal') || createTemplateModal();
+    const templateNameSpan = modal.querySelector('#selectedTemplateName');
+    const templateDescriptionDiv = modal.querySelector('#templateDescription');
+    const templateConsequenceSpan = modal.querySelector('#templateConsequence');
+    
+    // Update modal content based on selected template
+    const templateInfo = getTemplateInfo(templateName);
+    if (templateNameSpan) templateNameSpan.textContent = templateInfo.name;
+    if (templateDescriptionDiv) templateDescriptionDiv.textContent = templateInfo.description;
+    if (templateConsequenceSpan) {
+      templateConsequenceSpan.textContent = `A new ${templateInfo.name.toLowerCase()} will be loaded`;
+    }
+    
+    // Store selected template for confirmation
+    modal.dataset.selectedTemplate = templateName;
+    
+    modal.classList.remove('hidden');
+  }
+
+  function closeLoadTemplateModal() {
+    const modal = document.getElementById('loadTemplateConfirmModal');
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }
+
+  function getTemplateInfo(templateName) {
+    const templates = {
+      'default': {
+        name: 'Default Template',
+        description: 'A 3-generation sample family tree with 9 people'
+      },
+      '50-person-template': {
+        name: 'Large Template',
+        description: 'A comprehensive 6-generation family tree with 50 people'
+      },
+      'carrot-vegetable-template': {
+        name: '🥕 Carrot Vegetable Template',
+        description: 'A realistic carrot-shaped family tree with 30 people: 13 green leafy ancestors transitioning to 17 orange carrot descendants that taper to a point'
+      },
+      'apple-fruit-template': {
+        name: '🍎 Apple Fruit Template',
+        description: 'A beautiful apple-shaped family tree with 18 people forming a classic red apple silhouette with stem and leaf'
+      },
+      'solar-system-template': {
+        name: '🌌 Solar System Template',
+        description: 'An astronomical family tree with 22 people arranged as planets orbiting a central sun, including moons and asteroids'
+      }
+    };
+    return templates[templateName] || { name: templateName, description: 'Custom template' };
+  }
+
+  function createTemplateModal() {
+    const modal = document.createElement('div');
+    modal.id = 'loadTemplateConfirmModal';
+    modal.className = 'modal hidden';
+    modal.innerHTML = `
+      <div class="modal-content confirmation-modal">
+        <button class="modal-close-btn" aria-label="Close">&times;</button>
+        <h2>
+          <span class="person-icon">📋</span>
+          <span>Load Template</span>
+        </h2>
+        <div class="modal-body">
+          <div class="confirmation-content">
+            <div class="warning-icon">⚠️</div>
+            <p class="confirmation-message">
+              Are you sure you want to load "<span id="selectedTemplateName"></span>"? This will replace all current data.
+            </p>
+            <div class="template-description" id="templateDescription"></div>
+            <div class="consequence-list">
+              <div class="consequence-item">
+                <span class="bullet">•</span>
+                <span>All current family members will be replaced</span>
+              </div>
+              <div class="consequence-item">
+                <span class="bullet">•</span>
+                <span>All existing relationships will be lost</span>
+              </div>
+              <div class="consequence-item">
+                <span class="bullet">•</span>
+                <span id="templateConsequence">The selected template will be loaded</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <div class="form-actions-right">
+            <button type="button" id="cancelLoadTemplate">Cancel</button>
+            <button type="button" id="confirmLoadTemplate" class="btn-success">Yes, Load Template</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    const cancelBtn = modal.querySelector('#cancelLoadTemplate');
+    const confirmBtn = modal.querySelector('#confirmLoadTemplate');
+    const closeBtn = modal.querySelector('.modal-close-btn');
+    
+    if (cancelBtn) cancelBtn.addEventListener('click', closeLoadTemplateModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeLoadTemplateModal);
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => {
+        const templateName = modal.dataset.selectedTemplate;
+        loadSelectedTemplate(treeCore, templateName);
+        closeLoadTemplateModal();
+      });
+    }
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeLoadTemplateModal();
+      }
+    });
+    
+    return modal;
+  }
+
+  // Load Selected Template Function
+  async function loadSelectedTemplate(treeCore, templateName) {
     try {
-      notifications.info('Loading Template', 'Loading default family tree template...');
+      const templateInfo = getTemplateInfo(templateName);
+      notifications.info('Loading Template', `Loading ${templateInfo.name}...`);
       
-      const response = await fetch('./docs/templates/default.json');
+      const templatePath = templateName === 'default' 
+        ? './docs/templates/default.json' 
+        : `./docs/templates/${templateName}.json`;
+      
+      const response = await fetch(templatePath);
       if (!response.ok) {
         throw new Error(`Failed to load template: ${response.status}`);
       }
       
-      const defaultData = await response.json();
+      const templateData = await response.json();
       
       // Process the template data
-      treeCore.processLoadedData(defaultData);
+      treeCore.processLoadedData(templateData);
       
       // Update cache indicator if available
       if (treeCore.enhancedCacheIndicator) {
@@ -364,12 +503,17 @@ export function setupSettings(treeCore) {
         treeCore.undoRedoManager.pushUndoState();
       }
       
-      notifications.success('Template Loaded', 'Default family tree template loaded successfully');
+      notifications.success('Template Loaded', `${templateInfo.name} loaded successfully`);
       
     } catch (error) {
-      console.error('Failed to load default template:', error);
-      notifications.error('Load Failed', 'Failed to load default template. Please try again.');
+      console.error('Failed to load template:', error);
+      notifications.error('Load Failed', `Failed to load template. Please try again.`);
     }
+  }
+
+  // Load Default Template Function
+  async function loadDefaultTemplate(treeCore) {
+    return loadSelectedTemplate(treeCore, 'default');
   }
 
   // --- Tree Shapes ---

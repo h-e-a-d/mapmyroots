@@ -34,6 +34,118 @@
   box-sizing: border-box;
 }
 
+/* Template Selection Styles */
+.template-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.template-selection select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  transition: var(--transition);
+  box-sizing: border-box;
+  min-height: 36px;
+}
+
+.template-selection select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(15, 134, 108, 0.1);
+}
+
+.template-selection select:hover {
+  border-color: var(--primary-color);
+}
+
+.template-selection button {
+  width: 100%;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+/* Compact layout for settings panels */
+#settingsPanel .template-selection {
+  max-width: 100%;
+}
+
+#settingsPanel .template-selection select {
+  font-size: 12px;
+  padding: 6px 10px;
+  min-height: 32px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#settingsPanel .template-selection button {
+  padding: 6px 12px;
+  font-size: 12px;
+  min-height: 32px;
+  max-width: 100%;
+}
+
+/* Ensure collapsible content has proper padding */
+#settingsPanel .collapsible-content {
+  padding: 0 16px 16px;
+  box-sizing: border-box;
+}
+
+/* Make sure setting groups in settings panel don't overflow */
+#settingsPanel .setting-group {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Override setting-group flex layout for template selection */
+.setting-group:has(.template-selection) {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.setting-group:has(.template-selection) label {
+  flex: none;
+  margin-bottom: 0;
+}
+
+/* Fallback for browsers that don't support :has() */
+.setting-group.template-setting-group {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.setting-group.template-setting-group label {
+  flex: none;
+  margin-bottom: 0;
+}
+
+/* Remove mobile-specific styles since we're always using vertical layout now */
+
+/* Template Modal Description */
+.template-description {
+  font-style: italic;
+  color: #6b7280;
+  margin: 12px 0;
+  padding: 10px 12px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 /* ENHANCED: Complete scrollbar removal */
 * {
   scrollbar-width: none !important; /* Firefox */

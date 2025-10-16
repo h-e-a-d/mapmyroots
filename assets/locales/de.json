@@ -181,6 +181,10 @@
       "load_family_tree": "Stammbaum laden",
       "format_support": "Unterstützt JSON-Format-Dateien",
       "reset": "Zurücksetzen",
+      "select_template": "Vorlage auswählen",
+      "template_default": "Standard-Vorlage (3 Generationen)",
+      "template_50_person": "Große Vorlage (50 Personen)",
+      "load_template": "Vorlage laden",
       "clear_all_data": "Alle Daten löschen",
       "load_default_tree": "Standard-Stammbaum laden",
       "clear_warning": "Warnung: Dies löscht alle Stammbaum-Daten dauerhaft"

@@ -703,6 +703,19 @@
         <span class="collapsible-toggle">▼</span>
       </div>
       <div class="collapsible-content" id="resetSection">
+        <div class="setting-group template-setting-group">
+          <label for="templateSelect" data-i18n="builder.settings.select_template">Select Template:</label>
+          <div class="template-selection">
+            <select id="templateSelect" class="form-select">
+              <option value="default" data-i18n="builder.settings.template_default">Default Template (3 Generations)</option>
+              <option value="50-person-template" data-i18n="builder.settings.template_50_person">Large Template (50 People)</option>
+              <option value="carrot-vegetable-template">🥕 Carrot Vegetable (30 People)</option>
+              <option value="apple-fruit-template">🍎 Apple Fruit (18 People)</option>
+              <option value="solar-system-template">🌌 Solar System (22 People)</option>
+            </select>
+            <button id="loadTemplateBtn" class="btn-primary" data-i18n="builder.settings.load_template">Load Template</button>
+          </div>
+        </div>
         <div class="setting-group">
           <button id="clearAllBtn" class="btn-danger-outline" data-i18n="builder.settings.clear_all_data">Clear All Data</button>
           <button id="loadDefaultBtn" class="btn-success-outline" data-i18n="builder.settings.load_default_tree">Load Default Tree</button>

@@ -403,6 +403,10 @@
       "load_family_tree": "Load Family Tree",
       "format_support": "Supports JSON format files",
       "reset": "Reset",
+      "select_template": "Select Template",
+      "template_default": "Default Template (3 Generations)",
+      "template_50_person": "Large Template (50 People)",
+      "load_template": "Load Template",
       "clear_all_data": "Clear All Data",
       "load_default_tree": "Load Default Tree",
       "clear_warning": "Warning: This will permanently delete all family tree data"

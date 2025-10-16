@@ -395,6 +395,10 @@
       "load_family_tree": "Cargar Árbol Genealógico",
       "format_support": "Soporta archivos de formato JSON",
       "reset": "Restablecer",
+      "select_template": "Seleccionar Plantilla",
+      "template_default": "Plantilla Predeterminada (3 Generaciones)",
+      "template_50_person": "Plantilla Grande (50 Personas)",
+      "load_template": "Cargar Plantilla",
       "clear_all_data": "Limpiar Todos los Datos",
       "load_default_tree": "Cargar Árbol Predeterminado",
       "clear_warning": "Advertencia: Esto eliminará permanentemente todos los datos del árbol genealógico"

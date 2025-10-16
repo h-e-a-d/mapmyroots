@@ -4,6 +4,23 @@
 import { CONFIG, ERROR_MESSAGES } from '../config/config.js';
 import { EVENTS } from './event-bus.js';
 
+// Error type constants
+export const ERROR_TYPES = {
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  CANVAS_ERROR: 'CANVAS_ERROR',
+  DATA_OPERATION_ERROR: 'DATA_OPERATION_ERROR',
+  NETWORK_ERROR: 'NETWORK_ERROR',
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR'
+};
+
+// Simple error handler that doesn't rely on external dependencies
+export const ErrorHandler = {
+  handleError(error, errorType = ERROR_TYPES.UNKNOWN_ERROR, context = {}) {
+    console.error(`[${errorType}]`, error.message, context);
+    // In production, this would send to error tracking service
+  }
+};
+
 // Custom error classes for better error categorization
 export class ValidationError extends Error {
   constructor(message, field = null) {
