@@ -12,6 +12,7 @@ import { setupButtons } from '../ui/components/ui-buttons.js';
 import { setupSettings } from '../ui/components/ui-settings.js';
 import { setupModals } from '../ui/components/ui-modals.js';
 import { setupExport } from '../data/core-export.js';
+import { appContext } from '../utils/event-bus.js';
 
 /**
  * Core family tree engine responsible for managing the tree state,
@@ -365,8 +366,11 @@ export class TreeEngine {
    */
   clearAllData() {
     console.log('Clearing all family tree data...');
-    
+
     try {
+      // Track node count before clearing
+      const nodeCount = this.personData.size;
+
       // Clear person data
       this.personData.clear();
       
@@ -400,11 +404,17 @@ export class TreeEngine {
       // Update UI
       this.updateActionButtons();
       
+      // Emit analytics event for tree cleared
+      const eventBus = appContext.getEventBus();
+      if (eventBus) {
+        eventBus.emit('tree:cleared', { nodeCount });
+      }
+
       // Show success notification
       if (window.notifications) {
         window.notifications.success('Data Cleared', 'All family tree data has been cleared successfully');
       }
-      
+
       console.log('All data cleared successfully');
       
     } catch (error) {
@@ -755,7 +765,17 @@ export class TreeEngine {
       
       // Store in personData map
       this.personData.set(personId, personData);
-      
+
+      // Emit analytics event for person created/updated
+      const eventBus = appContext.getEventBus();
+      if (eventBus) {
+        if (isEdit) {
+          eventBus.emit('tree:person:updated', { id: personId, changes: personData });
+        } else {
+          eventBus.emit('tree:person:added', personData);
+        }
+      }
+
       // Handle canvas node creation/update
       if (this.renderer) {
         let nodeData;
@@ -1562,13 +1582,23 @@ export class TreeEngine {
         return;
     }
 
+    // Emit analytics event for relationship created
+    const eventBus = appContext.getEventBus();
+    if (eventBus) {
+      eventBus.emit('tree:relationship:added', {
+        type,
+        fromNodeId: personA,
+        toNodeId: personB
+      });
+    }
+
     // Close modal and update UI
     this.closeConnectionModal();
     this.regenerateConnections();
     if (this.renderer) {
       this.renderer.needsRedraw = true;
     }
-    
+
     // Auto-save
     if (this.cacheManager) {
       this.cacheManager.autoSave();

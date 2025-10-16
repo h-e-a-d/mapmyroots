@@ -5,6 +5,8 @@ import { SecurityUtils } from './src/utils/security-utils.js';
 import { RetryManager, GlobalErrorHandler } from './src/utils/error-handling.js';
 import { AccessibilityManager } from './src/features/accessibility/accessibility.js';
 import { CONFIG } from './src/config/config.js';
+import analyticsService from './src/analytics/analytics-service.js';
+import AnalyticsIntegration from './src/analytics/analytics-integration.js';
 
 // Enhanced module loader with retry mechanism
 const lazyLoadModule = async (modulePath) => {
@@ -17,28 +19,34 @@ const lazyLoadModule = async (modulePath) => {
 // Initialize core functionality immediately
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    // Initialize analytics integration with event bus
+    const eventBus = appContext.getEventBus();
+    const analyticsIntegration = new AnalyticsIntegration(eventBus);
+    analyticsIntegration.init();
+    console.log('✅ Analytics tracking initialized');
+
     // Load core tree functionality
     const { TreeCoreCanvas } = await import('./src/core/tree-engine.js');
-    
+
     // Initialize tree core
     const treeCore = new TreeCoreCanvas();
     treeCore.initialize();
-    
+
     // Lazy load search functionality
     const searchModule = await lazyLoadModule('./src/features/search/search.js');
     if (searchModule) {
       console.log('Search module loaded');
     }
-    
+
     // Lazy load export functionality
     const exportModule = await lazyLoadModule('./src/features/export/exporter.js');
     if (exportModule) {
       console.log('Export module loaded');
     }
-    
+
     // Initialize connection monitoring with reduced frequency
     initializeConnectionMonitoring();
-    
+
   } catch (error) {
     console.error('Failed to initialize tree application:', error);
   }
