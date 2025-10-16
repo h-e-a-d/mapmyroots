@@ -51,6 +51,7 @@ class AnalyticsService {
 
     // Add standard parameters
     const eventData = {
+      event: eventName,  // GTM looks for 'event' property
       event_name: eventName,
       timestamp: new Date().toISOString(),
       session_duration: Math.floor((Date.now() - this.sessionStartTime) / 1000),
@@ -68,28 +69,41 @@ class AnalyticsService {
       return;
     }
 
-    // Send to Google Analytics if available
-    if (this.isEnabled) {
+    // Send to dataLayer for GTM (primary method)
+    if (typeof window !== 'undefined' && window.dataLayer) {
       try {
-        if (typeof window.gtag === 'function') {
-          // GA4 (gtag.js)
-          window.gtag('event', eventName, eventData);
-        } else if (typeof window.ga === 'function') {
-          // Universal Analytics fallback
-          window.ga('send', 'event', {
-            eventCategory: params.category || 'general',
-            eventAction: eventName,
-            eventLabel: params.label || '',
-            eventValue: params.value || undefined
-          });
-        }
-        this.log(`Event sent: ${eventName}`, eventData);
+        window.dataLayer.push(eventData);
+        this.log(`Event sent to dataLayer: ${eventName}`, eventData);
       } catch (error) {
-        console.error('[Analytics] Error sending event:', error);
+        console.error('[Analytics] Error pushing to dataLayer:', error);
+      }
+    }
+    // Fallback to gtag if available
+    else if (typeof window.gtag === 'function') {
+      try {
+        window.gtag('event', eventName, eventData);
+        this.log(`Event sent via gtag: ${eventName}`, eventData);
+      } catch (error) {
+        console.error('[Analytics] Error sending via gtag:', error);
+      }
+    }
+    // Fallback to Universal Analytics
+    else if (typeof window.ga === 'function') {
+      try {
+        window.ga('send', 'event', {
+          eventCategory: params.category || 'general',
+          eventAction: eventName,
+          eventLabel: params.label || '',
+          eventValue: params.value || undefined
+        });
+        this.log(`Event sent via ga: ${eventName}`, eventData);
+      } catch (error) {
+        console.error('[Analytics] Error sending via ga:', error);
       }
     } else {
-      // Queue events if GA is not yet loaded
+      // Queue events if nothing is available yet
       this.eventQueue.push({ eventName, params: eventData, timestamp: Date.now() });
+      console.warn('[Analytics] No analytics method available, event queued');
     }
   }
 

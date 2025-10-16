@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Test Page</title>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-MNZ4MJB7');</script>
+  <!-- End Google Tag Manager -->
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0f866c;
+      margin-top: 0;
+    }
+    .button-group {
+      display: grid;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #0f866c;
+      color: white;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #0a6b56;
+    }
+    button.secondary {
+      background: #6c757d;
+    }
+    button.secondary:hover {
+      background: #5a6268;
+    }
+    .status {
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    .log {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+    .log-entry {
+      padding: 5px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    .timestamp {
+      color: #6c757d;
+      margin-right: 10px;
+    }
+    .event-name {
+      color: #0f866c;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MNZ4MJB7"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div class="container">
+    <h1>📊 Analytics Test Page</h1>
+    <p>Use this page to test if your analytics tracking is working correctly.</p>
+
+    <div id="status" class="status info">
+      Checking GTM and Analytics setup...
+    </div>
+
+    <div class="button-group">
+      <button onclick="checkSetup()">1. Check Setup</button>
+      <button onclick="sendTestEvent()">2. Send Test Event</button>
+      <button onclick="sendPersonCreatedEvent()">3. Test Person Created</button>
+      <button onclick="sendTreeExportedEvent()">4. Test Tree Exported</button>
+      <button class="secondary" onclick="viewDataLayer()">View DataLayer</button>
+      <button class="secondary" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <h3>Event Log:</h3>
+    <div id="log" class="log">
+      <div class="log-entry">
+        <span class="timestamp">[Loading]</span>
+        <span>Page loaded, waiting for GTM...</span>
+      </div>
+    </div>
+
+    <h3>Instructions:</h3>
+    <ol>
+      <li><strong>Check Setup</strong> - Verify GTM and dataLayer are loaded</li>
+      <li><strong>Send Test Event</strong> - Send a simple test event</li>
+      <li><strong>Test Events</strong> - Send sample person_created and tree_exported events</li>
+      <li><strong>Open GA4</strong> - Go to Realtime or DebugView to see events</li>
+      <li><strong>Enable GTM Preview</strong> - Use GTM preview mode to see events in real-time</li>
+    </ol>
+
+    <h3>Expected GA4 Setup:</h3>
+    <ul>
+      <li>GTM Container: <strong>GTM-MNZ4MJB7</strong> ✓ (installed on this page)</li>
+      <li>GA4 Tag: Should trigger on <strong>All Custom Events</strong></li>
+      <li>GA4 Measurement ID: <strong>G-XXXXXXXXXX</strong> (your ID)</li>
+    </ul>
+  </div>
+
+  <script>
+    const logEl = document.getElementById('log');
+    const statusEl = document.getElementById('status');
+
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `<span class="timestamp">[${timestamp}]</span><span>${message}</span>`;
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function updateStatus(message, type = 'info') {
+      statusEl.className = `status ${type}`;
+      statusEl.textContent = message;
+    }
+
+    function checkSetup() {
+      log('🔍 Checking setup...');
+
+      // Check dataLayer
+      if (typeof window.dataLayer !== 'undefined') {
+        log('✅ dataLayer exists', 'success');
+        log(`📊 dataLayer has ${window.dataLayer.length} items`);
+        updateStatus('✅ GTM and dataLayer are loaded!', 'success');
+      } else {
+        log('❌ dataLayer not found', 'error');
+        updateStatus('❌ GTM not loaded - check container ID', 'error');
+        return;
+      }
+
+      // Check GTM
+      if (typeof window.google_tag_manager !== 'undefined') {
+        log('✅ Google Tag Manager loaded', 'success');
+      } else {
+        log('⚠️ GTM object not found (may still work)', 'warning');
+      }
+
+      // Check gtag
+      if (typeof window.gtag !== 'undefined') {
+        log('✅ gtag.js loaded', 'success');
+      } else {
+        log('ℹ️ gtag.js not loaded (using GTM is recommended)', 'info');
+      }
+
+      log('✅ Setup check complete!');
+    }
+
+    function sendTestEvent() {
+      log('📤 Sending test event...');
+
+      const eventData = {
+        event: 'test_event',
+        event_name: 'test_event',
+        category: 'test',
+        timestamp: new Date().toISOString(),
+        test_parameter: 'hello_world'
+      };
+
+      try {
+        window.dataLayer.push(eventData);
+        log('✅ Test event sent to dataLayer!', 'success');
+        log(`📊 Event: <span class="event-name">test_event</span>`);
+        updateStatus('✅ Test event sent! Check GA4 Realtime.', 'success');
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        updateStatus('❌ Failed to send event', 'error');
+      }
+    }
+
+    function sendPersonCreatedEvent() {
+      log('📤 Sending person_created event...');
+
+      const eventData = {
+        event: 'person_created',
+        event_name: 'person_created',
+        category: 'person_management',
+        person_id: 'test_person_' + Date.now(),
+        has_name: true,
+        has_surname: true,
+        gender: 'male',
+        relationship_count: 2,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        window.dataLayer.push(eventData);
+        log('✅ person_created event sent!', 'success');
+        log(`📊 Event: <span class="event-name">person_created</span> (person_id: ${eventData.person_id})`);
+        updateStatus('✅ Person created event sent! Check GA4.', 'success');
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        updateStatus('❌ Failed to send event', 'error');
+      }
+    }
+
+    function sendTreeExportedEvent() {
+      log('📤 Sending tree_exported event...');
+
+      const eventData = {
+        event: 'tree_exported',
+        event_name: 'tree_exported',
+        category: 'tree_management',
+        export_format: 'pdf',
+        node_count: 25,
+        success: true,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        window.dataLayer.push(eventData);
+        log('✅ tree_exported event sent!', 'success');
+        log(`📊 Event: <span class="event-name">tree_exported</span> (format: PDF, nodes: 25)`);
+        updateStatus('✅ Tree exported event sent! This is your main conversion goal.', 'success');
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        updateStatus('❌ Failed to send event', 'error');
+      }
+    }
+
+    function viewDataLayer() {
+      log('📊 DataLayer contents:');
+      if (window.dataLayer) {
+        window.dataLayer.forEach((item, index) => {
+          log(`[${index}] ${JSON.stringify(item, null, 2)}`);
+        });
+        console.log('Full dataLayer:', window.dataLayer);
+        updateStatus('DataLayer logged to console (F12)', 'info');
+      } else {
+        log('❌ DataLayer not found', 'error');
+      }
+    }
+
+    function clearLog() {
+      logEl.innerHTML = '';
+      log('Log cleared');
+    }
+
+    // Auto-check on load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        checkSetup();
+        log('💡 Click buttons above to test events');
+        log('💡 Open GA4 Realtime to see results');
+        log('💡 Use GTM Preview Mode for detailed debugging');
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

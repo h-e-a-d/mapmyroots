@@ -8,6 +8,13 @@ import { CONFIG } from './src/config/config.js';
 import analyticsService from './src/analytics/analytics-service.js';
 import AnalyticsIntegration from './src/analytics/analytics-integration.js';
 
+// Load debug helper in development
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  import('./src/analytics/debug-helper.js').then(module => {
+    console.log('📊 Analytics debug helper loaded. Run: analyticsDebug.runAll()');
+  });
+}
+
 // Enhanced module loader with retry mechanism
 const lazyLoadModule = async (modulePath) => {
   return RetryManager.retryModuleLoad(async () => {
@@ -23,7 +30,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const eventBus = appContext.getEventBus();
     const analyticsIntegration = new AnalyticsIntegration(eventBus);
     analyticsIntegration.init();
+
+    // Make analytics globally accessible for debugging
+    window.analyticsService = analyticsService;
+    window.analyticsIntegration = analyticsIntegration;
+
     console.log('✅ Analytics tracking initialized');
+    console.log('💡 Debug: Run analyticsDebug.runAll() in console');
 
     // Load core tree functionality
     const { TreeCoreCanvas } = await import('./src/core/tree-engine.js');
