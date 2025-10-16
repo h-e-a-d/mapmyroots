@@ -7,18 +7,7 @@ import { notifications } from '../ui/components/notifications.js';
 export function setupExport(treeCore) {
   // --- Export Buttons ---
   document.getElementById('exportSvg')?.addEventListener('click', () => {
-    const loadingId = notifications.loading('Exporting...', 'Generating SVG file');
-    try {
-      setTimeout(() => {
-        treeCore.exportCanvasAsSVG();
-        notifications.remove(loadingId);
-        notifications.success('Export Complete', 'SVG file has been downloaded');
-      }, 100);
-    } catch (error) {
-      notifications.remove(loadingId);
-      notifications.error('Export Failed', 'Error generating SVG file');
-      console.error('SVG export error:', error);
-    }
+    treeCore.exportCanvasAsSVG();
   });
 
   document.getElementById('exportPng')?.addEventListener('click', () => {
@@ -67,17 +56,7 @@ export function setupExport(treeCore) {
   });
 
   document.getElementById('exportPdf')?.addEventListener('click', () => {
-    const loadingId = notifications.loading('Exporting...', 'Generating PDF file');
-    try {
-      setTimeout(() => {
-        treeCore.exportCanvasAsPDF();
-        notifications.remove(loadingId);
-      }, 100);
-    } catch (error) {
-      notifications.remove(loadingId);
-      notifications.error('Export Failed', 'Error generating PDF file');
-      console.error('PDF export error:', error);
-    }
+    treeCore.exportCanvasAsPDF();
   });
 
   document.getElementById('saveData')?.addEventListener('click', () => {
@@ -119,6 +98,16 @@ export function setupExport(treeCore) {
 
 
   // --- Export Helpers ---
+  treeCore.exportCanvasAsSVG = async function() {
+    try {
+      const { exportCanvasSVG } = await import('../features/export/exporter.js');
+      await exportCanvasSVG();
+    } catch (error) {
+      console.error('Error exporting SVG:', error);
+      notifications.error('Export Failed', 'Could not export SVG: ' + error.message);
+    }
+  };
+
   treeCore.exportCanvasAsPDF = async function() {
     try {
       const { exportCanvasPDF } = await import('../features/export/exporter.js');
