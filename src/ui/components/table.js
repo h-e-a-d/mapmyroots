@@ -156,6 +156,15 @@ export function rebuildTableView(retryCount = 0) {
     genderTd.textContent = r.gender;
     tr.appendChild(genderTd);
 
+    // Generation
+    const generationTd = document.createElement('td');
+    const generation = treeCore.getGeneration(r.id);
+    generationTd.textContent = generation !== null ? generation : '-';
+    generationTd.style.textAlign = 'center';
+    generationTd.style.fontWeight = '600';
+    generationTd.style.color = generation !== null ? '#0f866c' : '#999';
+    tr.appendChild(generationTd);
+
     // Mother
     const motherTd = document.createElement('td');
     motherTd.textContent = getNameById(r.motherId);

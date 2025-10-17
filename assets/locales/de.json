@@ -202,6 +202,7 @@
       "header_maiden_name": "Mädchenname",
       "header_dob": "Geburtsdatum",
       "header_gender": "Geschlecht",
+      "header_generation": "Generation",
       "header_mother": "Mutter",
       "header_father": "Vater",
       "header_spouse": "Ehepartner",

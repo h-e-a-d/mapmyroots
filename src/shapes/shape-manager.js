@@ -5,6 +5,7 @@
 
 import { GrapeShape } from './grape-shape.js';
 import { TreeBranchesShape } from './tree-branches-shape.js';
+import { SolarSystemShape } from './solar-system-shape.js';
 
 export class ShapeManager {
     constructor(treeCore) {
@@ -12,10 +13,11 @@ export class ShapeManager {
         this.currentShape = null;
         this.availableShapes = new Map();
         this.isApplyingShape = false;
-        
+
         // Register available shapes
         this.registerShape('grape', GrapeShape);
         this.registerShape('treeBranches', TreeBranchesShape);
+        this.registerShape('solarSystem', SolarSystemShape);
         
         // Default shape is none (manual positioning)
         this.currentShapeType = 'none';

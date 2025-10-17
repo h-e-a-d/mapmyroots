@@ -13,6 +13,7 @@ import { setupSettings } from '../ui/components/ui-settings.js';
 import { setupModals } from '../ui/components/ui-modals.js';
 import { setupExport } from '../data/core-export.js';
 import { appContext } from '../utils/event-bus.js';
+import { GenerationCalculator } from '../utils/generation-calculator.js';
 
 /**
  * Core family tree engine responsible for managing the tree state,
@@ -80,6 +81,10 @@ export class TreeEngine {
     this.enhancedCacheIndicator = null;
     this.undoRedoManager = null;
     this.cacheManager = null;
+
+    // Generation calculator
+    this.generationCalculator = new GenerationCalculator();
+    this.generationData = new Map(); // Map of person ID to generation number
   }
 
   /**
@@ -434,6 +439,37 @@ export class TreeEngine {
     // Implementation will be moved from original file
   }
 
+  /**
+   * Recalculate generation numbers for all persons
+   */
+  recalculateGenerations() {
+    if (!this.personData || this.personData.size === 0) {
+      this.generationData.clear();
+      return;
+    }
+
+    console.log('Recalculating generation numbers...');
+    this.generationData = this.generationCalculator.calculateGenerations(this.personData);
+
+    // Log statistics
+    const stats = this.generationCalculator.getStatistics();
+    console.log('Generation calculation complete:', stats);
+
+    // Trigger table rebuild to show updated generation values
+    if (typeof rebuildTableView === 'function') {
+      rebuildTableView();
+    }
+  }
+
+  /**
+   * Get generation number for a person
+   * @param {string} personId - Person ID
+   * @returns {number|null} Generation number or null if not available
+   */
+  getGeneration(personId) {
+    return this.generationData.get(personId) ?? null;
+  }
+
   regenerateConnections() {
     // Regenerate family connections based on relationship data
     if (!this.renderer) return;
@@ -517,6 +553,9 @@ export class TreeEngine {
     }
     
     console.log(`Generated ${this.renderer.connections.length} connections (including ${this.lineOnlyConnections.size} line-only)`);
+
+    // Recalculate generations after connections change
+    this.recalculateGenerations();
   }
 
   autoSaveOld() {
@@ -1912,6 +1951,7 @@ export class TreeEngine {
         motherId: personData.motherId || '',
         fatherId: personData.fatherId || '',
         spouseId: personData.spouseId || '',
+        generation: this.getGeneration(personId), // Add generation number
         x: node?.x || 300,
         y: node?.y || 300,
         color: node?.color || this.defaultColor,

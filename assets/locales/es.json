@@ -416,6 +416,7 @@
       "header_maiden_name": "Apellido de Soltera",
       "header_dob": "Fecha de Nacimiento",
       "header_gender": "Género",
+      "header_generation": "Generación",
       "header_mother": "Madre",
       "header_father": "Padre",
       "header_spouse": "Cónyuge",

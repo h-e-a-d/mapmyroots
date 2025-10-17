@@ -302,6 +302,7 @@
       "header_maiden_name": "Девичья фамилия",
       "header_dob": "Дата рождения",
       "header_gender": "Пол",
+      "header_generation": "Поколение",
       "header_mother": "Мать",
       "header_father": "Отец",
       "header_spouse": "Супруг(а)",
