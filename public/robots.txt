@@ -24,11 +24,10 @@ Disallow: /tmp/
 Disallow: /*.json$
 Disallow: /*.log$
 Disallow: /*.sql$
-Disallow: /*.txt$
-Disallow: /*.xml$
 
-# Allow specific important files
+# Allow specific important files (sitemaps and robots.txt are critical for SEO)
 Allow: /sitemap.xml
+Allow: /sitemap-*.xml
 Allow: /robots.txt
 Allow: /favicon.ico
 

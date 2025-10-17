@@ -8,7 +8,22 @@
   <meta name="author" content="MapMyRoots">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0f866c">
-  
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://mapmyroots.com/">
+
+  <!-- Resource Hints for Performance -->
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- Internationalization - hreflang tags -->
+  <link rel="alternate" hreflang="en" href="https://mapmyroots.com/">
+  <link rel="alternate" hreflang="es" href="https://mapmyroots.com/?lang=es">
+  <link rel="alternate" hreflang="ru" href="https://mapmyroots.com/?lang=ru">
+  <link rel="alternate" hreflang="de" href="https://mapmyroots.com/?lang=de">
+  <link rel="alternate" hreflang="x-default" href="https://mapmyroots.com/">
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mapmyroots.com/">
@@ -38,7 +53,7 @@
     "browserRequirements": "Requires JavaScript. Supports Chrome, Firefox, Safari, Edge.",
     "softwareVersion": "2.1.0",
     "datePublished": "2023-01-15",
-    "dateModified": "2024-12-01",
+    "dateModified": "2025-10-17",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -70,6 +85,53 @@
       "Free Forever"
     ],
     "screenshot": "https://mapmyroots.com/screenshots/family-tree-builder.jpg"
+  }
+  </script>
+
+  <!-- Organization Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "MapMyRoots",
+    "url": "https://mapmyroots.com",
+    "logo": "https://mapmyroots.com/logo.png",
+    "description": "Free family tree builder and genealogy software for preserving family history",
+    "foundingDate": "2023-01-15",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Support",
+      "email": "support@mapmyroots.com"
+    }
+  }
+  </script>
+
+  <!-- VideoObject Structured Data for Demo -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "MapMyRoots - Family Tree Builder Demo",
+    "description": "Watch a 2-minute demo of MapMyRoots, the free online family tree builder. Learn how to create beautiful, interactive family trees with our drag-and-drop interface.",
+    "thumbnailUrl": "https://mapmyroots.com/video-thumbnail.jpg",
+    "uploadDate": "2023-01-15",
+    "duration": "PT2M",
+    "contentUrl": "https://youtu.be/-h7E-F7frA8",
+    "embedUrl": "https://www.youtube.com/embed/-h7E-F7frA8"
+  }
+  </script>
+
+  <!-- BreadcrumbList Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://mapmyroots.com/"
+    }]
   }
   </script>
 
@@ -120,8 +182,9 @@
   <!-- Preconnect to external domains -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
-  <!-- Google Fonts with optimized loading -->
+
+  <!-- Google Fonts with optimized preload + async loading -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap">
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap"
     rel="stylesheet"
@@ -137,7 +200,13 @@
   
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="./public/favicon.ico">
-  
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/public/manifest.json">
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="/public/icon-192.png">
+
   <!-- Critical CSS to prevent FOUC -->
   <style>
     /* Prevent flash of unstyled content */

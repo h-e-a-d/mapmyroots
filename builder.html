@@ -2,10 +2,44 @@
 <html lang="en" data-i18n-title="builder.meta.title">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title data-i18n="builder.meta.title">MapMyRoots - Build Your Family Tree</title>
   <meta name="description" content="Interactive family tree builder with drag-and-drop interface. Create, edit, and visualize your family connections with MapMyRoots." data-i18n-content="builder.meta.description">
-  
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://mapmyroots.com/builder.html">
+
+  <!-- Resource Hints for Performance -->
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- Internationalization - hreflang tags -->
+  <link rel="alternate" hreflang="en" href="https://mapmyroots.com/builder.html">
+  <link rel="alternate" hreflang="es" href="https://mapmyroots.com/builder.html?lang=es">
+  <link rel="alternate" hreflang="ru" href="https://mapmyroots.com/builder.html?lang=ru">
+  <link rel="alternate" hreflang="de" href="https://mapmyroots.com/builder.html?lang=de">
+  <link rel="alternate" hreflang="x-default" href="https://mapmyroots.com/builder.html">
+
+  <!-- BreadcrumbList Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://mapmyroots.com/"
+    },{
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Family Tree Builder",
+      "item": "https://mapmyroots.com/builder.html"
+    }]
+  }
+  </script>
+
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -14,9 +48,10 @@
   })(window,document,'script','dataLayer','GTM-MNZ4MJB7');</script>
   <!-- End Google Tag Manager -->
   
-  <!-- Google Fonts with optimized loading -->
+  <!-- Google Fonts with optimized preload + async loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@400;500&display=swap">
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@400;500&display=swap"
     rel="stylesheet"
@@ -68,7 +103,13 @@
   
   <link rel="stylesheet" href="src/ui/styles/style.css" />
   <link rel="stylesheet" href="src/ui/styles/modal.css" />
-  
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/public/manifest.json">
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="/public/icon-192.png">
+
   <!-- Language Switcher Styles -->
   <style>
     .language-switcher {
