@@ -414,7 +414,7 @@
         <div class="logo-icon">🌳</div>
         <span>MapMyRoots</span>
       </a>
-      
+
       <ul class="nav-menu">
         <li><a href="#features" class="nav-link" data-i18n="nav.features">Features</a></li>
         <li><a href="#how-it-works" class="nav-link" data-i18n="nav.how_it_works">How It Works</a></li>
@@ -422,60 +422,88 @@
         <li><a href="#testimonials" class="nav-link" data-i18n="nav.reviews">Reviews</a></li>
         <li><a href="./assets/glossary/glossary.html" class="nav-link" data-i18n="nav.glossary">Glossary</a></li>
         <li><a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a></li>
-        <li><a href="./builder.html" class="cta-button" data-i18n="nav.start_building">Start Building Free</a></li>
       </ul>
-      
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <!-- Language Switcher -->
-        <div class="language-switcher" id="language-switcher">
-          <button class="language-button" id="language-button" aria-label="Select language">
+
+      <div class="nav-actions">
+        <!-- Desktop Language Switcher -->
+        <div class="language-switcher desktop-only" id="language-switcher">
+          <button class="language-button" id="language-button" aria-label="Select language" aria-expanded="false" aria-haspopup="true">
             <span class="language-flag" id="current-flag">🇺🇸</span>
             <span id="current-language">EN</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <polyline points="6,9 12,15 18,9"></polyline>
             </svg>
           </button>
-          <div class="language-dropdown" id="language-dropdown">
-            <button class="language-option" data-lang="en" data-flag="🇺🇸">
+          <div class="language-dropdown" id="language-dropdown" role="menu" aria-labelledby="language-button">
+            <button class="language-option" data-lang="en" data-flag="🇺🇸" role="menuitem">
               <span class="language-flag">🇺🇸</span>
               <span data-i18n="languages.english">English</span>
             </button>
-            <button class="language-option" data-lang="es" data-flag="🇪🇸">
+            <button class="language-option" data-lang="es" data-flag="🇪🇸" role="menuitem">
               <span class="language-flag">🇪🇸</span>
               <span data-i18n="languages.spanish">Español</span>
             </button>
-            <button class="language-option" data-lang="ru" data-flag="🇷🇺">
+            <button class="language-option" data-lang="ru" data-flag="🇷🇺" role="menuitem">
               <span class="language-flag">🇷🇺</span>
               <span data-i18n="languages.russian">Русский</span>
             </button>
-            <button class="language-option" data-lang="de" data-flag="🇩🇪">
+            <button class="language-option" data-lang="de" data-flag="🇩🇪" role="menuitem">
               <span class="language-flag">🇩🇪</span>
               <span data-i18n="languages.german">Deutsch</span>
             </button>
           </div>
         </div>
-        
-        <button class="mobile-menu-toggle" aria-label="Open navigation menu" id="mobile-menu-toggle">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
+
+        <!-- CTA Button - Visible on all screen sizes -->
+        <a href="./builder.html" class="cta-button" data-i18n="nav.start_building">Start Building Free</a>
+
+        <!-- Hamburger Menu Toggle - Mobile only -->
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" id="mobile-menu-toggle">
+          <span class="hamburger-icon">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </span>
         </button>
       </div>
     </nav>
-    
+
     <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobile-menu">
-      <ul>
-        <li><a href="#features" class="nav-link" data-i18n="nav.features">Features</a></li>
-        <li><a href="#how-it-works" class="nav-link" data-i18n="nav.how_it_works">How It Works</a></li>
-        <li><a href="#examples" class="nav-link" data-i18n="nav.examples">Examples</a></li>
-        <li><a href="#testimonials" class="nav-link" data-i18n="nav.reviews">Reviews</a></li>
-        <li><a href="./assets/glossary/glossary.html" class="nav-link" data-i18n="nav.glossary">Glossary</a></li>
-        <li><a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a></li>
-        <li><a href="./builder.html" class="nav-link" data-i18n="nav.start_building">Start Building Free</a></li>
-      </ul>
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
+      <div class="mobile-menu-content">
+        <h2 id="mobile-menu-title" class="sr-only">Navigation Menu</h2>
+        <ul role="menu">
+          <li role="none"><a href="#features" class="nav-link" role="menuitem" data-i18n="nav.features">Features</a></li>
+          <li role="none"><a href="#how-it-works" class="nav-link" role="menuitem" data-i18n="nav.how_it_works">How It Works</a></li>
+          <li role="none"><a href="#examples" class="nav-link" role="menuitem" data-i18n="nav.examples">Examples</a></li>
+          <li role="none"><a href="#testimonials" class="nav-link" role="menuitem" data-i18n="nav.reviews">Reviews</a></li>
+          <li role="none"><a href="./assets/glossary/glossary.html" class="nav-link" role="menuitem" data-i18n="nav.glossary">Glossary</a></li>
+          <li role="none"><a href="#faq" class="nav-link" role="menuitem" data-i18n="nav.faq">FAQ</a></li>
+        </ul>
+
+        <!-- Mobile Language Switcher -->
+        <div class="mobile-language-switcher">
+          <h3 class="mobile-language-title" data-i18n="nav.select_language">Select Language</h3>
+          <div class="mobile-language-options" role="menu">
+            <button class="mobile-language-option" data-lang="en" data-flag="🇺🇸" role="menuitem">
+              <span class="language-flag">🇺🇸</span>
+              <span data-i18n="languages.english">English</span>
+            </button>
+            <button class="mobile-language-option" data-lang="es" data-flag="🇪🇸" role="menuitem">
+              <span class="language-flag">🇪🇸</span>
+              <span data-i18n="languages.spanish">Español</span>
+            </button>
+            <button class="mobile-language-option" data-lang="ru" data-flag="🇷🇺" role="menuitem">
+              <span class="language-flag">🇷🇺</span>
+              <span data-i18n="languages.russian">Русский</span>
+            </button>
+            <button class="mobile-language-option" data-lang="de" data-flag="🇩🇪" role="menuitem">
+              <span class="language-flag">🇩🇪</span>
+              <span data-i18n="languages.german">Deutsch</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
   

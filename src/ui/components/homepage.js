@@ -87,17 +87,26 @@ const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 
 if (mobileMenuToggle && mobileMenu) {
+  // Toggle mobile menu
   mobileMenuToggle.addEventListener('click', () => {
     const isOpen = mobileMenu.classList.contains('open');
+    const willBeOpen = !isOpen;
+
     mobileMenu.classList.toggle('open');
-    
+
     // Update ARIA attributes for accessibility
-    mobileMenuToggle.setAttribute('aria-expanded', !isOpen);
-    mobileMenu.setAttribute('aria-hidden', isOpen);
-    
+    mobileMenuToggle.setAttribute('aria-expanded', willBeOpen.toString());
+
+    // Prevent body scroll when menu is open
+    if (willBeOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
     // Track mobile menu usage
     gtmTrack('mobile_menu_toggle', {
-      action: isOpen ? 'close' : 'open',
+      action: willBeOpen ? 'open' : 'close',
       location: 'header',
       locale: window.i18n ? window.i18n.getLocale() : 'unknown',
       timestamp: new Date().toISOString()
@@ -109,8 +118,8 @@ if (mobileMenuToggle && mobileMenu) {
     if (e.target.classList.contains('nav-link')) {
       mobileMenu.classList.remove('open');
       mobileMenuToggle.setAttribute('aria-expanded', 'false');
-      mobileMenu.setAttribute('aria-hidden', 'true');
-      
+      document.body.style.overflow = '';
+
       // Track navigation clicks from mobile menu
       gtmTrack('navigation_click', {
         link_text: e.target.textContent,
@@ -119,6 +128,85 @@ if (mobileMenuToggle && mobileMenu) {
         locale: window.i18n ? window.i18n.getLocale() : 'unknown',
         timestamp: new Date().toISOString()
       });
+    }
+  });
+
+  // Handle mobile language switcher
+  const mobileLanguageOptions = document.querySelectorAll('.mobile-language-option');
+  mobileLanguageOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const lang = this.dataset.lang;
+      const flag = this.dataset.flag;
+
+      // Update active state for mobile options
+      mobileLanguageOptions.forEach(opt => opt.classList.remove('active'));
+      this.classList.add('active');
+
+      // Update desktop language button if it exists
+      const currentFlag = document.getElementById('current-flag');
+      const currentLanguage = document.getElementById('current-language');
+      if (currentFlag && currentLanguage) {
+        currentFlag.textContent = flag;
+        currentLanguage.textContent = lang.toUpperCase();
+      }
+
+      // Update desktop language options
+      const desktopOptions = document.querySelectorAll('.language-option');
+      desktopOptions.forEach(opt => opt.classList.remove('active'));
+      const matchingDesktopOption = Array.from(desktopOptions).find(opt => opt.dataset.lang === lang);
+      if (matchingDesktopOption) {
+        matchingDesktopOption.classList.add('active');
+      }
+
+      // Switch language if i18n is available
+      if (window.i18n && window.i18n.setLocale) {
+        window.i18n.setLocale(lang);
+      }
+
+      // Track language change
+      gtmTrack('language_change', {
+        language: lang,
+        source: 'mobile_menu',
+        timestamp: new Date().toISOString()
+      });
+
+      // Close mobile menu after language selection
+      setTimeout(() => {
+        mobileMenu.classList.remove('open');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }, 300);
+    });
+  });
+
+  // Keyboard navigation for mobile menu
+  mobileMenu.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      mobileMenu.classList.remove('open');
+      mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      mobileMenuToggle.focus();
+    }
+  });
+
+  // Trap focus within mobile menu when open
+  mobileMenu.addEventListener('keydown', (e) => {
+    if (!mobileMenu.classList.contains('open')) return;
+
+    if (e.key === 'Tab') {
+      const focusableElements = mobileMenu.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
     }
   });
 }
@@ -215,7 +303,7 @@ document.addEventListener('click', (e) => {
       if (mobileMenu.classList.contains('open')) {
         mobileMenu.classList.remove('open');
         mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileMenu.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
       }
     }
   }
