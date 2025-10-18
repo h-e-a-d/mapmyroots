@@ -285,5 +285,78 @@
       "no_changes": "Keine Änderungen zu speichern",
       "unsaved_changes": "Sie haben ungespeicherte Änderungen"
     }
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "subtitle": "Alles, was Sie über die MapMyRoots-Stammbaum-Software wissen müssen",
+    "free": {
+      "question": "Ist MapMyRoots komplett kostenlos?",
+      "answer": "Ja, MapMyRoots ist vollkommen kostenlos ohne versteckte Kosten, Abonnementgebühren oder Premium-Stufen. Sie können unbegrenzt Stammbäume erstellen und für immer auf alle Funktionen zugreifen."
+    },
+    "compare": {
+      "question": "Wie unterscheidet sich MapMyRoots von Ancestry.com oder MyHeritage?",
+      "answer": "Im Gegensatz zu kostenpflichtigen Diensten wie Ancestry.com (24,99 $/Monat) oder MyHeritage (12,95 $/Monat) ist MapMyRoots komplett kostenlos und konzentriert sich auf die Visualisierung von Stammbäumen statt auf genealogische Forschung. Ihre Daten gehören Ihnen und Sie können sie jederzeit exportieren."
+    },
+    "export": {
+      "question": "In welchen Dateiformaten kann ich meinen Stammbaum exportieren?",
+      "answer": "Sie können Ihren Stammbaum als hochauflösende Bilder (PNG, JPG), PDF-Dokumente zum Drucken oder JSON-Daten zur Sicherung exportieren."
+    },
+    "register": {
+      "question": "Muss ich mich registrieren oder ein Konto erstellen?",
+      "answer": "Keine Registrierung erforderlich! Sie können sofort mit dem Aufbau Ihres Stammbaums beginnen."
+    },
+    "mobile": {
+      "question": "Kann ich MapMyRoots auf mobilen Geräten verwenden?",
+      "answer": "Ja, MapMyRoots funktioniert perfekt auf Desktop-Computern, Tablets und Mobiltelefonen. Das responsive Design passt sich Ihrer Bildschirmgröße an und behält dabei die volle Funktionalität."
+    },
+    "limit": {
+      "question": "Wie viele Personen kann ich zu meinem Stammbaum hinzufügen?",
+      "answer": "Es gibt keine Begrenzung! Sie können so viele Familienmitglieder hinzufügen, wie Sie möchten, und mehrere Stammbäume erstellen. Benutzer haben erfolgreich Bäume mit Hunderten von Familienmitgliedern erstellt."
+    },
+    "import": {
+      "question": "Kann ich Daten von Ancestry.com oder anderen Diensten importieren?",
+      "answer": "Derzeit unterstützt MapMyRoots keinen direkten Import von anderen Diensten. Wenn Sie jedoch eine GEDCOM-Datei von einem anderen Genealogie-Dienst haben, können Sie die Informationen manuell in MapMyRoots eingeben. Wir arbeiten daran, die GEDCOM-Importfunktion in zukünftigen Updates hinzuzufügen."
+    },
+    "photos": {
+      "question": "Kann ich Fotos zu meinem Stammbaum hinzufügen?",
+      "answer": "Die Fotounterstützung befindet sich derzeit in der Entwicklung. Vorerst können Sie umfassende Textinformationen einschließlich Namen, Daten, Beziehungen und Notizen für jedes Familienmitglied hinzufügen."
+    },
+    "print": {
+      "question": "Wie drucke ich meinen Stammbaum?",
+      "answer": "Sie können Ihren Stammbaum als hochauflösende PNG- oder PDF-Datei über das Exportmenü im Builder exportieren. Diese Formate eignen sich perfekt zum Drucken in jeder Größe, von Standardpapier bis zu großformatigen Postern für Familientreffen."
+    },
+    "backup": {
+      "question": "Wie sichere ich die Daten meines Stammbaums?",
+      "answer": "Regelmäßige Backups sind unerlässlich! Verwenden Sie die Exportfunktion, um Ihren Stammbaum als JSON-Datei herunterzuladen. Speichern Sie diese Datei auf Ihrem Computer, in Cloud-Speicher oder auf einem USB-Laufwerk. Sie können sie jederzeit über die Importfunktion neu laden."
+    },
+    "browsers": {
+      "question": "Welche Browser unterstützt MapMyRoots?",
+      "answer": "MapMyRoots funktioniert in allen modernen Browsern, einschließlich Chrome, Firefox, Safari und Edge. Wir empfehlen die neueste Version Ihres bevorzugten Browsers für die beste Erfahrung."
+    },
+    "share": {
+      "question": "Kann ich meinen Stammbaum mit Verwandten teilen?",
+      "answer": "Ja! Exportieren Sie Ihren Stammbaum als Bild, PDF oder JSON-Datei und teilen Sie ihn per E-Mail, Cloud-Speicher oder Messaging-Apps. Empfänger können Bilder/PDFs direkt ansehen oder die JSON-Datei in ihr eigenes MapMyRoots importieren, um die Bearbeitung fortzusetzen."
+    },
+    "privacy": {
+      "question": "Sind meine Familiendaten privat und sicher?",
+      "answer": "Absolut! Die Daten Ihres Stammbaums werden lokal auf Ihrem Gerät im LocalStorage des Browsers gespeichert. Sie verlassen niemals Ihr Gerät und wir sehen oder greifen niemals darauf zu. Sie haben vollständige Privatsphäre und Kontrolle über Ihre Familieninformationen."
+    },
+    "collaborate": {
+      "question": "Können mehrere Personen am selben Stammbaum arbeiten?",
+      "answer": "Obwohl die Echtzeitkollaboration derzeit nicht unterstützt wird, können Sie Ihre Stammbaum-JSON-Datei mit anderen teilen. Sie können sie importieren, Änderungen vornehmen und zurücksenden. Dann können Sie die Updates in Ihrer Version zusammenführen."
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "Unternehmen",
+      "about": "Über uns",
+      "contact": "Kontakt"
+    },
+    "legal": {
+      "title": "Rechtliches",
+      "privacy": "Datenschutzerklärung",
+      "terms": "Nutzungsbedingungen"
+    },
+    "copyright": "© 2025 MapMyRoots. Alle Rechte vorbehalten."
   }
 } 

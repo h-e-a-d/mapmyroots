@@ -200,6 +200,38 @@
     "limit": {
       "question": "How many people can I add to my family tree?",
       "answer": "There's no limit! You can add as many family members as you want and create multiple family trees. Users have successfully created trees with hundreds of family members."
+    },
+    "import": {
+      "question": "Can I import data from Ancestry.com or other services?",
+      "answer": "Currently, MapMyRoots doesn't support direct imports from other services. However, if you have a GEDCOM file from another genealogy service, you can manually enter the information into MapMyRoots. We're working on adding GEDCOM import functionality in future updates."
+    },
+    "photos": {
+      "question": "Can I add photos to my family tree?",
+      "answer": "Photo support is currently in development. For now, you can add comprehensive text information including names, dates, relationships, and notes for each family member."
+    },
+    "print": {
+      "question": "How do I print my family tree?",
+      "answer": "You can export your family tree as a high-resolution PNG or PDF file using the export menu in the builder. These formats are perfect for printing at any size, from standard paper to large format posters for family reunions."
+    },
+    "backup": {
+      "question": "How do I back up my family tree data?",
+      "answer": "Regular backups are essential! Use the export feature to download your family tree as a JSON file. Save this file to your computer, cloud storage, or USB drive. You can reload it anytime using the import feature."
+    },
+    "browsers": {
+      "question": "What browsers does MapMyRoots support?",
+      "answer": "MapMyRoots works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your preferred browser for the best experience."
+    },
+    "share": {
+      "question": "Can I share my family tree with relatives?",
+      "answer": "Yes! Export your family tree as an image, PDF, or JSON file and share it via email, cloud storage, or messaging apps. Recipients can view images/PDFs directly or import the JSON file into their own MapMyRoots to continue editing."
+    },
+    "privacy": {
+      "question": "Is my family data private and secure?",
+      "answer": "Absolutely! Your family tree data is stored locally on your device using browser LocalStorage. It never leaves your device and we never see or access it. You have complete privacy and control over your family information."
+    },
+    "collaborate": {
+      "question": "Can multiple people work on the same family tree?",
+      "answer": "While real-time collaboration isn't currently supported, you can share your family tree JSON file with others. They can import it, make changes, and send it back. You can then merge the updates into your version."
     }
   },
   "cta": {
@@ -227,6 +259,11 @@
       "examples": "Examples",
       "comparison": "vs Competitors"
     },
+    "company": {
+      "title": "Company",
+      "about": "About Us",
+      "contact": "Contact"
+    },
     "support": {
       "title": "Support",
       "faq": "FAQ",
@@ -251,7 +288,7 @@
       "cookies": "Cookie Policy",
       "opensource": "Open Source"
     },
-    "copyright": "© 2024 MapMyRoots. All rights reserved. Made with ❤️ for families worldwide.",
+    "copyright": "© 2025 MapMyRoots. All rights reserved. Made with ❤️ for families worldwide.",
     "badges": {
       "privacy": "🔒 Privacy First",
       "mobile": "📱 Mobile Friendly",

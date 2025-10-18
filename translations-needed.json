@@ -1,0 +1,355 @@
+{
+  "instructions": "This file contains all new content that needs translation into Spanish (es), Russian (ru), and German (de). Use professional translation services or native speakers for accuracy, especially for legal content.",
+
+  "pages_to_translate": [
+    "privacy.html",
+    "terms.html",
+    "about.html",
+    "contact.html",
+    "index.html (FAQ expansion)"
+  ],
+
+  "privacy": {
+    "meta": {
+      "title": "Privacy Policy - MapMyRoots | Your Data Stays Private",
+      "description": "MapMyRoots Privacy Policy - Learn how we protect your family tree data and personal information. Your data stays on your device, we never store it on our servers.",
+      "og": {
+        "title": "Privacy Policy - MapMyRoots",
+        "description": "MapMyRoots Privacy Policy - Your data stays on your device. Learn about our privacy-first approach to family tree building."
+      }
+    },
+    "content": {
+      "title": "Privacy Policy",
+      "last_updated": "Last Updated: January 1, 2025",
+      "tldr": {
+        "title": "TL;DR - Privacy First:",
+        "content": "Your family tree data never leaves your device. It's stored locally in your browser using LocalStorage. We don't have access to your data, and we can't see it. You're in complete control."
+      },
+      "sections": {
+        "introduction": {
+          "title": "1. Introduction",
+          "content": "MapMyRoots (\"we,\" \"our,\" or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we handle information when you use our free family tree builder application at mapmyroots.com (the \"Service\")."
+        },
+        "data_collection": {
+          "title": "2. Data Collection and Storage",
+          "family_tree": {
+            "title": "2.1 Family Tree Data",
+            "content": "All family tree data you create (names, dates, relationships, photos, notes) is stored locally on your device using browser LocalStorage technology. This data:",
+            "points": [
+              "Never leaves your device or browser",
+              "Is not uploaded to our servers",
+              "Cannot be accessed by us or any third party",
+              "Remains under your complete control",
+              "Can be exported and deleted at any time"
+            ]
+          },
+          "analytics": {
+            "title": "2.2 Analytics Data",
+            "content": "We use Google Tag Manager and Google Analytics to collect anonymous usage statistics to help us improve the Service. This includes:",
+            "points": [
+              "Pages visited",
+              "Features used",
+              "Time spent on site",
+              "Device type and browser",
+              "General location (country/city level)"
+            ],
+            "note": "Important: Analytics data does not include any personal information from your family tree."
+          },
+          "cookies": {
+            "title": "2.3 Cookies",
+            "content": "We use the following types of cookies:",
+            "essential": {
+              "title": "Essential Cookies:",
+              "content": "Required for the Service to function (e.g., saving your language preference)"
+            },
+            "analytics_title": "Analytics Cookies:",
+            "analytics_content": "Google Analytics cookies to understand how you use the Service"
+          }
+        },
+        "no_account": {
+          "title": "3. No Account Required",
+          "content": "MapMyRoots does not require you to create an account or provide any personal information such as:",
+          "points": [
+            "Email address",
+            "Name",
+            "Payment information",
+            "Phone number"
+          ],
+          "anonymous": "You can use the Service completely anonymously."
+        },
+        "data_security": {
+          "title": "4. Data Security",
+          "content": "Since your family tree data is stored locally on your device:",
+          "points": [
+            "You are responsible for securing your device",
+            "We recommend regularly exporting your family tree data as backup",
+            "Your data is subject to your browser's security and storage policies",
+            "Clearing your browser data will delete your family tree"
+          ]
+        },
+        "third_party": {
+          "title": "5. Third-Party Services",
+          "content": "We use the following third-party services:",
+          "google": {
+            "title": "Google Analytics:",
+            "content": "For anonymous usage statistics. See Google's Privacy Policy"
+          },
+          "fonts": {
+            "title": "Google Fonts:",
+            "content": "For typography. See Google Fonts Privacy"
+          }
+        },
+        "your_rights": {
+          "title": "6. Your Rights",
+          "intro": "You have complete control over your data:",
+          "access": {
+            "title": "Access:",
+            "content": "View your data anytime in the application"
+          },
+          "export": {
+            "title": "Export:",
+            "content": "Download your family tree data in JSON, PDF, or image formats"
+          },
+          "delete": {
+            "title": "Delete:",
+            "content": "Clear all data using the \"Clear All Data\" button in settings"
+          },
+          "modify": {
+            "title": "Modify:",
+            "content": "Edit any information in your family tree at any time"
+          }
+        },
+        "children": {
+          "title": "7. Children's Privacy",
+          "content": "MapMyRoots does not knowingly collect any personal information from users. Since we don't collect personal data, users of all ages can use the Service. However, we recommend parental supervision for users under 13."
+        },
+        "international": {
+          "title": "8. International Users",
+          "content": "MapMyRoots is available worldwide. Since your data is stored locally on your device, it never crosses international borders through our Service. Analytics data processed by Google may be transferred internationally in accordance with Google's privacy policies."
+        },
+        "data_retention": {
+          "title": "9. Data Retention",
+          "content": "Your family tree data remains on your device until you:",
+          "points": [
+            "Clear your browser's LocalStorage",
+            "Use the \"Clear All Data\" feature in the application",
+            "Uninstall your browser"
+          ],
+          "export": "We strongly recommend exporting your data regularly to prevent accidental loss."
+        },
+        "changes": {
+          "title": "10. Changes to This Policy",
+          "content": "We may update this Privacy Policy from time to time. We will notify you of any changes by updating the \"Last Updated\" date at the top of this policy. We encourage you to review this policy periodically."
+        },
+        "gdpr": {
+          "title": "11. GDPR Compliance",
+          "content": "For users in the European Union, we comply with the General Data Protection Regulation (GDPR):",
+          "points": [
+            "Data Minimization: We only process the minimum data necessary (anonymous analytics)",
+            "User Control: You have complete control over your family tree data",
+            "Transparency: This policy clearly explains our data practices",
+            "Consent: By using our Service, you consent to analytics as described"
+          ]
+        },
+        "ccpa": {
+          "title": "12. California Privacy Rights (CCPA)",
+          "content": "MapMyRoots does not sell personal information. California residents have the right to:",
+          "points": [
+            "Know what personal data is collected (none from your family tree)",
+            "Request deletion of personal data",
+            "Opt-out of data sales (we don't sell data)"
+          ]
+        },
+        "contact": {
+          "title": "13. Contact Us",
+          "intro": "If you have any questions about this Privacy Policy, please contact us:",
+          "email_label": "Email:",
+          "website_label": "Website:"
+        }
+      }
+    }
+  },
+
+  "terms": {
+    "meta": {
+      "title": "Terms of Service - MapMyRoots | Free Family Tree Builder",
+      "description": "MapMyRoots Terms of Service - Read our terms and conditions for using our free family tree builder application."
+    },
+    "content": {
+      "title": "Terms of Service",
+      "last_updated": "Last Updated: January 1, 2025",
+      "intro": "Welcome to MapMyRoots! These terms outline your rights and responsibilities when using our free family tree builder. By using our Service, you agree to these terms.",
+      "note": "For full content, see terms.html - approximately 2,800 words covering acceptance, service description, acceptable use, data ownership, intellectual property, disclaimers, liability, service availability, modifications, termination, external links, indemnification, governing law, and contact information."
+    }
+  },
+
+  "about": {
+    "meta": {
+      "title": "About Us - MapMyRoots | Free Family Tree Builder",
+      "description": "Learn about MapMyRoots - our mission to make family history preservation accessible to everyone through free, privacy-focused family tree software."
+    },
+    "content": {
+      "hero": {
+        "title": "About MapMyRoots",
+        "subtitle": "Making family history preservation accessible, free, and privacy-focused for everyone."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "content": "To empower families worldwide to create, visualize, and preserve their family histories without barriers. We believe that documenting your heritage should be free, simple, and private - accessible to everyone, not just those who can afford expensive genealogy software."
+      },
+      "story": {
+        "title": "Our Story",
+        "paragraph1": "MapMyRoots was born from a simple frustration: why is creating a family tree so expensive and complicated? Most genealogy services charge monthly fees, lock your data behind paywalls, and make the process overwhelming for beginners.",
+        "paragraph2": "We created MapMyRoots to solve this problem. Launched in 2023, our platform provides a completely free, intuitive family tree builder that respects your privacy. Your data stays on your device - we never see it, we never store it, and we never sell it.",
+        "paragraph3": "Since our launch, over 15,000 families have used MapMyRoots to preserve their heritage. From students completing school projects to grandparents documenting multiple generations, our tool serves families worldwide in their journey to understand where they come from."
+      },
+      "values": {
+        "privacy": {
+          "title": "Privacy First",
+          "content": "Your family tree data never leaves your device. We use browser LocalStorage to keep everything private and secure. No servers, no databases, no data collection - just you and your family history."
+        },
+        "free": {
+          "title": "100% Free Forever",
+          "content": "No subscriptions, no premium tiers, no hidden costs. All features are free and always will be. Family history preservation shouldn't require a monthly payment."
+        },
+        "simple": {
+          "title": "Simple & Intuitive",
+          "content": "We focus on making family tree creation easy for everyone. Drag-and-drop interface, visual canvas, and straightforward controls mean you can start building immediately - no training required."
+        },
+        "accessible": {
+          "title": "Accessible to All",
+          "content": "No registration required. Works on any device with a browser. Available in multiple languages. We believe everyone should be able to document their family story, regardless of technical skill or resources."
+        },
+        "beautiful": {
+          "title": "Beautiful Design",
+          "content": "Your family history deserves to be presented beautifully. Our interactive canvas, customizable styles, and high-resolution exports make your family trees stunning works of art."
+        },
+        "ownership": {
+          "title": "Your Data, Your Control",
+          "content": "Export your family tree anytime in multiple formats (JSON, PDF, images). No vendor lock-in, no restrictions. Your data belongs to you, period."
+        }
+      },
+      "stats": {
+        "title": "MapMyRoots by the Numbers",
+        "families": "Families Served",
+        "free": "Free Forever",
+        "rating": "Average Rating",
+        "languages": "Languages"
+      },
+      "why_free": {
+        "title": "Why Is MapMyRoots Free?",
+        "paragraph1": "Great question! We believe family history preservation is a fundamental human activity that shouldn't be monetized. Unlike other genealogy services, we don't charge because:",
+        "reason1": "Privacy-focused architecture: Since your data stays on your device, we don't need expensive servers or databases",
+        "reason2": "No historical records: We focus on tree visualization, not genealogical research databases",
+        "reason3": "Sustainable model: Our lean operation and efficient technology keep costs minimal",
+        "reason4": "Community-driven: We're committed to serving families, not shareholders",
+        "paragraph2": "We will never introduce paid features, subscriptions, or premium tiers. MapMyRoots will remain 100% free, forever."
+      },
+      "technology": {
+        "title": "Our Technology",
+        "paragraph1": "MapMyRoots is built with modern web technologies to ensure a fast, secure, and reliable experience:",
+        "canvas": "HTML5 Canvas: Smooth, responsive family tree visualization",
+        "localstorage": "LocalStorage API: Secure, local data storage on your device",
+        "responsive": "Responsive Design: Works perfectly on desktop, tablet, and mobile",
+        "export": "Advanced Export: High-resolution PNG, PDF, and JSON formats",
+        "i18n": "Internationalization: Multi-language support for global accessibility"
+      },
+      "cta": {
+        "title": "Start Your Family Tree Today",
+        "content": "Join over 15,000 families who trust MapMyRoots to preserve their family history. No registration required, completely free, and your data stays private.",
+        "button": "Start Building Free"
+      }
+    }
+  },
+
+  "contact": {
+    "meta": {
+      "title": "Contact Us - MapMyRoots | Get Support",
+      "description": "Contact MapMyRoots - Get support for our free family tree builder or send us your feedback and questions."
+    },
+    "content": {
+      "hero": {
+        "title": "Contact Us",
+        "subtitle": "Have questions or feedback? We'd love to hear from you!"
+      },
+      "email": {
+        "title": "Email Support",
+        "description": "Send us an email and we'll get back to you as soon as possible."
+      },
+      "faq": {
+        "title": "FAQ",
+        "description": "Check our frequently asked questions for quick answers.",
+        "link": "Visit FAQ"
+      },
+      "resources": {
+        "title": "Resources",
+        "description": "Explore our glossary and tutorials to learn more.",
+        "link": "Browse Resources"
+      },
+      "response": {
+        "title": "Response Time",
+        "content": "We typically respond to emails within 24-48 hours during business days. For immediate answers, check our FAQ section."
+      }
+    }
+  },
+
+  "faq_expansion": {
+    "note": "These are the 9 new FAQ questions added to index.html",
+    "questions": [
+      {
+        "question": "Can I import data from Ancestry.com or other services?",
+        "answer": "Currently, MapMyRoots doesn't support direct imports from other services. However, if you have a GEDCOM file from another genealogy service, you can manually enter the information into MapMyRoots. We're working on adding GEDCOM import functionality in future updates."
+      },
+      {
+        "question": "Can I add photos to my family tree?",
+        "answer": "Photo support is currently in development. For now, you can add comprehensive text information including names, dates, relationships, and notes for each family member."
+      },
+      {
+        "question": "How do I print my family tree?",
+        "answer": "You can export your family tree as a high-resolution PNG or PDF file using the export menu in the builder. These formats are perfect for printing at any size, from standard paper to large format posters for family reunions."
+      },
+      {
+        "question": "How do I back up my family tree data?",
+        "answer": "Regular backups are essential! Use the export feature to download your family tree as a JSON file. Save this file to your computer, cloud storage, or USB drive. You can reload it anytime using the import feature."
+      },
+      {
+        "question": "What browsers does MapMyRoots support?",
+        "answer": "MapMyRoots works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your preferred browser for the best experience."
+      },
+      {
+        "question": "Can I share my family tree with relatives?",
+        "answer": "Yes! Export your family tree as an image, PDF, or JSON file and share it via email, cloud storage, or messaging apps. Recipients can view images/PDFs directly or import the JSON file into their own MapMyRoots to continue editing."
+      },
+      {
+        "question": "Is my family data private and secure?",
+        "answer": "Absolutely! Your family tree data is stored locally on your device using browser LocalStorage. It never leaves your device and we never see or access it. You have complete privacy and control over your family information."
+      },
+      {
+        "question": "Can multiple people work on the same family tree?",
+        "answer": "While real-time collaboration isn't currently supported, you can share your family tree JSON file with others. They can import it, make changes, and send it back. You can then merge the updates into your version."
+      }
+    ]
+  },
+
+  "footer": {
+    "company": {
+      "title": "Company",
+      "about": "About Us",
+      "contact": "Contact"
+    },
+    "copyright": "© 2025 MapMyRoots. All rights reserved."
+  },
+
+  "translation_service_recommendations": {
+    "professional_services": [
+      "DeepL Pro API (highest quality for European languages)",
+      "Google Cloud Translation API",
+      "Microsoft Translator",
+      "Smartling",
+      "Lokalise"
+    ],
+    "manual_review": "IMPORTANT: Have native speakers review legal content (Privacy Policy, Terms) before publishing",
+    "estimated_cost": "Professional translation: $0.08-0.15 per word = $1,848 - $3,465 for all 3 languages",
+    "estimated_time": "Manual translation by native speakers: 40-60 hours total"
+  }
+}

@@ -150,7 +150,7 @@
         }
       },
       {
-        "@type": "Question", 
+        "@type": "Question",
         "name": "How does MapMyRoots compare to Ancestry.com or MyHeritage?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -161,11 +161,106 @@
         "@type": "Question",
         "name": "What file formats can I export my family tree in?",
         "acceptedAnswer": {
-          "@type": "Answer", 
+          "@type": "Answer",
           "text": "You can export your family tree as high-resolution images (PNG, JPG), PDF documents for printing, or JSON data for backup and sharing with other genealogy software."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to register or create an account?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No registration required! You can start building your family tree immediately. However, creating a free account lets you save your trees online and access them from any device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use MapMyRoots on mobile devices?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, MapMyRoots works perfectly on desktop computers, tablets, and mobile phones. The responsive design adapts to your screen size while maintaining full functionality."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many people can I add to my family tree?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There's no limit! You can add as many family members as you want and create multiple family trees. Users have successfully created trees with hundreds of family members."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I import data from Ancestry.com or other services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Currently, MapMyRoots doesn't support direct imports from other services. However, if you have a GEDCOM file, you can manually enter the information. We're working on adding GEDCOM import functionality."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I print my family tree?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Export your family tree as a high-resolution PNG or PDF file using the export menu. These formats are perfect for printing at any size, from standard paper to large format posters."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I back up my family tree data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use the export feature to download your family tree as a JSON file. Save this to your computer, cloud storage, or USB drive. You can reload it anytime using the import feature."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my family data private and secure?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely! Your family tree data is stored locally on your device using browser LocalStorage. It never leaves your device and we never see or access it."
         }
       }
     ]
+  }
+  </script>
+
+  <!-- HowTo Schema for "How It Works" -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Build Your Family Tree with MapMyRoots",
+    "description": "Step-by-step guide to creating a comprehensive family tree using MapMyRoots free family tree builder.",
+    "totalTime": "PT10M",
+    "estimatedCost": {
+      "@type": "MonetaryAmount",
+      "currency": "USD",
+      "value": "0"
+    },
+    "tool": [{
+      "@type": "HowToTool",
+      "name": "MapMyRoots Family Tree Builder"
+    }],
+    "step": [{
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Add Family Members",
+      "text": "Start by adding yourself and begin building outward. Add parents, siblings, children, and extended family with detailed profiles including photos and personal information.",
+      "url": "https://mapmyroots.com/#how-it-works"
+    },{
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Connect Relationships",
+      "text": "Use our simple connection tools to link family members. Define relationships like parent-child, spouse, or custom connections. The family tree updates automatically.",
+      "url": "https://mapmyroots.com/#how-it-works"
+    },{
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Customize & Share",
+      "text": "Personalize your tree with colors and styles. Export as beautiful high-resolution images, PDFs for printing, or share your family history digitally with loved ones.",
+      "url": "https://mapmyroots.com/#how-it-works"
+    }]
   }
   </script>
 
@@ -773,6 +868,62 @@
               <p data-i18n="faq.limit.answer">There's no limit! You can add as many family members as you want and create multiple family trees. Users have successfully created trees with hundreds of family members.</p>
             </div>
           </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.import.question">Can I import data from Ancestry.com or other services?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.import.answer">Currently, MapMyRoots doesn't support direct imports from other services. However, if you have a GEDCOM file from another genealogy service, you can manually enter the information into MapMyRoots. We're working on adding GEDCOM import functionality in future updates.</p>
+            </div>
+          </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.photos.question">Can I add photos to my family tree?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.photos.answer">Photo support is currently in development. For now, you can add comprehensive text information including names, dates, relationships, and notes for each family member.</p>
+            </div>
+          </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.print.question">How do I print my family tree?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.print.answer">You can export your family tree as a high-resolution PNG or PDF file using the export menu in the builder. These formats are perfect for printing at any size, from standard paper to large format posters for family reunions.</p>
+            </div>
+          </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.backup.question">How do I back up my family tree data?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.backup.answer">Regular backups are essential! Use the export feature to download your family tree as a JSON file. Save this file to your computer, cloud storage, or USB drive. You can reload it anytime using the import feature.</p>
+            </div>
+          </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.browsers.question">What browsers does MapMyRoots support?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.browsers.answer">MapMyRoots works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your preferred browser for the best experience.</p>
+            </div>
+          </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.share.question">Can I share my family tree with relatives?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.share.answer">Yes! Export your family tree as an image, PDF, or JSON file and share it via email, cloud storage, or messaging apps. Recipients can view images/PDFs directly or import the JSON file into their own MapMyRoots to continue editing.</p>
+            </div>
+          </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.privacy.question">Is my family data private and secure?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.privacy.answer">Absolutely! Your family tree data is stored locally on your device using browser LocalStorage. It never leaves your device and we never see or access it. You have complete privacy and control over your family information.</p>
+            </div>
+          </div>
+
+          <div class="faq-item fade-in">
+            <h3 class="faq-question" data-i18n="faq.collaborate.question">Can multiple people work on the same family tree?</h3>
+            <div class="faq-answer">
+              <p data-i18n="faq.collaborate.answer">While real-time collaboration isn't currently supported, you can share your family tree JSON file with others. They can import it, make changes, and send it back. You can then merge the updates into your version.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -825,35 +976,32 @@
       </div>
       
       <div class="footer-section">
+        <h3 data-i18n="footer.company.title">Company</h3>
+        <ul>
+          <li><a href="./about.html" data-i18n="footer.company.about">About Us</a></li>
+          <li><a href="./contact.html" data-i18n="footer.company.contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
         <h3 data-i18n="footer.support.title">Support</h3>
         <ul>
           <li><a href="#faq" data-i18n="footer.support.faq">FAQ</a></li>
-          <li><a href="#help" data-i18n="footer.support.help">Help Center</a></li>
-          <li><a href="#contact" data-i18n="footer.support.contact">Contact Us</a></li>
-          <li><a href="#tutorials" data-i18n="footer.support.tutorials">Tutorials</a></li>
-          <li><a href="#community" data-i18n="footer.support.community">Community</a></li>
         </ul>
       </div>
-      
+
       <div class="footer-section">
         <h3 data-i18n="footer.resources.title">Resources</h3>
         <ul>
           <li><a href="./assets/glossary/glossary.html" data-i18n="footer.resources.glossary">Genealogy Glossary</a></li>
-          <li><a href="#genealogy-tips" data-i18n="footer.resources.tips">Genealogy Tips</a></li>
-          <li><a href="#blog" data-i18n="footer.resources.blog">Blog</a></li>
-          <li><a href="#templates" data-i18n="footer.resources.templates">Templates</a></li>
-          <li><a href="#export-guide" data-i18n="footer.resources.export">Export Guide</a></li>
-          <li><a href="#best-practices" data-i18n="footer.resources.practices">Best Practices</a></li>
         </ul>
       </div>
-      
+
       <div class="footer-section">
         <h3 data-i18n="footer.legal.title">Legal</h3>
         <ul>
-          <li><a href="#privacy" data-i18n="footer.legal.privacy">Privacy Policy</a></li>
-          <li><a href="#terms" data-i18n="footer.legal.terms">Terms of Service</a></li>
-          <li><a href="#cookies" data-i18n="footer.legal.cookies">Cookie Policy</a></li>
-          <li><a href="#opensource" data-i18n="footer.legal.opensource">Open Source</a></li>
+          <li><a href="./privacy.html" data-i18n="footer.legal.privacy">Privacy Policy</a></li>
+          <li><a href="./terms.html" data-i18n="footer.legal.terms">Terms of Service</a></li>
         </ul>
       </div>
     </div>

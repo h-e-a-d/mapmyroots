@@ -200,6 +200,38 @@
     "limit": {
       "question": "¿Cuántas personas puedo agregar a mi árbol genealógico?",
       "answer": "¡No hay límite! Puedes agregar tantos miembros de la familia como quieras y crear múltiples árboles genealógicos. Los usuarios han creado exitosamente árboles con cientos de miembros familiares."
+    },
+    "import": {
+      "question": "¿Puedo importar datos de Ancestry.com u otros servicios?",
+      "answer": "Actualmente, MapMyRoots no admite importaciones directas de otros servicios. Sin embargo, si tienes un archivo GEDCOM de otro servicio de genealogía, puedes ingresar manualmente la información en MapMyRoots. Estamos trabajando en agregar funcionalidad de importación GEDCOM en futuras actualizaciones."
+    },
+    "photos": {
+      "question": "¿Puedo agregar fotos a mi árbol genealógico?",
+      "answer": "El soporte para fotos está actualmente en desarrollo. Por ahora, puedes agregar información de texto completa que incluya nombres, fechas, relaciones y notas para cada miembro de la familia."
+    },
+    "print": {
+      "question": "¿Cómo imprimo mi árbol genealógico?",
+      "answer": "Puedes exportar tu árbol genealógico como archivo PNG o PDF de alta resolución usando el menú de exportación en el constructor. Estos formatos son perfectos para imprimir en cualquier tamaño, desde papel estándar hasta pósteres de gran formato para reuniones familiares."
+    },
+    "backup": {
+      "question": "¿Cómo hago una copia de seguridad de los datos de mi árbol genealógico?",
+      "answer": "¡Las copias de seguridad regulares son esenciales! Usa la función de exportación para descargar tu árbol genealógico como archivo JSON. Guarda este archivo en tu computadora, almacenamiento en la nube o unidad USB. Puedes recargarlo en cualquier momento usando la función de importación."
+    },
+    "browsers": {
+      "question": "¿Qué navegadores admite MapMyRoots?",
+      "answer": "MapMyRoots funciona en todos los navegadores modernos incluyendo Chrome, Firefox, Safari y Edge. Recomendamos usar la última versión de tu navegador preferido para la mejor experiencia."
+    },
+    "share": {
+      "question": "¿Puedo compartir mi árbol genealógico con familiares?",
+      "answer": "¡Sí! Exporta tu árbol genealógico como imagen, PDF o archivo JSON y compártelo por correo electrónico, almacenamiento en la nube o aplicaciones de mensajería. Los destinatarios pueden ver imágenes/PDFs directamente o importar el archivo JSON en su propio MapMyRoots para continuar editando."
+    },
+    "privacy": {
+      "question": "¿Mis datos familiares son privados y seguros?",
+      "answer": "¡Absolutamente! Los datos de tu árbol genealógico se almacenan localmente en tu dispositivo usando LocalStorage del navegador. Nunca salen de tu dispositivo y nunca los vemos ni accedemos a ellos. Tienes completa privacidad y control sobre tu información familiar."
+    },
+    "collaborate": {
+      "question": "¿Pueden varias personas trabajar en el mismo árbol genealógico?",
+      "answer": "Aunque la colaboración en tiempo real no está actualmente admitida, puedes compartir tu archivo JSON del árbol genealógico con otros. Ellos pueden importarlo, hacer cambios y enviarlo de vuelta. Luego puedes fusionar las actualizaciones en tu versión."
     }
   },
   "cta": {
@@ -227,6 +259,11 @@
       "examples": "Ejemplos",
       "comparison": "vs Competidores"
     },
+    "company": {
+      "title": "Compañía",
+      "about": "Sobre Nosotros",
+      "contact": "Contacto"
+    },
     "support": {
       "title": "Soporte",
       "faq": "FAQ",
@@ -251,7 +288,7 @@
       "cookies": "Política de Cookies",
       "opensource": "Código Abierto"
     },
-    "copyright": "© 2024 MapMyRoots. Todos los derechos reservados. Hecho con ❤️ para familias en todo el mundo.",
+    "copyright": "© 2025 MapMyRoots. Todos los derechos reservados. Hecho con ❤️ para familias en todo el mundo.",
     "badges": {
       "privacy": "🔒 Privacidad Primero",
       "mobile": "📱 Amigable con Móviles",

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" data-i18n-title="about.meta.title">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn about MapMyRoots - our mission to make family history preservation accessible to everyone through free, privacy-focused family tree software." data-i18n-content="about.meta.description">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f866c">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://mapmyroots.com/about.html">
+
+  <!-- Internationalization - hreflang tags -->
+  <link rel="alternate" hreflang="en" href="https://mapmyroots.com/about.html">
+  <link rel="alternate" hreflang="es" href="https://mapmyroots.com/about.html?lang=es">
+  <link rel="alternate" hreflang="ru" href="https://mapmyroots.com/about.html?lang=ru">
+  <link rel="alternate" hreflang="de" href="https://mapmyroots.com/about.html?lang=de">
+  <link rel="alternate" hreflang="x-default" href="https://mapmyroots.com/about.html">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mapmyroots.com/about.html">
+  <meta property="og:title" content="About Us - MapMyRoots | Free Family Tree Builder" data-i18n-content="about.meta.og.title">
+  <meta property="og:description" content="Learn about MapMyRoots - our mission to make family history preservation accessible to everyone." data-i18n-content="about.meta.og.description">
+  <meta property="og:image" content="https://mapmyroots.com/og-image.jpg">
+
+  <!-- BreadcrumbList Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://mapmyroots.com/"
+    },{
+      "@type": "ListItem",
+      "position": 2,
+      "name": "About Us",
+      "item": "https://mapmyroots.com/about.html"
+    }]
+  }
+  </script>
+
+  <!-- Organization Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "MapMyRoots",
+    "url": "https://mapmyroots.com",
+    "logo": "https://mapmyroots.com/logo.png",
+    "description": "Free family tree builder and genealogy software for preserving family history",
+    "foundingDate": "2023",
+    "founders": [{
+      "@type": "Organization",
+      "name": "MapMyRoots Team"
+    }],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Support",
+      "email": "support@mapmyroots.com"
+    },
+    "sameAs": []
+  }
+  </script>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-MNZ4MJB7');</script>
+  <!-- End Google Tag Manager -->
+
+  <title data-i18n="about.meta.title">About Us - MapMyRoots | Free Family Tree Builder</title>
+
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="./public/favicon.ico">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="./src/ui/styles/homepage.css">
+
+  <style>
+    .about-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: calc(var(--header-height) + 3rem) 2rem 4rem;
+    }
+
+    .about-hero {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .about-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .about-hero .subtitle {
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .mission-box {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 3rem 2rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .mission-box h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .mission-box p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.7;
+      opacity: 0.95;
+    }
+
+    .story-section {
+      margin-bottom: 4rem;
+    }
+
+    .story-section h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .story-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .value-card {
+      background: var(--background-card);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+
+    .value-card:hover {
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow);
+      transform: translateY(-4px);
+    }
+
+    .value-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .value-card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .value-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .stats-section {
+      background: var(--background-alt);
+      padding: 3rem 2rem;
+      border-radius: 12px;
+      text-align: center;
+      margin: 4rem 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 2rem auto 0;
+    }
+
+    .stat-item {
+      padding: 1rem;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .cta-section {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--background-card);
+      border-radius: 12px;
+      margin-top: 4rem;
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (max-width: 768px) {
+      .about-container {
+        padding: calc(var(--header-height) + 2rem) 1rem 3rem;
+      }
+
+      .values-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MNZ4MJB7"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="header" id="header">
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+      <a href="./" class="logo" aria-label="MapMyRoots Home">
+        <div class="logo-icon">🌳</div>
+        <span>MapMyRoots</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="./#features" class="nav-link" data-i18n="nav.features">Features</a></li>
+        <li><a href="./#how-it-works" class="nav-link" data-i18n="nav.how_it_works">How It Works</a></li>
+        <li><a href="./#testimonials" class="nav-link" data-i18n="nav.reviews">Reviews</a></li>
+        <li><a href="./assets/glossary/glossary.html" class="nav-link" data-i18n="nav.glossary">Glossary</a></li>
+        <li><a href="./builder.html" class="cta-button" data-i18n="nav.start_building">Start Building Free</a></li>
+      </ul>
+
+      <button class="mobile-menu-toggle" aria-label="Open navigation menu" id="mobile-menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="about-container">
+      <div class="about-hero">
+        <h1 data-i18n="about.hero.title">About MapMyRoots</h1>
+        <p class="subtitle" data-i18n="about.hero.subtitle">Making family history preservation accessible, free, and privacy-focused for everyone.</p>
+      </div>
+
+      <div class="mission-box">
+        <h2 data-i18n="about.mission.title">Our Mission</h2>
+        <p data-i18n="about.mission.content">To empower families worldwide to create, visualize, and preserve their family histories without barriers. We believe that documenting your heritage should be free, simple, and private - accessible to everyone, not just those who can afford expensive genealogy software.</p>
+      </div>
+
+      <div class="story-section">
+        <h2 data-i18n="about.story.title">Our Story</h2>
+        <p data-i18n="about.story.paragraph1">MapMyRoots was born from a simple frustration: why is creating a family tree so expensive and complicated? Most genealogy services charge monthly fees, lock your data behind paywalls, and make the process overwhelming for beginners.</p>
+        <p data-i18n="about.story.paragraph2">We created MapMyRoots to solve this problem. Launched in 2023, our platform provides a completely free, intuitive family tree builder that respects your privacy. Your data stays on your device - we never see it, we never store it, and we never sell it.</p>
+        <p data-i18n="about.story.paragraph3">Since our launch, over 15,000 families have used MapMyRoots to preserve their heritage. From students completing school projects to grandparents documenting multiple generations, our tool serves families worldwide in their journey to understand where they come from.</p>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">🔒</div>
+          <h3 data-i18n="about.values.privacy.title">Privacy First</h3>
+          <p data-i18n="about.values.privacy.content">Your family tree data never leaves your device. We use browser LocalStorage to keep everything private and secure. No servers, no databases, no data collection - just you and your family history.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">💯</div>
+          <h3 data-i18n="about.values.free.title">100% Free Forever</h3>
+          <p data-i18n="about.values.free.content">No subscriptions, no premium tiers, no hidden costs. All features are free and always will be. Family history preservation shouldn't require a monthly payment.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">✨</div>
+          <h3 data-i18n="about.values.simple.title">Simple & Intuitive</h3>
+          <p data-i18n="about.values.simple.content">We focus on making family tree creation easy for everyone. Drag-and-drop interface, visual canvas, and straightforward controls mean you can start building immediately - no training required.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">🌍</div>
+          <h3 data-i18n="about.values.accessible.title">Accessible to All</h3>
+          <p data-i18n="about.values.accessible.content">No registration required. Works on any device with a browser. Available in multiple languages. We believe everyone should be able to document their family story, regardless of technical skill or resources.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">🎨</div>
+          <h3 data-i18n="about.values.beautiful.title">Beautiful Design</h3>
+          <p data-i18n="about.values.beautiful.content">Your family history deserves to be presented beautifully. Our interactive canvas, customizable styles, and high-resolution exports make your family trees stunning works of art.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">🔓</div>
+          <h3 data-i18n="about.values.ownership.title">Your Data, Your Control</h3>
+          <p data-i18n="about.values.ownership.content">Export your family tree anytime in multiple formats (JSON, PDF, images). No vendor lock-in, no restrictions. Your data belongs to you, period.</p>
+        </div>
+      </div>
+
+      <div class="stats-section">
+        <h2 data-i18n="about.stats.title">MapMyRoots by the Numbers</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">15,000+</div>
+            <div class="stat-label" data-i18n="about.stats.families">Families Served</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label" data-i18n="about.stats.free">Free Forever</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">4.8★</div>
+            <div class="stat-label" data-i18n="about.stats.rating">Average Rating</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">4</div>
+            <div class="stat-label" data-i18n="about.stats.languages">Languages</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <h2 data-i18n="about.why_free.title">Why Is MapMyRoots Free?</h2>
+        <p data-i18n="about.why_free.paragraph1">Great question! We believe family history preservation is a fundamental human activity that shouldn't be monetized. Unlike other genealogy services, we don't charge because:</p>
+        <ul style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-left: 2rem;">
+          <li data-i18n="about.why_free.reason1"><strong>Privacy-focused architecture:</strong> Since your data stays on your device, we don't need expensive servers or databases</li>
+          <li data-i18n="about.why_free.reason2"><strong>No historical records:</strong> We focus on tree visualization, not genealogical research databases</li>
+          <li data-i18n="about.why_free.reason3"><strong>Sustainable model:</strong> Our lean operation and efficient technology keep costs minimal</li>
+          <li data-i18n="about.why_free.reason4"><strong>Community-driven:</strong> We're committed to serving families, not shareholders</li>
+        </ul>
+        <p data-i18n="about.why_free.paragraph2">We will never introduce paid features, subscriptions, or premium tiers. MapMyRoots will remain 100% free, forever.</p>
+      </div>
+
+      <div class="story-section">
+        <h2 data-i18n="about.technology.title">Our Technology</h2>
+        <p data-i18n="about.technology.paragraph1">MapMyRoots is built with modern web technologies to ensure a fast, secure, and reliable experience:</p>
+        <ul style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-left: 2rem;">
+          <li data-i18n="about.technology.canvas"><strong>HTML5 Canvas:</strong> Smooth, responsive family tree visualization</li>
+          <li data-i18n="about.technology.localstorage"><strong>LocalStorage API:</strong> Secure, local data storage on your device</li>
+          <li data-i18n="about.technology.responsive"><strong>Responsive Design:</strong> Works perfectly on desktop, tablet, and mobile</li>
+          <li data-i18n="about.technology.export"><strong>Advanced Export:</strong> High-resolution PNG, PDF, and JSON formats</li>
+          <li data-i18n="about.technology.i18n"><strong>Internationalization:</strong> Multi-language support for global accessibility</li>
+        </ul>
+      </div>
+
+      <div class="cta-section">
+        <h2 data-i18n="about.cta.title">Start Your Family Tree Today</h2>
+        <p data-i18n="about.cta.content">Join over 15,000 families who trust MapMyRoots to preserve their family history. No registration required, completely free, and your data stays private.</p>
+        <a href="./builder.html" class="btn-primary btn-large">
+          <span data-i18n="about.cta.button">Start Building Free</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3 data-i18n="footer.product.title">Product</h3>
+        <ul>
+          <li><a href="./#features" data-i18n="footer.product.features">Features</a></li>
+          <li><a href="./builder.html" data-i18n="footer.product.builder">Family Tree Builder</a></li>
+          <li><a href="./#how-it-works" data-i18n="footer.product.how_it_works">How It Works</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h3 data-i18n="footer.company.title">Company</h3>
+        <ul>
+          <li><a href="./about.html" data-i18n="footer.company.about">About Us</a></li>
+          <li><a href="./contact.html" data-i18n="footer.company.contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h3 data-i18n="footer.resources.title">Resources</h3>
+        <ul>
+          <li><a href="./assets/glossary/glossary.html" data-i18n="footer.resources.glossary">Genealogy Glossary</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h3 data-i18n="footer.legal.title">Legal</h3>
+        <ul>
+          <li><a href="./privacy.html" data-i18n="footer.legal.privacy">Privacy Policy</a></li>
+          <li><a href="./terms.html" data-i18n="footer.legal.terms">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p data-i18n="footer.copyright">&copy; 2025 MapMyRoots. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- i18n Script -->
+  <script src="./src/features/i18n/i18n.js"></script>
+  <!-- Language Switcher -->
+  <script src="./src/features/i18n/language-switcher.js"></script>
+  <!-- Main JavaScript -->
+  <script src="./src/ui/components/homepage.js"></script>
+</body>
+</html>
