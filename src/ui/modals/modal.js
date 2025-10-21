@@ -135,11 +135,18 @@ export function openModalForEdit(personId, retryCount = 0) {
     // Rebuild searchable selects, passing in existing IDs
     setTimeout(() => updateSearchableSelects(existingData), 100);
   } else {
-    // New person mode
-    titleEl.innerHTML = `
-      <span class="person-icon">+</span>
-      ${t('builder.modals.person.add_title', 'Add Person')}
-    `;
+    // New person mode - build safely using DOM API
+    titleEl.innerHTML = ''; // Clear existing content
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'person-icon';
+    iconSpan.textContent = '+';
+
+    const titleText = document.createTextNode(' ' + t('builder.modals.person.add_title', 'Add Person'));
+
+    titleEl.appendChild(iconSpan);
+    titleEl.appendChild(titleText);
+
     delete modal.dataset.editingId;
     currentEditingId = null;
 
@@ -981,11 +988,17 @@ if (window.i18n) {
         const editingId = modal?.dataset.editingId || currentEditingId;
         
         if (titleEl && !editingId) {
-          // Only update if it's a new person modal (no editing ID)
-          titleEl.innerHTML = `
-            <span class="person-icon">+</span>
-            ${t('builder.modals.person.add_title', 'Add Person')}
-          `;
+          // Only update if it's a new person modal (no editing ID) - build safely using DOM API
+          titleEl.innerHTML = ''; // Clear existing content
+
+          const iconSpan = document.createElement('span');
+          iconSpan.className = 'person-icon';
+          iconSpan.textContent = '+';
+
+          const titleText = document.createTextNode(' ' + t('builder.modals.person.add_title', 'Add Person'));
+
+          titleEl.appendChild(iconSpan);
+          titleEl.appendChild(titleText);
         }
       }
     }

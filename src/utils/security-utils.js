@@ -1,11 +1,39 @@
 // security-utils.js
 // Security utilities for safe DOM manipulation and input sanitization
+// Enhanced with DOMPurify integration for comprehensive XSS protection
 
 export class SecurityUtils {
+  // Get DOMPurify instance (loaded globally via CDN)
+  static getDOMPurify() {
+    if (typeof window !== 'undefined' && window.DOMPurify) {
+      return window.DOMPurify;
+    }
+    console.warn('DOMPurify not loaded. Falling back to basic sanitization.');
+    return null;
+  }
+
+  // Sanitize HTML using DOMPurify (preferred) or fallback
+  static sanitizeHTML(html, config = {}) {
+    if (typeof html !== 'string') return '';
+
+    const purify = this.getDOMPurify();
+    if (purify) {
+      const defaultConfig = {
+        ALLOWED_TAGS: ['span', 'strong', 'em', 'b', 'i', 'u', 'br'],
+        ALLOWED_ATTR: ['class'],
+        KEEP_CONTENT: true
+      };
+      return purify.sanitize(html, { ...defaultConfig, ...config });
+    }
+
+    // Fallback: strip all HTML
+    return this.sanitizeText(html);
+  }
+
   // Sanitize text input to prevent XSS
   static sanitizeText(input) {
     if (typeof input !== 'string') return '';
-    
+
     return input
       .replace(/[<>'"&]/g, (char) => {
         const entityMap = {
@@ -51,21 +79,21 @@ export class SecurityUtils {
     return element;
   }
 
+  // Safely set innerHTML with DOMPurify sanitization
+  static safeSetInnerHTML(element, html, config = {}) {
+    if (!element) return;
+
+    const sanitized = this.sanitizeHTML(html, config);
+    element.innerHTML = sanitized;
+  }
+
   // Replace innerHTML usage with safe DOM manipulation
   static replaceInnerHTML(element, htmlString) {
     if (!element) return;
-    
-    // Clear existing content
-    element.innerHTML = '';
-    
-    // Create a temporary div to parse HTML safely
-    const temp = document.createElement('div');
-    temp.innerHTML = htmlString;
-    
-    // Move sanitized nodes
-    while (temp.firstChild) {
-      element.appendChild(temp.firstChild);
-    }
+
+    // Use DOMPurify if available
+    const sanitized = this.sanitizeHTML(htmlString);
+    element.innerHTML = sanitized;
   }
 
   // Validate and sanitize person data

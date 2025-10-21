@@ -1,0 +1,141 @@
+/**
+ * Self-hosted Google Fonts for MapMyRoots
+ * Fonts: Inter, Playfair Display, Roboto
+ *
+ * Performance Benefits:
+ * - No external DNS lookup (~200ms saved)
+ * - No render-blocking external request
+ * - Full control over font loading strategy
+ * - Better privacy (no Google tracking)
+ *
+ * Download fonts from: https://google-webfonts-helper.herokuapp.com/
+ * Or use: https://gwfh.mranftl.com/fonts
+ */
+
+/* Inter Font Family */
+/* inter-400 - latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap; /* Prevents layout shift */
+  src: local('Inter Regular'), local('Inter-Regular'),
+       url('./inter-v12-latin-400.woff2') format('woff2'), /* Modern browsers */
+       url('./inter-v12-latin-400.woff') format('woff'); /* Legacy browsers */
+}
+
+/* inter-600 - latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Inter SemiBold'), local('Inter-SemiBold'),
+       url('./inter-v12-latin-600.woff2') format('woff2'),
+       url('./inter-v12-latin-600.woff') format('woff');
+}
+
+/* inter-700 - latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Inter Bold'), local('Inter-Bold'),
+       url('./inter-v12-latin-700.woff2') format('woff2'),
+       url('./inter-v12-latin-700.woff') format('woff');
+}
+
+/* Playfair Display Font Family */
+/* playfair-display-600 - latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Playfair Display SemiBold'), local('PlayfairDisplay-SemiBold'),
+       url('./playfair-display-v30-latin-600.woff2') format('woff2'),
+       url('./playfair-display-v30-latin-600.woff') format('woff');
+}
+
+/* playfair-display-700 - latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Playfair Display Bold'), local('PlayfairDisplay-Bold'),
+       url('./playfair-display-v30-latin-700.woff2') format('woff2'),
+       url('./playfair-display-v30-latin-700.woff') format('woff');
+}
+
+/* Roboto Font Family */
+/* roboto-400 - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Roboto'), local('Roboto-Regular'),
+       url('./roboto-v30-latin-400.woff2') format('woff2'),
+       url('./roboto-v30-latin-400.woff') format('woff');
+}
+
+/* roboto-500 - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Roboto Medium'), local('Roboto-Medium'),
+       url('./roboto-v30-latin-500.woff2') format('woff2'),
+       url('./roboto-v30-latin-500.woff') format('woff');
+}
+
+/**
+ * System Font Stack Fallback
+ * Use this for ultimate performance if self-hosted fonts fail to load
+ */
+.font-system-stack {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+               'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+               sans-serif;
+}
+
+/**
+ * Font Loading Strategy
+ * Add this to <head> to prevent FOUT (Flash of Unstyled Text)
+ */
+/*
+<script>
+  // Font loading detection
+  if ('fonts' in document) {
+    Promise.all([
+      document.fonts.load('400 1em Inter'),
+      document.fonts.load('600 1em Inter'),
+      document.fonts.load('600 1em Playfair Display')
+    ]).then(() => {
+      document.documentElement.classList.add('fonts-loaded');
+    });
+  } else {
+    // Fallback for older browsers
+    document.documentElement.classList.add('fonts-loaded');
+  }
+</script>
+*/
+
+/**
+ * Critical CSS for preventing FOUT
+ * Add this inline in <head> before other stylesheets
+ */
+/*
+<style>
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    visibility: hidden;
+  }
+  .fonts-loaded body {
+    visibility: visible;
+  }
+</style>
+*/

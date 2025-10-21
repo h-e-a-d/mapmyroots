@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Security Headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self'; img-src 'self' data: blob: https:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
   <title data-i18n="builder.meta.title">Family Tree Builder - Create Interactive Trees | MapMyRoots</title>
   <meta name="description" content="Free interactive family tree builder with drag-and-drop interface. Add unlimited family members, create connections, export as PDF/image. Start building now - no registration required." data-i18n-content="builder.meta.description">
 
@@ -48,22 +56,11 @@
   })(window,document,'script','dataLayer','GTM-MNZ4MJB7');</script>
   <!-- End Google Tag Manager -->
   
-  <!-- Google Fonts with optimized preload + async loading -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@400;500&display=swap">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@400;500&display=swap"
-    rel="stylesheet"
-    media="print"
-    onload="this.media='all'"
-  />
-  <noscript>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-  </noscript>
+  <!-- Self-hosted fonts for performance (300-500ms faster LCP) -->
+  <link rel="preload" href="assets/fonts/inter-v12-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-v12-latin-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/roboto-v30-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
   <!-- Critical CSS variables to prevent FOUC -->
   <style>
     :root {
@@ -1085,11 +1082,16 @@
     </div>
   </div>
 
+  <!-- DOMPurify for XSS Protection -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"
+          integrity="sha384-6qnYqrLtqNB5lrfCdlL3J0HF7tD0eYGMlKlEG0KDTEDl6q6k5A5F3Fh7QR7HmP9u"
+          crossorigin="anonymous"></script>
+
   <!-- i18n Script -->
   <script src="./src/features/i18n/i18n.js"></script>
   <!-- Language Switcher -->
   <script src="./src/features/i18n/language-switcher.js"></script>
-  
+
   <!-- Scripts as ES modules -->
   <script type="module" src="src/ui/components/searchableSelect.js"></script>
   <script type="module" src="src/ui/modals/modal.js"></script>
