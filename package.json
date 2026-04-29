@@ -1,8 +1,7 @@
 {
-  "name": "familytree-2",
+  "name": "mapmyroots",
   "version": "1.0.0",
-  "description": "A modern, interactive web application for creating and managing family trees with a beautiful visual interface.",
-  "main": "accessibility.js",
+  "description": "Free online family tree builder and genealogy software with interactive canvas-based visualization.",
   "scripts": {
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -11,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/h-e-a-d/familytree-2.git"
+    "url": "git+https://github.com/h-e-a-d/mapmyroots.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/h-e-a-d/familytree-2/issues"
+    "url": "https://github.com/h-e-a-d/mapmyroots/issues"
   },
-  "homepage": "https://github.com/h-e-a-d/familytree-2#readme",
+  "homepage": "https://mapmyroots.com",
   "devDependencies": {
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.10",
@@ -31,7 +30,5 @@
     "postcss-cli": "^11.0.1",
     "vitest": "^3.2.4"
   },
-  "dependencies": {
-    "@anthropic-ai/claude-code": "^2.0.19"
-  }
+  "dependencies": {}
 }
