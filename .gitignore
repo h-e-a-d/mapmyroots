@@ -28,6 +28,8 @@ node_modules/
 # Build artifacts
 dist/
 build/
+.astro/
+.cache/
 
 # Environment files
 .env
