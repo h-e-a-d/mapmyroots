@@ -2,19 +2,21 @@
 import '@/styles/global.css';
 import '@/styles/modal.css';
 import SEO from '@/components/SEO.astro';
+import type { Locale } from '@/i18n';
 
 export interface Props {
   title: string;
   description: string;
   canonicalPath: string;
+  locale?: Locale;
   jsonLd?: string[];
 }
 
-const { title, description, canonicalPath, jsonLd = [] } = Astro.props;
+const { title, description, canonicalPath, locale = 'en', jsonLd = [] } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -25,6 +27,7 @@ const { title, description, canonicalPath, jsonLd = [] } = Astro.props;
       title={title}
       description={description}
       canonicalPath={canonicalPath}
+      locale={locale}
       jsonLd={jsonLd}
     />
 

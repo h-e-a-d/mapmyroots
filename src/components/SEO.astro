@@ -1,9 +1,13 @@
 ---
+import { locales, defaultLocale, localizedPath, type Locale } from '@/i18n';
+
 export interface Props {
   title: string;
   description: string;
-  /** Path portion of canonical URL, e.g. "/" or "/about". Site origin comes from astro.config.mjs */
+  /** Path WITHOUT a locale prefix, e.g. "/" or "/about". Per-locale prefixes are added automatically. */
   canonicalPath: string;
+  /** Page locale; defaults to English. */
+  locale?: Locale;
   /** Optional Open Graph image URL (absolute) */
   ogImage?: string;
   /** Optional Twitter card image URL (absolute) */
@@ -16,12 +20,20 @@ const {
   title,
   description,
   canonicalPath,
-  ogImage = 'https://mapmyroots.com/og-image.jpg',
-  twitterImage = 'https://mapmyroots.com/twitter-image.jpg',
+  locale = defaultLocale,
   jsonLd = []
 } = Astro.props;
 
-const canonicalUrl = new URL(canonicalPath, Astro.site).toString();
+const slug = canonicalPath === '/' ? 'home' : canonicalPath.replace(/^\/+|\/+$/g, '').replace(/\//g, '-');
+const ogImage = Astro.props.ogImage ?? new URL(`/og/${slug}.png`, Astro.site).toString();
+const twitterImage = Astro.props.twitterImage ?? ogImage;
+
+const canonicalUrl = new URL(localizedPath(locale, canonicalPath), Astro.site).toString();
+
+const alternates = locales.map((alt) => ({
+  hreflang: alt,
+  href: new URL(localizedPath(alt, canonicalPath), Astro.site).toString()
+}));
 ---
 
 <title>{title}</title>
@@ -30,6 +42,11 @@ const canonicalUrl = new URL(canonicalPath, Astro.site).toString();
 <meta name="robots" content="index, follow" />
 
 <link rel="canonical" href={canonicalUrl} />
+
+{alternates.map(({ hreflang, href }) => (
+  <link rel="alternate" hreflang={hreflang} href={href} />
+))}
+<link rel="alternate" hreflang="x-default" href={new URL(canonicalPath, Astro.site).toString()} />
 
 <!-- Resource hints -->
 <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />

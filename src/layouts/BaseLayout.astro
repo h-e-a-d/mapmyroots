@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import SEO from '@/components/SEO.astro';
+import type { Locale } from '@/i18n';
 
 export interface Props {
   /** Page title (set in <title> and og:title) */
@@ -11,6 +12,8 @@ export interface Props {
   description: string;
   /** Canonical URL path, e.g. "/" or "/about" */
   canonicalPath: string;
+  /** Page locale for hreflang and html[lang] */
+  locale?: Locale;
   /** Whether the language switcher should be shown in the header */
   showLanguageSwitcher?: boolean;
   /** Optional list of <script type="application/ld+json"> blocks (raw stringified JSON) */
@@ -23,6 +26,7 @@ const {
   title,
   description,
   canonicalPath,
+  locale = 'en',
   showLanguageSwitcher = true,
   jsonLd = [],
   bodyClass = ''
@@ -30,7 +34,7 @@ const {
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,6 +45,7 @@ const {
       title={title}
       description={description}
       canonicalPath={canonicalPath}
+      locale={locale}
       jsonLd={jsonLd}
     />
 
