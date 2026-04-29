@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://mapmyroots.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://mapmyroots.com/contact" }
+  ]
+});
+---
+
+<BaseLayout
+  title="Contact Us - MapMyRoots"
+  description="Contact MapMyRoots - Get support for our free family tree builder or send us your feedback and questions."
+  canonicalPath="/contact"
+  jsonLd={[breadcrumbSchema]}
+>
+    <div class="contact-container">
+      <div class="contact-hero">
+        <h1 data-i18n="contact.hero.title">Contact Us</h1>
+        <p data-i18n="contact.hero.subtitle">Have questions or feedback? We'd love to hear from you!</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">📧</div>
+          <h3 data-i18n="contact.email.title">Email Support</h3>
+          <p data-i18n="contact.email.description">Send us an email and we'll get back to you as soon as possible.</p>
+          <a href="mailto:support@mapmyroots.com">support@mapmyroots.com</a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-icon">❓</div>
+          <h3 data-i18n="contact.faq.title">FAQ</h3>
+          <p data-i18n="contact.faq.description">Check our frequently asked questions for quick answers.</p>
+          <a href="/#faq" data-i18n="contact.faq.link">Visit FAQ</a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-icon">📚</div>
+          <h3 data-i18n="contact.resources.title">Resources</h3>
+          <p data-i18n="contact.resources.description">Explore our glossary and tutorials to learn more.</p>
+          <a href="/assets/glossary/glossary.html" data-i18n="contact.resources.link">Browse Resources</a>
+        </div>
+      </div>
+
+      <div class="faq-link">
+        <h2 data-i18n="contact.response.title">Response Time</h2>
+        <p data-i18n="contact.response.content">We typically respond to emails within 24-48 hours during business days. For immediate answers, check our FAQ section.</p>
+      </div>
+    </div>
+</BaseLayout>
