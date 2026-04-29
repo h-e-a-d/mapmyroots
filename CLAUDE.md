@@ -99,6 +99,12 @@ Loaded data must include `version` or `persons`. Anything else is rejected with 
 - Adding a new module: add at least one expected-use test, one edge case, one failure case.
 - Adding a user-visible string: confirm all four locales have a translation.
 
+### Translation strings
+
+- Build-time strings (Astro pages) use `t(locale, 'key.path')` from `src/i18n/`.
+- Runtime strings (builder UI) continue to use the existing `data-i18n` attributes resolved by `src/features/i18n/i18n.js`.
+- Missing keys fall back to English with a dev-mode warning. Adding a new user-visible string still requires updating all four locale JSONs (Phase 0 rule unchanged).
+
 ## Migration awareness
 
 The site is mid-migration. When working on this codebase:
