@@ -118,7 +118,7 @@
     },
     "zoom": {
       "zoom_in": "Vergrößern",
-      "zoom_out": "Verkleinern", 
+      "zoom_out": "Verkleinern",
       "zoom_reset": "Zoom zurücksetzen",
       "zoom_display": "Aktueller Zoom-Level"
     },
@@ -273,7 +273,7 @@
     },
     "toolbar": {
       "save": "Stammbaum speichern",
-      "load": "Stammbaum laden", 
+      "load": "Stammbaum laden",
       "export": "Stammbaum exportieren"
     },
     "status": {
@@ -358,5 +358,19 @@
       "terms": "Nutzungsbedingungen"
     },
     "copyright": "© 2025 MapMyRoots. Alle Rechte vorbehalten."
+  },
+  "pages": {
+    "about": {
+      "meta": {
+        "title": "Über uns - MapMyRoots | Kostenloser Stammbaum-Builder",
+        "description": "Erfahren Sie mehr über MapMyRoots - unsere Mission, die Bewahrung der Familiengeschichte für alle zugänglich zu machen."
+      }
+    },
+    "contact": {
+      "meta": {
+        "title": "Kontakt - MapMyRoots",
+        "description": "Kontaktieren Sie MapMyRoots - Holen Sie sich Support für unseren kostenlosen Stammbaum-Builder oder senden Sie uns Ihr Feedback."
+      }
+    }
   }
-} 
+}

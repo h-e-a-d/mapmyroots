@@ -369,7 +369,7 @@
     },
     "zoom": {
       "zoom_in": "Zoom In",
-      "zoom_out": "Zoom Out", 
+      "zoom_out": "Zoom Out",
       "zoom_reset": "Reset Zoom",
       "zoom_display": "Current zoom level"
     },
@@ -533,7 +533,7 @@
     },
     "toolbar": {
       "save": "Save Family Tree",
-      "load": "Load Family Tree", 
+      "load": "Load Family Tree",
       "export": "Export Family Tree"
     },
     "status": {
@@ -624,6 +624,20 @@
       "genealogy": {
         "name": "Genealogy",
         "definition": "The study and tracing of family lineages and histories; the practice of researching and documenting family relationships."
+      }
+    }
+  },
+  "pages": {
+    "about": {
+      "meta": {
+        "title": "About Us - MapMyRoots | Free Family Tree Builder",
+        "description": "Learn about MapMyRoots - our mission to make family history preservation accessible to everyone through free, privacy-focused family tree software."
+      }
+    },
+    "contact": {
+      "meta": {
+        "title": "Contact Us - MapMyRoots",
+        "description": "Contact MapMyRoots - Get support for our free family tree builder or send us your feedback and questions."
       }
     }
   }

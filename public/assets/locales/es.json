@@ -369,7 +369,7 @@
     },
     "zoom": {
       "zoom_in": "Acercar",
-      "zoom_out": "Alejar", 
+      "zoom_out": "Alejar",
       "zoom_reset": "Restablecer Zoom",
       "zoom_display": "Nivel de zoom actual"
     },
@@ -486,29 +486,6 @@
       "invalid_date": "Por favor ingresa una fecha válida.",
       "form_errors": "Por favor corrige los errores siguientes:"
     },
-    "zoom": {
-      "zoom_in": "Acercar",
-      "zoom_out": "Alejar", 
-      "zoom_reset": "Restablecer Zoom",
-      "zoom_display": "Nivel de zoom actual"
-    },
-    "search": {
-      "placeholder": "Buscar miembros de la familia...",
-      "no_results": "No se encontraron miembros de la familia",
-      "results_count": "{{count}} resultados encontrados",
-      "clear": "Limpiar búsqueda"
-    },
-    "sidebar": {
-      "home": "Volver al Inicio",
-      "search": "Buscar Miembros Familiares",
-      "center_selected": "Centrar Persona Seleccionada",
-      "zoom_in": "Acercar",
-      "zoom_out": "Alejar",
-      "settings": "Abrir Configuración",
-      "toggle_view": "Cambiar Modo de Vista",
-      "undo": "Deshacer Última Acción",
-      "redo": "Rehacer Última Acción"
-    },
     "notifications": {
       "unknown_person": "Desconocido",
       "person_deleted": "Persona Eliminada",
@@ -558,11 +535,6 @@
       "success": "Operación completada exitosamente",
       "no_changes": "No hay cambios para guardar",
       "unsaved_changes": "Tienes cambios sin guardar"
-    },
-    "toolbar": {
-      "save": "Guardar Árbol Genealógico",
-      "load": "Cargar Árbol Genealógico",
-      "export": "Exportar Árbol Genealógico"
     }
   },
   "glossary": {
@@ -643,6 +615,20 @@
       "genealogy": {
         "name": "Genealogía",
         "definition": "El estudio y rastreo de linajes e historias familiares; la práctica de investigar y documentar relaciones familiares."
+      }
+    }
+  },
+  "pages": {
+    "about": {
+      "meta": {
+        "title": "Sobre nosotros - MapMyRoots | Constructor de árbol genealógico gratuito",
+        "description": "Conozca MapMyRoots - nuestra misión de hacer accesible la preservación de la historia familiar para todos."
+      }
+    },
+    "contact": {
+      "meta": {
+        "title": "Contáctanos - MapMyRoots",
+        "description": "Contáctenos en MapMyRoots - Obtenga soporte para nuestro constructor de árbol genealógico gratuito o envíenos sus comentarios."
       }
     }
   }

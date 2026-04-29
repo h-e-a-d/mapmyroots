@@ -1,5 +1,14 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { t, type Locale } from '@/i18n';
+
+export interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const title = t(locale, 'pages.about.meta.title');
+const description = t(locale, 'pages.about.meta.description');
 
 const orgSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -21,9 +30,10 @@ const breadcrumbSchema = JSON.stringify({
 ---
 
 <BaseLayout
-  title="About Us - MapMyRoots | Free Family Tree Builder"
-  description="Learn about MapMyRoots - our mission to make family history preservation accessible to everyone through free, privacy-focused family tree software."
+  title={title}
+  description={description}
   canonicalPath="/about"
+  locale={locale}
   jsonLd={[orgSchema, breadcrumbSchema]}
 >
     <div class="about-container">
