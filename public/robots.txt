@@ -145,10 +145,7 @@ User-agent: Wget
 Disallow: /
 
 # Sitemap location
-Sitemap: https://mapmyroots.com/sitemap.xml
-
-# Additional sitemaps (if you create specialized ones)
-Sitemap: https://mapmyroots.com/sitemap-glossary.xml
+Sitemap: https://mapmyroots.com/sitemap-index.xml
 
 # Note: This robots.txt is designed for a family tree building website
 # that wants good SEO visibility while protecting sensitive areas.
