@@ -1,0 +1,54 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  /** Path portion of canonical URL, e.g. "/" or "/about". Site origin comes from astro.config.mjs */
+  canonicalPath: string;
+  /** Optional Open Graph image URL (absolute) */
+  ogImage?: string;
+  /** Optional Twitter card image URL (absolute) */
+  twitterImage?: string;
+  /** Stringified JSON-LD blocks; each rendered inside its own <script type="application/ld+json"> */
+  jsonLd?: string[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogImage = 'https://mapmyroots.com/og-image.jpg',
+  twitterImage = 'https://mapmyroots.com/twitter-image.jpg',
+  jsonLd = []
+} = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, Astro.site).toString();
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="author" content="MapMyRoots" />
+<meta name="robots" content="index, follow" />
+
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Resource hints -->
+<link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content="MapMyRoots" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalUrl} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={twitterImage} />
+
+{jsonLd.map((block) => (
+  <script type="application/ld+json" set:html={block}></script>
+))}
