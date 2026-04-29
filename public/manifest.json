@@ -1,0 +1,61 @@
+{
+  "name": "MapMyRoots - Free Family Tree Builder",
+  "short_name": "MapMyRoots",
+  "description": "Create beautiful, interactive family trees with our free drag-and-drop genealogy software. Build unlimited family trees, preserve memories, and discover your family story.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f866c",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/public/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    },
+    {
+      "src": "/public/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/public/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Build Family Tree",
+      "short_name": "Builder",
+      "description": "Open the family tree builder",
+      "url": "/builder.html",
+      "icons": [{ "src": "/public/favicon.ico", "sizes": "48x48" }]
+    },
+    {
+      "name": "Genealogy Glossary",
+      "short_name": "Glossary",
+      "description": "View genealogy terms",
+      "url": "/assets/glossary/glossary.html",
+      "icons": [{ "src": "/public/favicon.ico", "sizes": "48x48" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/family-tree-builder.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Family Tree Builder Interface"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "lang": "en",
+  "dir": "ltr"
+}
