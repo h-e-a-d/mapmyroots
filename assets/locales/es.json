@@ -191,7 +191,7 @@
     },
     "register": {
       "question": "¿Necesito registrarme o crear una cuenta?",
-      "answer": "¡No se requiere registro! Puedes comenzar a construir tu árbol genealógico inmediatamente. Sin embargo, crear una cuenta gratuita te permite guardar tus árboles en línea y acceder a ellos desde cualquier dispositivo."
+      "answer": "No requiere registro ni cuenta. Puedes empezar a construir tu árbol genealógico inmediatamente. Todos tus datos se almacenan localmente en tu dispositivo, así que mantienes el control completo."
     },
     "mobile": {
       "question": "¿Puedo usar MapMyRoots en dispositivos móviles?",

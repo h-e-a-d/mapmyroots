@@ -303,7 +303,7 @@
     },
     "register": {
       "question": "Muss ich mich registrieren oder ein Konto erstellen?",
-      "answer": "Keine Registrierung erforderlich! Sie können sofort mit dem Aufbau Ihres Stammbaums beginnen."
+      "answer": "Keine Registrierung und kein Konto erforderlich. Du kannst sofort mit dem Aufbau deines Stammbaums beginnen. Alle deine Daten werden lokal auf deinem Gerät gespeichert, du behältst die volle Kontrolle."
     },
     "mobile": {
       "question": "Kann ich MapMyRoots auf mobilen Geräten verwenden?",
