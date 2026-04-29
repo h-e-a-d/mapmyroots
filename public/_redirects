@@ -1,0 +1,13 @@
+# Host canonicalization: www → apex
+https://www.mapmyroots.com/* https://mapmyroots.com/:splat 301!
+
+# Legacy .html URLs → clean URLs
+/index.html / 301
+/about.html /about 301
+/contact.html /contact 301
+/privacy.html /privacy 301
+/terms.html /terms 301
+/builder.html /builder 301
+
+# Legacy assets/glossary path stays (no migration in this phase)
+# /assets/glossary/glossary.html — unchanged, served as-is
