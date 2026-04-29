@@ -1,0 +1,121 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SEO from '@/components/SEO.astro';
+
+export interface Props {
+  /** Page title (set in <title> and og:title) */
+  title: string;
+  /** Page meta description */
+  description: string;
+  /** Canonical URL path, e.g. "/" or "/about" */
+  canonicalPath: string;
+  /** Whether the language switcher should be shown in the header */
+  showLanguageSwitcher?: boolean;
+  /** Optional list of <script type="application/ld+json"> blocks (raw stringified JSON) */
+  jsonLd?: string[];
+  /** Optional <body> classes appended after the default ones */
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  showLanguageSwitcher = true,
+  jsonLd = [],
+  bodyClass = ''
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <SEO
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      jsonLd={jsonLd}
+    />
+
+    <meta name="theme-color" content="#0f866c" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- Self-hosted fonts (preload critical weights) -->
+    <link rel="preload" href="/assets/fonts/inter-v12-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/inter-v12-latin-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/playfair-display-v30-latin-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+
+    <!-- Critical CSS to prevent FOUC -->
+    <style>
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background-color: #ffffff;
+        color: #2c3e50;
+        visibility: hidden;
+      }
+      body.fonts-loaded {
+        visibility: visible;
+      }
+      .no-animations * {
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
+        transition-duration: 0s !important;
+      }
+    </style>
+
+    <!-- Google Tag Manager (replaced by Cloudflare Web Analytics in Phase 2) -->
+    <script is:inline>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-MNZ4MJB7');
+    </script>
+  </head>
+  <body class:list={['no-animations', bodyClass]}>
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MNZ4MJB7"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      ></iframe>
+    </noscript>
+
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <Header showLanguageSwitcher={showLanguageSwitcher} />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Font load detection -->
+    <script is:inline>
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          document.body.classList.add('fonts-loaded');
+          setTimeout(() => document.body.classList.remove('no-animations'), 100);
+        });
+      } else {
+        window.addEventListener('load', () => {
+          document.body.classList.add('fonts-loaded');
+          setTimeout(() => document.body.classList.remove('no-animations'), 100);
+        });
+      }
+    </script>
+  </body>
+</html>
