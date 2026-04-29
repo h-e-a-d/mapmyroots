@@ -6,6 +6,18 @@ export default defineConfig({
   site: 'https://mapmyroots.com',
   output: 'static',
   trailingSlash: 'ignore',
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'de', 'es', 'ru'],
+    routing: {
+      prefixDefaultLocale: false
+    },
+    fallback: {
+      de: 'en',
+      es: 'en',
+      ru: 'en'
+    }
+  },
   build: {
     format: 'directory',
     assets: '_astro'
@@ -14,7 +26,16 @@ export default defineConfig({
     sitemap({
       filter: (page) => !page.includes('/offline'),
       changefreq: 'weekly',
-      priority: 0.7
+      priority: 0.7,
+      i18n: {
+        defaultLocale: 'en',
+        locales: {
+          en: 'en-US',
+          de: 'de-DE',
+          es: 'es-ES',
+          ru: 'ru-RU'
+        }
+      }
     })
   ],
   vite: {
