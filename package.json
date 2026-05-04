@@ -30,6 +30,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.2",
+    "@axe-core/cli": "^4.11.3",
     "@lhci/cli": "^0.13.0",
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.10",
