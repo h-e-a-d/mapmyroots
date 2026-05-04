@@ -1,0 +1,56 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Offline - MapMyRoots"
+  description="You are currently offline. The family tree builder still works without an internet connection."
+  canonicalPath="/offline"
+  showLanguageSwitcher={false}
+>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+    <h1>You're offline</h1>
+    <p class="lead">No worries — your family tree data lives on your device, so the builder still works.</p>
+
+    <div class="offline-actions">
+      <a href="/builder" class="btn-primary">Open the builder</a>
+      <button id="retryBtn" class="btn-secondary">Retry network</button>
+    </div>
+
+    <details class="offline-details">
+      <summary>What works while offline?</summary>
+      <ul>
+        <li>The full family tree builder — add people, edit, save, load, export PNG/PDF/JSON.</li>
+        <li>Pages you've already visited (cached automatically).</li>
+        <li>The genealogy glossary, if visited at least once.</li>
+      </ul>
+      <p>What doesn't work: visiting pages you haven't loaded before, sharing previews, the language switcher fetching new locale files.</p>
+    </details>
+  </div>
+
+  <script is:inline>
+    document.getElementById('retryBtn')?.addEventListener('click', () => {
+      window.location.reload();
+    });
+    window.addEventListener('online', () => {
+      window.location.href = '/';
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .offline-container { max-width: 600px; margin: 4rem auto; padding: 0 1.5rem; text-align: center; }
+  .offline-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .offline-container h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .lead { font-size: 1.1rem; color: var(--text-secondary, #4a5568); margin-bottom: 2rem; }
+  .offline-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+  .btn-primary, .btn-secondary { padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid transparent; font-size: 1rem; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn-primary { background: var(--primary-color, #0f866c); color: white; }
+  .btn-secondary { background: white; border-color: var(--border-color, #e2e8f0); color: var(--text-primary, #2c3e50); }
+  .offline-details { text-align: left; background: var(--background-alt, #f8f9fa); padding: 1.5rem; border-radius: 0.5rem; }
+  .offline-details summary { cursor: pointer; font-weight: 600; }
+  .offline-details ul { margin-top: 1rem; padding-left: 1.5rem; }
+  .offline-details li { margin-bottom: 0.5rem; }
+  .offline-details p { margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary, #4a5568); }
+</style>
