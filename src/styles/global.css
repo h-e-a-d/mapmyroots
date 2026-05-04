@@ -2516,3 +2516,65 @@ html, body {
     max-height: calc(100svh - 120px) !important;
   }
 }
+
+/* Print styles */
+@media print {
+  .header,
+  .site-footer,
+  .sidebar,
+  .top-toolbar,
+  .floating-buttons,
+  .zoom-controls,
+  .header-controls,
+  .cache-indicator,
+  .install-banner,
+  .offline-badge,
+  #settingsPanel,
+  .modal,
+  .notifications-container,
+  .search-container,
+  .skip-link {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 10pt;
+  }
+
+  main, #main, #mainContainer, #graphicView {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    position: static !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  #graphicView canvas,
+  #graphicView svg {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3 { page-break-after: avoid; }
+
+  @page {
+    size: A4 landscape;
+    margin: 1cm;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 80%;
+    color: #555;
+  }
+
+  a[href^="#"]::after,
+  a[href^="mailto:"]::after {
+    content: "";
+  }
+}
