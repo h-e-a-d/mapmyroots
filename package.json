@@ -12,7 +12,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "test:e2e": "playwright test --config testing/playwright.config.js"
+    "test:e2e": "playwright test --config testing/playwright.config.js",
+    "generate-icons": "node scripts/generate-icons.mjs"
   },
   "repository": {
     "type": "git",

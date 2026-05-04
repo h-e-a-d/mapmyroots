@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0f866c"/>
+  <!-- Trunk -->
+  <rect x="240" y="340" width="32" height="100" rx="8" fill="white"/>
+  <!-- Crown layers -->
+  <ellipse cx="256" cy="290" rx="100" ry="70" fill="white"/>
+  <ellipse cx="256" cy="230" rx="80" ry="60" fill="white"/>
+  <ellipse cx="256" cy="175" rx="60" ry="50" fill="white"/>
+  <!-- Roots -->
+  <path d="M240 440 Q210 460 190 480" stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M272 440 Q302 460 322 480" stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M256 440 Q256 465 256 480" stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/>
+</svg>
