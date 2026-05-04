@@ -953,6 +953,10 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     import '../../src/features/export/exporter.js';
     import '../../src/ui/components/notifications.js';
     import '../../src/features/search/search.js';
+    import { importFromGedcom } from '@/features/import/gedcom-importer.js';
+    import { SecurityUtils } from '@/utils/security-utils.js';
+    window.__gedcomImport = importFromGedcom;
+    window.__SecurityUtils = SecurityUtils;
   </script>
 
   <!-- App initialization -->
@@ -1283,12 +1287,12 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         if (!file) return;
 
         const text = await file.text();
-        const { importFromGedcom } = await import('/src/features/import/gedcom-importer.js');
+        const importFromGedcom = window.__gedcomImport;
+        const SecurityUtils = window.__SecurityUtils;
         try {
           const result = importFromGedcom(text);
           parsedPersons = result.persons;
 
-          const { SecurityUtils } = await import('/src/utils/security-utils.js');
           SecurityUtils.setTextContent(previewSummary, `Found ${parsedPersons.length} person(s) in file.`);
           preview.classList.remove('hidden');
 
@@ -1302,7 +1306,6 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
           doImportBtn.disabled = parsedPersons.length === 0;
         } catch (err) {
           console.error('[GEDCOM import] parse error:', err);
-          const { SecurityUtils } = await import('/src/utils/security-utils.js');
           SecurityUtils.setTextContent(previewSummary, 'Error parsing file. Is this a valid .ged file?');
           preview.classList.remove('hidden');
           doImportBtn.disabled = true;

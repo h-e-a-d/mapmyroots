@@ -46,6 +46,12 @@ describe('importFromGedcom', () => {
     expect(abt).toBeDefined();
   });
 
+  it('preserves BEF date qualifiers', () => {
+    const { persons } = importFromGedcom(fixture('edge-cases.ged'));
+    const bef = persons.find(p => p.dob?.includes('BEF'));
+    expect(bef).toBeDefined();
+  });
+
   it('handles missing SEX tag gracefully (empty gender)', () => {
     const { persons } = importFromGedcom(fixture('edge-cases.ged'));
     const noSex = persons.find(p => p.gender === '');
