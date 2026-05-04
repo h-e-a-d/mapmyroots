@@ -32,6 +32,7 @@
     "@lhci/cli": "^0.13.0",
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.10",
+    "@vite-pwa/astro": "^1.2.0",
     "@vitest/ui": "^3.2.4",
     "astro": "^5.18.1",
     "cssnano": "^7.1.1",
@@ -40,7 +41,8 @@
     "jsdom": "^27.0.0",
     "postcss-cli": "^11.0.1",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "workbox-window": "^7.4.0"
   },
   "dependencies": {
     "astro-og-canvas": "^0.11.1",
