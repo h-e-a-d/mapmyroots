@@ -4,7 +4,8 @@ module.exports = {
       url: [
         'http://localhost:4321/',
         'http://localhost:4321/about',
-        'http://localhost:4321/builder'
+        'http://localhost:4321/contact',
+        'http://localhost:4321/glossary'
       ],
       numberOfRuns: 3,
       settings: {
@@ -14,10 +15,12 @@ module.exports = {
     },
     assert: {
       assertions: {
-        'categories:performance': ['warn', { minScore: 0.9 }],
+        'categories:performance': ['error', { minScore: 0.95 }],
         'categories:accessibility': ['error', { minScore: 0.95 }],
-        'categories:best-practices': ['warn', { minScore: 0.95 }],
-        'categories:seo': ['error', { minScore: 0.95 }]
+        'categories:best-practices': ['error', { minScore: 0.95 }],
+        'categories:seo': ['error', { minScore: 0.95 }],
+        'resource-summary:script:size': ['warn', { maxNumericValue: 300000 }],
+        'resource-summary:total:size': ['warn', { maxNumericValue: 1500000 }]
       }
     },
     upload: {
