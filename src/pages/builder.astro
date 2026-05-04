@@ -695,7 +695,7 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
     </button>
-    <button id="importGedcomBtn" class="toolbar-btn" title="Import GEDCOM (.ged)">
+    <button id="importGedcomBtn" class="toolbar-btn" title="Import GEDCOM (.ged)" aria-label="Import GEDCOM (.ged)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7,14 12,9 17,14"/>
@@ -1277,7 +1277,13 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         modal.classList.remove('hidden');
       });
 
-      function closeModal() { modal.classList.add('hidden'); }
+      function closeModal() {
+        modal.classList.add('hidden');
+        parsedPersons = [];
+        doImportBtn.disabled = true;
+        preview.classList.add('hidden');
+        conflictsDiv.classList.add('hidden');
+      }
       closeBtn.addEventListener('click', closeModal);
       cancelBtn.addEventListener('click', closeModal);
       modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
@@ -1286,10 +1292,10 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         const file = fileInput.files[0];
         if (!file) return;
 
-        const text = await file.text();
         const importFromGedcom = window.__gedcomImport;
         const SecurityUtils = window.__SecurityUtils;
         try {
+          const text = await file.text();
           const result = importFromGedcom(text);
           parsedPersons = result.persons;
 

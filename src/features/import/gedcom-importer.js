@@ -1,6 +1,7 @@
 import { parse as parseGedcom } from 'parse-gedcom';
 
 export function importFromGedcom(gedcomText) {
+  const sessionSalt = Date.now().toString(36);
   const root = parseGedcom(gedcomText);
   const nodes = root.children ?? [];
   const personMap = new Map();
@@ -8,7 +9,7 @@ export function importFromGedcom(gedcomText) {
 
   for (const node of nodes) {
     if (node.type === 'INDI') {
-      personMap.set(node.data.xref_id, indiToPersonStub(node));
+      personMap.set(node.data.xref_id, indiToPersonStub(node, sessionSalt));
     }
   }
 
@@ -21,7 +22,7 @@ export function importFromGedcom(gedcomText) {
   return { persons: Array.from(personMap.values()), warnings };
 }
 
-function indiToPersonStub(indi) {
+function indiToPersonStub(indi, sessionSalt) {
   const children = indi.children ?? [];
 
   const nameNode = children.find(n => n.type === 'NAME');
@@ -40,7 +41,7 @@ function indiToPersonStub(indi) {
   const dod = dodNode?.value ?? '';
 
   return {
-    id: pointerToId(indi.data.xref_id),
+    id: pointerToId(indi.data.xref_id, sessionSalt),
     name: given,
     surname,
     fatherName: '',
@@ -85,6 +86,6 @@ function parseName(raw) {
   return { given: raw.trim(), surname: '' };
 }
 
-function pointerToId(pointer) {
-  return `gedcom_${pointer.replace(/@/g, '')}`;
+function pointerToId(pointer, salt) {
+  return `gedcom_${salt}_${pointer.replace(/@/g, '')}`;
 }
