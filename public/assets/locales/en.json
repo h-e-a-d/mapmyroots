@@ -203,7 +203,7 @@
     },
     "import": {
       "question": "Can I import data from Ancestry.com or other services?",
-      "answer": "Currently, MapMyRoots doesn't support direct imports from other services. However, if you have a GEDCOM file from another genealogy service, you can manually enter the information into MapMyRoots. We're working on adding GEDCOM import functionality in future updates."
+      "answer": "Yes! Use the Import button in the builder to load a GEDCOM file (.ged) — the universal genealogy format supported by Ancestry, MyHeritage, FamilySearch, and most genealogy software. From those services, export your tree as GEDCOM, then import it here."
     },
     "photos": {
       "question": "Can I add photos to my family tree?",
@@ -355,6 +355,14 @@
         "edit_title": "Edit Person",
         "editing": "Editing:",
         "new_person": "New Person"
+      },
+      "gedcom": {
+        "title": "Import from GEDCOM",
+        "intro": "Import a family tree from a GEDCOM file (.ged). GEDCOM is the universal format used by Ancestry, MyHeritage, and FamilySearch.",
+        "conflict_label": "Existing tree detected. Choose how to handle it:",
+        "replace": "Replace existing tree",
+        "merge": "Merge with existing tree",
+        "import_btn": "Import"
       }
     },
     "buttons": {

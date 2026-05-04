@@ -117,6 +117,14 @@
         "edit_title": "Редактировать человека",
         "editing": "Редактирование:",
         "new_person": "Новый человек"
+      },
+      "gedcom": {
+        "title": "Import from GEDCOM",
+        "intro": "Import a family tree from a GEDCOM file (.ged). GEDCOM is the universal format used by Ancestry, MyHeritage, and FamilySearch.",
+        "conflict_label": "Existing tree detected. Choose how to handle it:",
+        "replace": "Replace existing tree",
+        "merge": "Merge with existing tree",
+        "import_btn": "Import"
       }
     },
     "zoom": {
@@ -352,8 +360,8 @@
       "answer": "Нет ограничений! Вы можете добавлять столько членов семьи, сколько хотите, и создавать несколько генеалогических деревьев. Пользователи успешно создавали деревья с сотнями членов семьи."
     },
     "import": {
-      "question": "Могу ли я импортировать данные из Ancestry.com или других сервисов?",
-      "answer": "В настоящее время MapMyRoots не поддерживает прямой импорт из других сервисов. Однако, если у вас есть файл GEDCOM от другого генеалогического сервиса, вы можете вручную ввести информацию в MapMyRoots. Мы работаем над добавлением функции импорта GEDCOM в будущих обновлениях."
+      "question": "Can I import data from Ancestry.com or other services?",
+      "answer": "Yes! Use the Import button in the builder to load a GEDCOM file (.ged) — the universal genealogy format supported by Ancestry, MyHeritage, FamilySearch, and most genealogy software. From those services, export your tree as GEDCOM, then import it here."
     },
     "photos": {
       "question": "Могу ли я добавлять фотографии в свое генеалогическое древо?",

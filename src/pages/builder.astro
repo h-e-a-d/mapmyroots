@@ -175,6 +175,38 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     </div>
   </div>
 
+  <!-- GEDCOM Import Modal -->
+  <div id="importGedcomModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="importGedcomTitle">
+    <div class="modal-content">
+      <button class="modal-close-btn" aria-label="Close" id="importGedcomClose">&times;</button>
+      <div class="modal-header">
+        <h2 id="importGedcomTitle" data-i18n="builder.modals.gedcom.title">Import from GEDCOM</h2>
+      </div>
+      <div class="modal-body">
+        <p data-i18n="builder.modals.gedcom.intro">Import a family tree from a GEDCOM file (.ged). GEDCOM is the universal format used by Ancestry, MyHeritage, and FamilySearch.</p>
+        <input type="file" id="gedcomFileInput" accept=".ged,text/plain" style="margin: 1rem 0;" />
+        <div id="gedcomPreview" class="hidden">
+          <p id="gedcomPreviewSummary"></p>
+        </div>
+        <div id="gedcomConflicts" class="hidden">
+          <p data-i18n="builder.modals.gedcom.conflict_label">Existing tree detected. Choose how to handle it:</p>
+          <label style="display:block;margin:.5rem 0;">
+            <input type="radio" name="gedcomConflictMode" value="replace" checked />
+            <span data-i18n="builder.modals.gedcom.replace">Replace existing tree</span>
+          </label>
+          <label style="display:block;margin:.5rem 0;">
+            <input type="radio" name="gedcomConflictMode" value="merge" />
+            <span data-i18n="builder.modals.gedcom.merge">Merge with existing tree</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="gedcomCancelBtn" class="btn-secondary" data-i18n="builder.buttons.cancel">Cancel</button>
+        <button type="button" id="gedcomImportBtn" class="btn-primary" disabled data-i18n="builder.modals.gedcom.import_btn">Import</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Notifications Container -->
   <div class="notifications-container" id="notificationsContainer"></div>
 
@@ -661,6 +693,14 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7,10 12,15 17,10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+    </button>
+    <button id="importGedcomBtn" class="toolbar-btn" title="Import GEDCOM (.ged)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7,14 12,9 17,14"/>
+        <line x1="12" y1="9" x2="12" y2="21"/>
+        <path d="M3 3h18"/>
       </svg>
     </button>
   </div>
@@ -1207,5 +1247,86 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         });
       });
     }
+
+    // GEDCOM Import
+    (function setupGedcomImport() {
+      const importBtn = document.getElementById('importGedcomBtn');
+      const modal = document.getElementById('importGedcomModal');
+      const closeBtn = document.getElementById('importGedcomClose');
+      const cancelBtn = document.getElementById('gedcomCancelBtn');
+      const fileInput = document.getElementById('gedcomFileInput');
+      const preview = document.getElementById('gedcomPreview');
+      const previewSummary = document.getElementById('gedcomPreviewSummary');
+      const conflictsDiv = document.getElementById('gedcomConflicts');
+      const doImportBtn = document.getElementById('gedcomImportBtn');
+
+      if (!importBtn || !modal) return;
+
+      let parsedPersons = [];
+
+      importBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        parsedPersons = [];
+        doImportBtn.disabled = true;
+        preview.classList.add('hidden');
+        conflictsDiv.classList.add('hidden');
+        modal.classList.remove('hidden');
+      });
+
+      function closeModal() { modal.classList.add('hidden'); }
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const text = await file.text();
+        const { importFromGedcom } = await import('/src/features/import/gedcom-importer.js');
+        try {
+          const result = importFromGedcom(text);
+          parsedPersons = result.persons;
+
+          const { SecurityUtils } = await import('/src/utils/security-utils.js');
+          SecurityUtils.setTextContent(previewSummary, `Found ${parsedPersons.length} person(s) in file.`);
+          preview.classList.remove('hidden');
+
+          const existingCount = window.treeCore?.renderer?.nodes?.size ?? 0;
+          if (existingCount > 0) {
+            conflictsDiv.classList.remove('hidden');
+          } else {
+            conflictsDiv.classList.add('hidden');
+          }
+
+          doImportBtn.disabled = parsedPersons.length === 0;
+        } catch (err) {
+          console.error('[GEDCOM import] parse error:', err);
+          const { SecurityUtils } = await import('/src/utils/security-utils.js');
+          SecurityUtils.setTextContent(previewSummary, 'Error parsing file. Is this a valid .ged file?');
+          preview.classList.remove('hidden');
+          doImportBtn.disabled = true;
+        }
+      });
+
+      doImportBtn.addEventListener('click', () => {
+        if (!parsedPersons.length) return;
+
+        const conflictMode = document.querySelector('input[name="gedcomConflictMode"]:checked')?.value ?? 'replace';
+        let personsToLoad = parsedPersons;
+
+        if (conflictMode === 'merge' && window.treeCore) {
+          const existing = Array.from(window.treeCore.personData?.values() ?? []);
+          const existingIds = new Set(existing.map(p => p.id));
+          const newOnly = parsedPersons.filter(p => !existingIds.has(p.id));
+          personsToLoad = [...existing, ...newOnly];
+        }
+
+        if (window.treeCore?.processLoadedData) {
+          window.treeCore.processLoadedData({ persons: personsToLoad });
+        }
+        closeModal();
+      });
+    })();
   </script>
 </BuilderLayout>

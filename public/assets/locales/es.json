@@ -202,8 +202,8 @@
       "answer": "¡No hay límite! Puedes agregar tantos miembros de la familia como quieras y crear múltiples árboles genealógicos. Los usuarios han creado exitosamente árboles con cientos de miembros familiares."
     },
     "import": {
-      "question": "¿Puedo importar datos de Ancestry.com u otros servicios?",
-      "answer": "Actualmente, MapMyRoots no admite importaciones directas de otros servicios. Sin embargo, si tienes un archivo GEDCOM de otro servicio de genealogía, puedes ingresar manualmente la información en MapMyRoots. Estamos trabajando en agregar funcionalidad de importación GEDCOM en futuras actualizaciones."
+      "question": "Can I import data from Ancestry.com or other services?",
+      "answer": "Yes! Use the Import button in the builder to load a GEDCOM file (.ged) — the universal genealogy format supported by Ancestry, MyHeritage, FamilySearch, and most genealogy software. From those services, export your tree as GEDCOM, then import it here."
     },
     "photos": {
       "question": "¿Puedo agregar fotos a mi árbol genealógico?",
@@ -355,6 +355,14 @@
         "edit_title": "Editar Persona",
         "editing": "Editando:",
         "new_person": "Nueva Persona"
+      },
+      "gedcom": {
+        "title": "Import from GEDCOM",
+        "intro": "Import a family tree from a GEDCOM file (.ged). GEDCOM is the universal format used by Ancestry, MyHeritage, and FamilySearch.",
+        "conflict_label": "Existing tree detected. Choose how to handle it:",
+        "replace": "Replace existing tree",
+        "merge": "Merge with existing tree",
+        "import_btn": "Import"
       }
     },
     "buttons": {
