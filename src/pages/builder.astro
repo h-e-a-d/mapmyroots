@@ -902,6 +902,12 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     });
   </script>
 
+  <!-- Storage migration: localStorage → IndexedDB (runs before any other module) -->
+  <script>
+    import { migrateLocalStorageToIndexedDb } from '../../src/data/migrations/localstorage-to-indexeddb.js';
+    await migrateLocalStorageToIndexedDb().catch((err) => console.error('[migration] failed:', err));
+  </script>
+
   <!-- Module imports (Vite-bundled) -->
   <script>
     import '../../src/features/i18n/i18n.js';
