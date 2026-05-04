@@ -206,8 +206,8 @@
       "answer": "Currently, MapMyRoots doesn't support direct imports from other services. However, if you have a GEDCOM file from another genealogy service, you can manually enter the information into MapMyRoots. We're working on adding GEDCOM import functionality in future updates."
     },
     "photos": {
-      "question": "Can I add photos to my family tree?",
-      "answer": "Photo support is currently in development. For now, you can add comprehensive text information including names, dates, relationships, and notes for each family member."
+      "question": "Can I add photos of family members?",
+      "answer": "Yes — click Edit on any person and add a photo. Photos are resized and stored locally on your device."
     },
     "print": {
       "question": "How do I print my family tree?",
@@ -354,7 +354,12 @@
         "add_title": "Add Person",
         "edit_title": "Edit Person",
         "editing": "Editing:",
-        "new_person": "New Person"
+        "new_person": "New Person",
+        "photo": {
+          "label": "Photo",
+          "remove": "Remove photo",
+          "hint": "JPG, PNG or WebP · max 500 KB · stored locally"
+        }
       }
     },
     "buttons": {

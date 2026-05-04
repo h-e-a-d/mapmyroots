@@ -192,18 +192,38 @@ function populateFormFields(node, personData) {
   document.getElementById('personSurname').value = node?.surname || personData?.surname || '';
   document.getElementById('personMaidenName').value = node?.maidenName || personData?.maidenName || '';
   document.getElementById('personDob').value = node?.dob || personData?.dob || '';
-  
+
   // Handle gender radio buttons with enhanced UX
   const gender = node?.gender || personData?.gender || '';
   const maleRadio = document.getElementById('genderMale');
   const femaleRadio = document.getElementById('genderFemale');
-  
+
   if (maleRadio && femaleRadio) {
     maleRadio.checked = gender === 'male';
     femaleRadio.checked = gender === 'female';
-    
+
     // Add visual feedback for pre-selected option
     updateGenderRadioStyles();
+  }
+
+  const storedPhoto = personData?.photoBase64 || '';
+  const photoPreview = document.getElementById('personPhotoPreview');
+  const photoPlaceholder = document.getElementById('personPhotoPlaceholder');
+  const photoBase64Input = document.getElementById('personPhotoBase64');
+  const removeBtn = document.getElementById('personPhotoRemove');
+
+  if (photoBase64Input) photoBase64Input.value = storedPhoto;
+  if (photoPreview) {
+    if (storedPhoto) {
+      photoPreview.src = storedPhoto;
+      photoPreview.hidden = false;
+      if (photoPlaceholder) photoPlaceholder.hidden = true;
+      if (removeBtn) removeBtn.hidden = false;
+    } else {
+      photoPreview.hidden = true;
+      if (photoPlaceholder) photoPlaceholder.hidden = false;
+      if (removeBtn) removeBtn.hidden = true;
+    }
   }
 }
 
@@ -349,6 +369,18 @@ function clearForm() {
   
   // Clear error states
   clearErrorStates();
+
+  // Reset photo fields
+  const photoBase64Input = document.getElementById('personPhotoBase64');
+  const photoPreview = document.getElementById('personPhotoPreview');
+  const photoPlaceholder = document.getElementById('personPhotoPlaceholder');
+  const personPhotoRemove = document.getElementById('personPhotoRemove');
+  const personPhotoInput = document.getElementById('personPhotoInput');
+  if (photoBase64Input) photoBase64Input.value = '';
+  if (photoPreview) { photoPreview.src = ''; photoPreview.hidden = true; }
+  if (photoPlaceholder) photoPlaceholder.hidden = false;
+  if (personPhotoRemove) personPhotoRemove.hidden = true;
+  if (personPhotoInput) personPhotoInput.value = '';
 }
 
 export function isModalCurrentlyOpen() {
@@ -735,7 +767,8 @@ document.addEventListener('DOMContentLoaded', () => {
         motherId: document.querySelector('#motherSelect input[type="hidden"]')?.value || '',
         fatherId: document.querySelector('#fatherSelect input[type="hidden"]')?.value || '',
         spouseId: document.querySelector('#spouseSelect input[type="hidden"]')?.value || '',
-        editingId: modal.dataset.editingId || null
+        editingId: modal.dataset.editingId || null,
+        photoBase64: document.getElementById('personPhotoBase64')?.value || ''
       };
       
       devLog('Form data to save:', formData);

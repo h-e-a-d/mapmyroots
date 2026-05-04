@@ -38,7 +38,8 @@ export class CanvasRenderer {
     // Performance
     this.needsRedraw = true;
     this.rafId = null;
-    
+    this._imageCache = new Map(); // personId -> HTMLImageElement
+
     // Settings
     this.settings = {
       nodeRadius: 50,
@@ -306,9 +307,20 @@ export class CanvasRenderer {
       ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
       ctx.stroke();
     }
-    
-    // Draw text
-    this.drawNodeText(ctx, node, radius * 1.8);
+
+    const exportImg = this._getNodeImage(id, node);
+    if (exportImg && exportImg.complete && exportImg.naturalWidth > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(exportImg, node.x - radius, node.y - radius, radius * 2, radius * 2);
+      ctx.restore();
+    }
+
+    if (!node.photoBase64) {
+      this.drawNodeText(ctx, node, radius * 1.8);
+    }
   }
 
   // Draw rectangle node for export (no selection states)
@@ -1094,8 +1106,34 @@ export class CanvasRenderer {
       ctx.fill();
     }
     
-    // Draw text
-    this.drawNodeText(ctx, node, radius * 1.8);
+    const img = this._getNodeImage(id, node);
+    if (img && img.complete && img.naturalWidth > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, node.x - radius, node.y - radius, radius * 2, radius * 2);
+      ctx.restore();
+    }
+
+    if (!node.photoBase64) {
+      this.drawNodeText(ctx, node, radius * 1.8);
+    }
+  }
+
+  _getNodeImage(id, node) {
+    if (!node.photoBase64) return null;
+    const cached = this._imageCache.get(id);
+    if (cached && cached.src === node.photoBase64) return cached;
+    const img = new Image();
+    img.src = node.photoBase64;
+    this._imageCache.set(id, img);
+    if (!img.complete) img.onload = () => { this.needsRedraw = true; };
+    return img;
+  }
+
+  invalidateImageCache(id) {
+    this._imageCache.delete(id);
   }
 
   drawRectangleNode(ctx, id, node, isSelected, isHovered) {

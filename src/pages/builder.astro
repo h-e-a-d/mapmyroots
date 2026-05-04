@@ -859,6 +859,19 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
             <small class="help-text" data-i18n="builder.form.dob_help">Enter full date dd.mm.yyyy or just year yyyy</small>
           </div>
           <div class="form-group">
+            <label data-i18n="builder.modals.person.photo.label">Photo</label>
+            <div class="photo-section">
+              <div class="photo-preview-wrap">
+                <img id="personPhotoPreview" alt="" hidden style="width:80px;height:80px;object-fit:cover;border-radius:50%;" />
+                <span id="personPhotoPlaceholder" aria-hidden="true" style="font-size:2rem;">📷</span>
+              </div>
+              <input type="file" id="personPhotoInput" accept="image/jpeg,image/png,image/webp" aria-label="Upload person photo" style="margin:.5rem 0;" />
+              <input type="hidden" id="personPhotoBase64" />
+              <button type="button" id="personPhotoRemove" hidden data-i18n="builder.modals.person.photo.remove">Remove photo</button>
+              <p class="help-text" data-i18n="builder.modals.person.photo.hint">JPG, PNG or WebP · max 500 KB · stored locally</p>
+            </div>
+          </div>
+          <div class="form-group">
             <label data-i18n="builder.form.mother">Mother</label>
             <div class="searchable-select" id="motherSelect"></div>
           </div>
@@ -913,6 +926,60 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     import '../../src/features/export/exporter.js';
     import '../../src/ui/components/notifications.js';
     import '../../src/features/search/search.js';
+    import { resizePhotoToDataUrl, shouldWarnAboutStorage } from '@/features/photos/photo-utils.js';
+
+    (function setupPhotoUpload() {
+      const photoInput = document.getElementById('personPhotoInput');
+      const photoPreview = document.getElementById('personPhotoPreview');
+      const photoPlaceholder = document.getElementById('personPhotoPlaceholder');
+      const photoBase64Input = document.getElementById('personPhotoBase64');
+      const removeBtn = document.getElementById('personPhotoRemove');
+
+      if (!photoInput) return;
+
+      photoInput.addEventListener('change', async () => {
+        const file = photoInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const resized = await resizePhotoToDataUrl(e.target.result);
+            photoBase64Input.value = resized;
+            photoPreview.src = resized;
+            photoPreview.hidden = false;
+            photoPlaceholder.hidden = true;
+            removeBtn.hidden = false;
+
+            if (navigator.storage?.estimate) {
+              const est = await navigator.storage.estimate();
+              if (shouldWarnAboutStorage(est)) {
+                const { notifications } = await import('@/ui/components/notifications.js');
+                notifications.warning('Storage almost full', 'Consider exporting your tree.');
+              }
+            }
+          } catch (err) {
+            const { notifications } = await import('@/ui/components/notifications.js');
+            notifications.error('Photo error', err.message);
+            photoInput.value = '';
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      removeBtn?.addEventListener('click', () => {
+        photoBase64Input.value = '';
+        photoPreview.src = '';
+        photoPreview.hidden = true;
+        photoPlaceholder.hidden = false;
+        removeBtn.hidden = true;
+        photoInput.value = '';
+        const modal = document.getElementById('personModal');
+        const editingId = modal?.dataset.editingId;
+        if (editingId && window.treeCore?.renderer?.invalidateImageCache) {
+          window.treeCore.renderer.invalidateImageCache(editingId);
+        }
+      });
+    })();
   </script>
 
   <!-- App initialization -->

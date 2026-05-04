@@ -799,7 +799,8 @@ export class TreeEngine {
         gender: formData.gender,
         motherId: formData.motherId || '',
         fatherId: formData.fatherId || '',
-        spouseId: formData.spouseId || ''
+        spouseId: formData.spouseId || '',
+        photoBase64: formData.photoBase64 || ''
       };
       
       // Store in personData map
@@ -828,7 +829,8 @@ export class TreeEngine {
             surname: personData.surname,
             maidenName: personData.maidenName,
             dob: personData.dob,
-            gender: personData.gender
+            gender: personData.gender,
+            photoBase64: personData.photoBase64
           });
           
           console.log('✏️ Updated existing node:', personId);
@@ -861,7 +863,8 @@ export class TreeEngine {
             x: x,
             y: y,
             color: this.defaultColor,
-            radius: this.nodeRadius
+            radius: this.nodeRadius,
+            photoBase64: personData.photoBase64
           };
           
           this.renderer.setNode(personId, nodeData);

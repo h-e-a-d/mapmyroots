@@ -103,7 +103,12 @@
         "add_title": "Person hinzufügen",
         "edit_title": "Person bearbeiten",
         "editing": "Bearbeitung:",
-        "new_person": "Neue Person"
+        "new_person": "Neue Person",
+        "photo": {
+          "label": "Photo",
+          "remove": "Remove photo",
+          "hint": "JPG, PNG or WebP · max 500 KB · stored locally"
+        }
       }
     },
     "buttons": {
@@ -318,8 +323,8 @@
       "answer": "Derzeit unterstützt MapMyRoots keinen direkten Import von anderen Diensten. Wenn Sie jedoch eine GEDCOM-Datei von einem anderen Genealogie-Dienst haben, können Sie die Informationen manuell in MapMyRoots eingeben. Wir arbeiten daran, die GEDCOM-Importfunktion in zukünftigen Updates hinzuzufügen."
     },
     "photos": {
-      "question": "Kann ich Fotos zu meinem Stammbaum hinzufügen?",
-      "answer": "Die Fotounterstützung befindet sich derzeit in der Entwicklung. Vorerst können Sie umfassende Textinformationen einschließlich Namen, Daten, Beziehungen und Notizen für jedes Familienmitglied hinzufügen."
+      "question": "Kann ich Fotos von Familienmitgliedern hinzufügen?",
+      "answer": "Yes — click Edit on any person and add a photo. Photos are resized and stored locally on your device."
     },
     "print": {
       "question": "Wie drucke ich meinen Stammbaum?",
