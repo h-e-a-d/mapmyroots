@@ -13,7 +13,8 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test --config testing/playwright.config.js",
-    "generate-icons": "node scripts/generate-icons.mjs"
+    "generate-icons": "node scripts/generate-icons.mjs",
+    "subset-fonts": "glyphhanger http://localhost:4321 --subset=public/assets/fonts/*.woff2 --formats=woff2 --output=public/assets/fonts/"
   },
   "repository": {
     "type": "git",
