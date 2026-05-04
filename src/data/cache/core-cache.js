@@ -180,13 +180,15 @@ export class CacheManager {
   clearCache() {
     // Clear localStorage
     localStorage.removeItem(this.cacheKey);
-    // Remove backups
+    // Collect backup keys first — removing inside the loop shifts indices and silently skips keys
+    const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && key.startsWith(`${this.cacheKey}_backup_`)) {
-        localStorage.removeItem(key);
+        keysToRemove.push(key);
       }
     }
+    keysToRemove.forEach(k => localStorage.removeItem(k));
 
     // Clear IndexedDB
     if (this.#idbReady) {

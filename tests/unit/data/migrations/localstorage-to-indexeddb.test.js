@@ -35,8 +35,6 @@ vi.mock('../../../../src/data/repositories/indexed-db-repository.js', () => ({
   IndexedDBRepository: vi.fn().mockImplementation(() => mockIdbInstance),
 }));
 
-vi.mock('../../../../src/data/repositories/local-storage-repository.js', () => ({}));
-
 // ── Test suite ───────────────────────────────────────────────────────────────
 
 describe('migrateLocalStorageToIndexedDb', () => {
