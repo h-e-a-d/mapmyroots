@@ -114,7 +114,8 @@
       "delete": "Löschen",
       "style": "Stil",
       "link": "Verknüpfen",
-      "undo": "Rückgängig"
+      "undo": "Rückgängig",
+      "close": "Schließen"
     },
     "zoom": {
       "zoom_in": "Vergrößern",
@@ -284,6 +285,12 @@
       "success": "Vorgang erfolgreich abgeschlossen",
       "no_changes": "Keine Änderungen zu speichern",
       "unsaved_changes": "Sie haben ungespeicherte Änderungen"
+    },
+    "share": {
+      "title": "Stammbaum teilen",
+      "intro": "Teilen Sie einen schreibgeschützten Link zu Ihrem Stammbaum. Fotos sind nicht im Link enthalten.",
+      "copy": "Link kopieren",
+      "too_big": "Der Stammbaum ist zu groß, um als URL geteilt zu werden. Entfernen Sie Fotos oder reduzieren Sie die Anzahl der Personen."
     }
   },
   "faq": {

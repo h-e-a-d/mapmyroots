@@ -217,6 +217,28 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     </div>
   </div>
 
+  <!-- Share Modal -->
+  <div id="shareModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+    <div class="modal-content">
+      <button class="modal-close-btn" aria-label="Close" id="shareModalClose">&times;</button>
+      <div class="modal-header">
+        <h2 id="shareModalTitle" data-i18n="builder.share.title">Share tree</h2>
+      </div>
+      <div class="modal-body">
+        <p data-i18n="builder.share.intro">Share a read-only link to your family tree. Photos are not included in the link.</p>
+        <div style="display:flex;gap:.5rem;margin-top:1rem;">
+          <input type="text" id="shareUrlInput" readonly style="flex:1;padding:.5rem;border:1px solid #ccc;border-radius:4px;font-size:.875rem;" aria-label="Share URL" />
+          <button type="button" id="shareCopyBtn" class="btn-primary" data-i18n="builder.share.copy">Copy</button>
+        </div>
+        <p id="shareStatus" role="status" aria-live="polite" style="margin-top:.5rem;font-size:.875rem;"></p>
+        <p id="shareTooBig" class="hidden" style="color:#e74c3c;font-size:.875rem;" data-i18n="builder.share.too_big">Tree is too large to share as a URL. Consider removing photos or reducing the number of people.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="shareCloseBtn" class="btn-secondary" data-i18n="builder.buttons.close">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Vertical Sidebar -->
   <div class="sidebar">
     <button class="sidebar-btn" id="homeBtn" data-i18n-title="builder.sidebar.home">
@@ -661,6 +683,13 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7,10 12,15 17,10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+    </button>
+    <button id="shareBtn" class="toolbar-btn" title="Share tree" aria-label="Share tree as link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
       </svg>
     </button>
   </div>
@@ -1205,6 +1234,70 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
             header.classList.toggle('expanded');
           }
         });
+      });
+    }
+  </script>
+
+  <!-- Share by link -->
+  <script>
+    import { encodeTreeToParam } from '@/features/share/url-codec.js';
+    import { buildShareUrl, MAX_URL_BYTES } from '@/features/share/share-utils.js';
+
+    const shareBtn = document.getElementById('shareBtn');
+    const shareModal = document.getElementById('shareModal');
+
+    if (shareBtn && shareModal) {
+      const closeShareModal = () => shareModal.classList.add('hidden');
+
+      document.getElementById('shareModalClose')?.addEventListener('click', closeShareModal);
+      document.getElementById('shareCloseBtn')?.addEventListener('click', closeShareModal);
+      shareModal.addEventListener('click', (e) => { if (e.target === shareModal) closeShareModal(); });
+
+      shareBtn.addEventListener('click', async () => {
+        const state = window.treeCore?.getCurrentState?.();
+        if (!state?.persons?.length) {
+          const { notifications } = await import('@/ui/components/notifications.js');
+          notifications.warning('Nothing to share', 'Add some people to the tree first.');
+          return;
+        }
+
+        try {
+          const encoded = await encodeTreeToParam(state);
+          const url = buildShareUrl(window.location.origin, encoded);
+
+          const urlInput = document.getElementById('shareUrlInput');
+          const tooBig = document.getElementById('shareTooBig');
+          const statusEl = document.getElementById('shareStatus');
+
+          if (url.length > MAX_URL_BYTES) {
+            urlInput.value = '';
+            tooBig?.classList.remove('hidden');
+            shareModal.classList.remove('hidden');
+            return;
+          }
+
+          tooBig?.classList.add('hidden');
+          urlInput.value = url;
+          if (statusEl) statusEl.textContent = '';
+          shareModal.classList.remove('hidden');
+        } catch (err) {
+          const { notifications } = await import('@/ui/components/notifications.js');
+          notifications.error('Share failed', err.message);
+        }
+      });
+
+      document.getElementById('shareCopyBtn')?.addEventListener('click', async () => {
+        const urlInput = document.getElementById('shareUrlInput');
+        const statusEl = document.getElementById('shareStatus');
+        if (!urlInput?.value) return;
+        try {
+          await navigator.clipboard.writeText(urlInput.value);
+          if (statusEl) statusEl.textContent = 'Copied!';
+          setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 2000);
+        } catch {
+          urlInput.select();
+          if (statusEl) statusEl.textContent = 'Press Ctrl+C to copy.';
+        }
       });
     }
   </script>

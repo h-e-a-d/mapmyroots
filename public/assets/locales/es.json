@@ -365,7 +365,8 @@
       "delete": "Eliminar",
       "style": "Estilo",
       "link": "Enlazar",
-      "undo": "Deshacer"
+      "undo": "Deshacer",
+      "close": "Cerrar"
     },
     "zoom": {
       "zoom_in": "Acercar",
@@ -535,6 +536,12 @@
       "success": "Operación completada exitosamente",
       "no_changes": "No hay cambios para guardar",
       "unsaved_changes": "Tienes cambios sin guardar"
+    },
+    "share": {
+      "title": "Compartir árbol",
+      "intro": "Comparte un enlace de solo lectura de tu árbol genealógico. Las fotos no se incluyen en el enlace.",
+      "copy": "Copiar enlace",
+      "too_big": "El árbol es demasiado grande para compartir como URL. Considera eliminar fotos o reducir el número de personas."
     }
   },
   "glossary": {

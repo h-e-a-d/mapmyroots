@@ -365,7 +365,8 @@
       "delete": "Delete",
       "style": "Style",
       "link": "Link",
-      "undo": "Undo"
+      "undo": "Undo",
+      "close": "Close"
     },
     "zoom": {
       "zoom_in": "Zoom In",
@@ -544,6 +545,12 @@
       "success": "Operation completed successfully",
       "no_changes": "No changes to save",
       "unsaved_changes": "You have unsaved changes"
+    },
+    "share": {
+      "title": "Share tree",
+      "intro": "Share a read-only link to your family tree. Photos are not included in the link.",
+      "copy": "Copy link",
+      "too_big": "Tree is too large to share as a URL. Consider removing photos or reducing the number of people."
     }
   },
   "glossary": {
