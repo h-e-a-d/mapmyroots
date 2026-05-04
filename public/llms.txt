@@ -1,0 +1,46 @@
+# MapMyRoots
+
+> MapMyRoots is a free, browser-based family tree builder. Trees are stored locally in the browser (no account, no server). Export to JSON, PNG, or PDF. The product is fully free with no premium tier or subscription.
+
+## Documentation
+
+- [Home page](https://mapmyroots.com/): product overview, key features, FAQ.
+- [About](https://mapmyroots.com/about): mission, technology stack, why the product is free.
+- [Builder](https://mapmyroots.com/builder): the family tree editor itself (interactive — JS required).
+- [Privacy](https://mapmyroots.com/privacy): privacy policy, GDPR/CCPA compliance.
+- [Terms](https://mapmyroots.com/terms): terms of service.
+
+## Glossary
+
+The glossary at [/glossary](https://mapmyroots.com/glossary) defines essential genealogy terms. Each term has its own page with a structured `DefinedTerm` schema for AI consumption:
+
+- [Abstract](https://mapmyroots.com/glossary/abstract): abbreviated transcription of a document.
+- [Affinity](https://mapmyroots.com/glossary/affinity): relationship by marriage.
+- [Ahnentafel](https://mapmyroots.com/glossary/ahnentafel): German "ancestor table" numbering system.
+- [Ancestor](https://mapmyroots.com/glossary/ancestor): a person from whom one is descended.
+- [Ancestry](https://mapmyroots.com/glossary/ancestry): the line of one's ancestors collectively.
+- [Autosomal DNA](https://mapmyroots.com/glossary/autosomal-dna): inherited from both parents, used in genetic genealogy.
+- [Banns](https://mapmyroots.com/glossary/banns): public announcement of an upcoming marriage.
+- [Birth record](https://mapmyroots.com/glossary/birth-record): official document recording a birth.
+- [Brick wall](https://mapmyroots.com/glossary/brick-wall): research term for an ancestor whose origins can't be traced further.
+- [Census](https://mapmyroots.com/glossary/census): periodic government enumeration of population.
+- [Family tree](https://mapmyroots.com/glossary/family-tree): visual or organized representation of family lineage.
+- [Genealogy](https://mapmyroots.com/glossary/genealogy): the study and tracing of family history.
+
+## Localization
+
+The site is available in English (default), German (`/de/`), Spanish (`/es/`), and Russian (`/ru/`). Hreflang annotations on every page link locale variants.
+
+## Out of scope (not yet documented)
+
+The following are mentioned in the FAQ but not currently supported. They are on the roadmap but not yet shipped:
+
+- GEDCOM import: planned for a future release (genealogy interchange format).
+- Cloud sync / accounts: explicitly not supported. Data lives on the user's device.
+- Photos per person: planned but not yet shipped.
+
+## Optional
+
+- [Sitemap](https://mapmyroots.com/sitemap-index.xml): full URL index for crawlers.
+- [Robots](https://mapmyroots.com/robots.txt): crawler rules.
+- [Source](https://github.com/h-e-a-d/mapmyroots): open source on GitHub.
