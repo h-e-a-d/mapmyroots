@@ -43,6 +43,20 @@ const year = new Date().getFullYear();
   <div class="footer-bottom">
     <p>© {year} MapMyRoots. All rights reserved.</p>
   </div>
+
+  <div id="installBanner" class="install-banner hidden" role="region" aria-label="Install app">
+    <div class="install-banner-inner">
+      <span aria-hidden="true">📲</span>
+      <div>
+        <strong>Install MapMyRoots</strong>
+        <p>Use as an app — works offline, no app store needed.</p>
+      </div>
+      <div class="install-banner-actions">
+        <button id="installBtn" type="button">Install</button>
+        <button id="installDismissBtn" type="button" aria-label="Dismiss">×</button>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <style>
@@ -81,4 +95,24 @@ const year = new Date().getFullYear();
     font-size: 0.875rem;
     color: var(--text-secondary, #4a5568);
   }
+  .install-banner {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    max-width: 360px;
+    background: white;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    padding: 1rem;
+    z-index: 1000;
+  }
+  .install-banner.hidden { display: none; }
+  .install-banner-inner { display: flex; align-items: flex-start; gap: 0.75rem; }
+  .install-banner-inner > span { font-size: 1.5rem; flex-shrink: 0; }
+  .install-banner-inner strong { display: block; margin-bottom: 0.25rem; }
+  .install-banner-inner p { margin: 0; font-size: 0.875rem; color: var(--text-secondary, #4a5568); }
+  .install-banner-actions { display: flex; gap: 0.5rem; align-items: center; margin-left: auto; flex-shrink: 0; }
+  .install-banner-actions button:first-child { padding: 0.5rem 1rem; background: var(--primary-color, #0f866c); color: white; border: none; border-radius: 0.5rem; cursor: pointer; white-space: nowrap; }
+  .install-banner-actions button:last-child { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 0 0.25rem; line-height: 1; color: var(--text-secondary, #4a5568); }
 </style>
