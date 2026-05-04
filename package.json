@@ -40,5 +40,9 @@
     "postcss-cli": "^11.0.1",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "astro-og-canvas": "^0.11.1",
+    "canvaskit-wasm": "^0.41.1"
   }
 }
