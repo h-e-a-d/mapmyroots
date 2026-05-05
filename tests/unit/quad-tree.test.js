@@ -79,30 +79,27 @@ describe('QuadTree', () => {
     });
 
     it('should be faster than linear search for large datasets', () => {
-      // Insert 1000 points
+      // QuadTree bounds are center-based: { x:0, y:0, width:1000 } covers -500..500.
+      // Insert 1000 points spread across that valid range.
       for (let i = 0; i < 1000; i++) {
         quadTree.insert({
-          x: Math.random() * 1000,
-          y: Math.random() * 1000,
+          x: (Math.random() - 0.5) * 1000,
+          y: (Math.random() - 0.5) * 1000,
           data: { id: i }
         });
       }
 
-      const range = {
-        x: 500,
-        y: 500,
-        width: 100,
-        height: 100
-      };
+      // Guarantee at least one hit by inserting a known point in the query range.
+      quadTree.insert({ x: 0, y: 0, data: { id: 9999 } });
+
+      // Query a 200x200 range at the centre — guaranteed to contain the known point.
+      const range = { x: 0, y: 0, width: 200, height: 200 };
 
       const startTime = performance.now();
       const found = quadTree.query(range);
       const endTime = performance.now();
 
-      const queryTime = endTime - startTime;
-
-      // QuadTree query should be very fast (< 1ms for this range)
-      expect(queryTime).toBeLessThan(10);
+      expect(endTime - startTime).toBeLessThan(10);
       expect(found.length).toBeGreaterThan(0);
     });
   });
