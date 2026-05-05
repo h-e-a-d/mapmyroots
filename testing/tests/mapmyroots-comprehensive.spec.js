@@ -129,7 +129,7 @@ test.describe('MapMyRoots Website Comprehensive Testing', () => {
     
     test.beforeEach(async ({ page }) => {
       // Navigate directly to builder for these tests
-      await page.goto('/builder.html');
+      await page.goto('/builder/');
       await page.waitForLoadState('networkidle');
     });
 
@@ -379,7 +379,7 @@ test.describe('MapMyRoots Website Comprehensive Testing', () => {
       await page.waitForLoadState('networkidle');
       
       // Navigate to builder to test those resources too
-      await page.goto('/builder.html');
+      await page.goto('/builder/');
       await page.waitForLoadState('networkidle');
       
       if (failedRequests.length > 0) {

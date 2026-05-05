@@ -48,3 +48,6 @@ build/
 testing/playwright-report/
 testing/test-results/
 testing/test-results.json
+
+# MCP local config (contains secrets)
+.mcp.json
