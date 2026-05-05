@@ -1,0 +1,80 @@
+---
+import BuilderLayout from '@/layouts/BuilderLayout.astro';
+---
+
+<BuilderLayout
+  title="View family tree - MapMyRoots"
+  description="View a shared family tree."
+  canonicalPath="/view"
+>
+  <div id="viewRoot" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;">
+    <p id="viewStatus">Loading tree…</p>
+    <div id="viewContainer" style="width:100%;height:100%;display:none;"></div>
+  </div>
+
+  <a href="/builder" style="position:fixed;bottom:1rem;right:1rem;padding:.5rem 1rem;background:#3498db;color:#fff;border-radius:4px;text-decoration:none;font-family:sans-serif;font-size:.875rem;">
+    Build your own →
+  </a>
+
+  <script>
+    import { decodeTreeFromParam } from '@/features/share/url-codec.js';
+    import { CanvasRenderer } from '@/core/canvas-renderer.js';
+
+    (async () => {
+      const statusEl = document.getElementById('viewStatus');
+      const containerEl = document.getElementById('viewContainer');
+
+      const params = new URLSearchParams(window.location.search);
+      const d = params.get('d');
+
+      if (!d) {
+        statusEl.textContent = 'No tree data in URL.';
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let tree: { persons: any[] } | undefined;
+      try {
+        tree = await decodeTreeFromParam(d);
+      } catch {
+        statusEl.textContent = 'Invalid share link.';
+        return;
+      }
+
+      if (!Array.isArray(tree?.persons) || tree.persons.length === 0) {
+        statusEl.textContent = 'Share link contains an empty tree.';
+        return;
+      }
+
+      statusEl.style.display = 'none';
+      containerEl.style.display = 'block';
+      const renderer = new CanvasRenderer(containerEl);
+
+      for (const person of tree.persons) {
+        renderer.setNode(person.id, {
+          id: person.id,
+          name: person.name || '',
+          fatherName: person.fatherName || '',
+          surname: person.surname || '',
+          maidenName: person.maidenName || '',
+          dob: person.dob || '',
+          gender: person.gender || '',
+          x: person.x ?? 300,
+          y: person.y ?? 300,
+          color: person.color || '#3498db',
+          radius: person.radius || 50
+        });
+      }
+
+      for (const person of tree.persons) {
+        if (person.fatherId) renderer.connections.push({ from: person.fatherId, to: person.id, type: 'parent' });
+        if (person.motherId) renderer.connections.push({ from: person.motherId, to: person.id, type: 'parent' });
+        if (person.spouseId && person.id < person.spouseId) {
+          renderer.connections.push({ from: person.id, to: person.spouseId, type: 'spouse' });
+        }
+      }
+
+      renderer.needsRedraw = true;
+    })();
+  </script>
+</BuilderLayout>

@@ -1,0 +1,33 @@
+# robots.txt for MapMyRoots
+# https://mapmyroots.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Block common malicious / abusive scrapers
+User-agent: SiteSnagger
+Disallow: /
+
+User-agent: HTTrack
+Disallow: /
+
+User-agent: WebReaper
+Disallow: /
+
+User-agent: WebStripper
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+User-agent: Offline Explorer
+Disallow: /
+
+User-agent: Teleport
+Disallow: /
+
+User-agent: TeleportPro
+Disallow: /
+
+# Sitemap
+Sitemap: https://mapmyroots.com/sitemap-index.xml

@@ -1,0 +1,83 @@
+---
+import '@/styles/global.css';
+import '@/styles/modal.css';
+import SEO from '@/components/SEO.astro';
+import type { Locale } from '@/i18n';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  locale?: Locale;
+  jsonLd?: string[];
+}
+
+const { title, description, canonicalPath, locale = 'en', jsonLd = [] } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <SEO
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      locale={locale}
+      jsonLd={jsonLd}
+    />
+
+    <meta name="theme-color" content="#0f866c" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <link rel="preload" href="/assets/fonts/inter-v12-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/inter-v12-latin-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+
+  </head>
+  <body>
+    <div id="offlineBadge" class="offline-badge hidden" role="status" aria-live="polite">
+      <span aria-hidden="true">📡</span>
+      <span>Offline — your tree is saved locally</span>
+    </div>
+    <slot />
+    <script is:inline>
+      (function() {
+        var badge = document.getElementById('offlineBadge');
+        function update() { badge.classList.toggle('hidden', navigator.onLine); }
+        window.addEventListener('online', update);
+        window.addEventListener('offline', update);
+        update();
+      })();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .offline-badge {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #fef3c7;
+    color: #78350f;
+    border: 1px solid #fcd34d;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  .offline-badge.hidden { display: none; }
+</style>

@@ -1,0 +1,118 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <a href="/" class="logo" aria-label="MapMyRoots Home">
+        <span class="logo-icon">🌳</span>
+        <span>MapMyRoots</span>
+      </a>
+      <p class="footer-tagline">Free family tree builder. Your data stays on your device.</p>
+    </div>
+
+    <div class="footer-col">
+      <h3>Product</h3>
+      <ul>
+        <li><a href="/builder">Builder</a></li>
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#how-it-works">How It Works</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Company</h3>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Resources</h3>
+      <ul>
+        <li><a href="/glossary">Glossary</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© {year} MapMyRoots. All rights reserved.</p>
+  </div>
+
+  <div id="installBanner" class="install-banner hidden" role="region" aria-label="Install app">
+    <div class="install-banner-inner">
+      <span aria-hidden="true">📲</span>
+      <div>
+        <strong>Install MapMyRoots</strong>
+        <p>Use as an app — works offline, no app store needed.</p>
+      </div>
+      <div class="install-banner-actions">
+        <button id="installBtn" type="button">Install</button>
+        <button id="installDismissBtn" type="button" aria-label="Dismiss">×</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--background-alt, #f8f9fa);
+    border-top: 1px solid var(--border-color, #e2e8f0);
+    padding: 3rem 1.5rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 768px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+  }
+  .footer-col h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .footer-col ul { list-style: none; padding: 0; margin: 0; }
+  .footer-col ul li { margin-bottom: 0.5rem; }
+  .footer-col ul li a {
+    color: var(--text-secondary, #4a5568);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .footer-col ul li a:hover { color: var(--primary-color, #0f866c); }
+  .footer-tagline { font-size: 0.875rem; color: var(--text-secondary, #4a5568); margin-top: 0.5rem; }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 2rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color, #e2e8f0);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #4a5568);
+  }
+  .install-banner {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    max-width: 360px;
+    background: white;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    padding: 1rem;
+    z-index: 1000;
+  }
+  .install-banner.hidden { display: none; }
+  .install-banner-inner { display: flex; align-items: flex-start; gap: 0.75rem; }
+  .install-banner-inner > span { font-size: 1.5rem; flex-shrink: 0; }
+  .install-banner-inner strong { display: block; margin-bottom: 0.25rem; }
+  .install-banner-inner p { margin: 0; font-size: 0.875rem; color: var(--text-secondary, #4a5568); }
+  .install-banner-actions { display: flex; gap: 0.5rem; align-items: center; margin-left: auto; flex-shrink: 0; }
+  .install-banner-actions button:first-child { padding: 0.5rem 1rem; background: var(--primary-color, #0f866c); color: white; border: none; border-radius: 0.5rem; cursor: pointer; white-space: nowrap; }
+  .install-banner-actions button:last-child { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 0 0.25rem; line-height: 1; color: var(--text-secondary, #4a5568); }
+</style>

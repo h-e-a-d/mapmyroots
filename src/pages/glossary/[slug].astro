@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const terms = await getCollection('glossary');
+  return terms.map((term) => ({
+    params: { slug: term.slug },
+    props: { term }
+  }));
+}
+
+const { term } = Astro.props;
+const { Content } = await term.render();
+
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://mapmyroots.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://mapmyroots.com/glossary" },
+    { "@type": "ListItem", "position": 3, "name": term.data.title, "item": `https://mapmyroots.com/glossary/${term.slug}` }
+  ]
+});
+
+const definedTermSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "DefinedTerm",
+  "name": term.data.title,
+  "description": term.data.description,
+  "url": `https://mapmyroots.com/glossary/${term.slug}`,
+  "inDefinedTermSet": "https://mapmyroots.com/glossary"
+});
+
+const related = term.data.relatedTerms.length > 0
+  ? await Promise.all(term.data.relatedTerms.map((slug: string) => getEntry('glossary', slug)))
+  : [];
+---
+
+<BaseLayout
+  title={`${term.data.title} - Genealogy Glossary | MapMyRoots`}
+  description={term.data.description}
+  canonicalPath={`/glossary/${term.slug}`}
+  jsonLd={[breadcrumbSchema, definedTermSchema]}
+>
+  <article class="glossary-term">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/glossary">← Back to Genealogy Glossary</a>
+    </nav>
+    <h1>{term.data.title}</h1>
+    {term.data.aka.length > 0 && (
+      <p class="aka">Also known as: <em>{term.data.aka.join(', ')}</em></p>
+    )}
+    <div class="term-body">
+      <Content />
+    </div>
+    {related.length > 0 && (
+      <section class="related">
+        <h2>Related terms</h2>
+        <ul>
+          {related.filter(Boolean).map((r: any) => (
+            <li><a href={`/glossary/${r.slug}`}>{r.data.title}</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .glossary-term { max-width: 800px; margin: 2rem auto; padding: 0 1.5rem; }
+  .breadcrumb { margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--primary-color, #0f866c); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .glossary-term h1 { color: var(--primary-color, #0f866c); font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .aka { color: var(--text-secondary, #4a5568); font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .term-body { line-height: 1.7; }
+  .term-body h2 { margin-top: 2rem; color: var(--text-primary, #2c3e50); }
+  .related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color, #e2e8f0); }
+  .related h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+  .related ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .related a { padding: 0.25rem 0.75rem; background: var(--background-alt, #f8f9fa); border-radius: 1rem; text-decoration: none; color: var(--primary-color, #0f866c); font-size: 0.9rem; border: 1px solid var(--border-color, #e2e8f0); }
+  .related a:hover { background: var(--primary-color, #0f866c); color: white; }
+</style>
