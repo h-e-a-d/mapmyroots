@@ -536,7 +536,12 @@ export function setupSettings(treeCore) {
         'none': 'Manual Positioning',
         'grape': 'Grape Bunch',
         'treeBranches': 'Tree Branches',
-        'solarSystem': 'Solar System'
+        'solarSystem': 'Solar System',
+        'apple': 'Apple',
+        'heart': 'Heart',
+        'egg': 'Egg',
+        'diamond': 'Diamond',
+        'triangle': 'Triangle'
       };
       const shapeName = shapeNames[selectedShape] || selectedShape;
       notifications.info('Shape Selected', `Selected: ${shapeName}`);
@@ -566,7 +571,12 @@ export function setupSettings(treeCore) {
           const shapeNames = {
             'grape': 'Grape Bunch',
             'treeBranches': 'Tree Branches',
-            'solarSystem': 'Solar System'
+            'solarSystem': 'Solar System',
+            'apple': 'Apple',
+            'heart': 'Heart',
+            'egg': 'Egg',
+            'diamond': 'Diamond',
+            'triangle': 'Triangle'
           };
           const shapeName = shapeNames[selectedShape] || selectedShape;
           notifications.success('Shape Applied', `Applied ${shapeName} layout`);

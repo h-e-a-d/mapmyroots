@@ -6,6 +6,11 @@
 import { GrapeShape } from './grape-shape.js';
 import { TreeBranchesShape } from './tree-branches-shape.js';
 import { SolarSystemShape } from './solar-system-shape.js';
+import { AppleShape } from './apple-shape.js';
+import { HeartShape } from './heart-shape.js';
+import { EggShape } from './egg-shape.js';
+import { DiamondShape } from './diamond-shape.js';
+import { TriangleShape } from './triangle-shape.js';
 
 export class ShapeManager {
     constructor(treeCore) {
@@ -14,11 +19,18 @@ export class ShapeManager {
         this.availableShapes = new Map();
         this.isApplyingShape = false;
 
-        // Register available shapes
-        this.registerShape('grape', GrapeShape);
+        // Genealogy-based shapes
         this.registerShape('treeBranches', TreeBranchesShape);
         this.registerShape('solarSystem', SolarSystemShape);
-        
+
+        // Visual envelope shapes (no genealogy)
+        this.registerShape('grape', GrapeShape);
+        this.registerShape('apple', AppleShape);
+        this.registerShape('heart', HeartShape);
+        this.registerShape('egg', EggShape);
+        this.registerShape('diamond', DiamondShape);
+        this.registerShape('triangle', TriangleShape);
+
         // Default shape is none (manual positioning)
         this.currentShapeType = 'none';
     }
@@ -114,6 +126,9 @@ export class ShapeManager {
     updatePositions(positions) {
         positions.forEach((position, personId) => {
             this.treeCore.updatePersonPosition(personId, position.x, position.y);
+            if (position.color && this.treeCore.renderer?.nodes?.has(personId)) {
+                this.treeCore.renderer.nodes.get(personId).color = position.color;
+            }
         });
     }
 
