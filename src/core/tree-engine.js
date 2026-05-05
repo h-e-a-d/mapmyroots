@@ -63,6 +63,7 @@ export class TreeEngine {
     this.currentConnectionToRemove = null;
     this.hiddenConnections = new Set();
     this.lineOnlyConnections = new Set();
+    this.legacyRelations = [];
     
     // ID counter
     this.nextId = 1;
@@ -391,6 +392,7 @@ export class TreeEngine {
       // Clear connection sets
       this.hiddenConnections.clear();
       this.lineOnlyConnections.clear();
+      this.legacyRelations = [];
       
       // Reset ID counter
       this.nextId = 1;
@@ -552,6 +554,18 @@ export class TreeEngine {
       }
     }
     
+    // Re-add legacy relations (from old-format imports) not encoded in person fields
+    for (const rel of this.legacyRelations) {
+      if (!this.renderer.nodes.has(rel.source) || !this.renderer.nodes.has(rel.target)) continue;
+      const already = this.renderer.connections.some(c =>
+        (c.from === rel.source && c.to === rel.target) ||
+        (c.from === rel.target && c.to === rel.source)
+      );
+      if (!already) {
+        this.renderer.connections.push({ from: rel.source, to: rel.target, type: 'parent' });
+      }
+    }
+
     console.log(`Generated ${this.renderer.connections.length} connections (including ${this.lineOnlyConnections.size} line-only)`);
 
     // Recalculate generations after connections change
@@ -703,7 +717,8 @@ export class TreeEngine {
       personData: this.personData ? Array.from(this.personData.entries()) : [],
       nextId: this.nextId,
       hiddenConnections: Array.from(this.hiddenConnections),
-      lineOnlyConnections: Array.from(this.lineOnlyConnections)
+      lineOnlyConnections: Array.from(this.lineOnlyConnections),
+      legacyRelations: this.legacyRelations
     };
   }
 
@@ -1932,27 +1947,16 @@ export class TreeEngine {
       if (data.hiddenConnections) {
         this.hiddenConnections = new Set(data.hiddenConnections);
       }
-      
+
       if (data.lineOnlyConnections) {
         this.lineOnlyConnections = new Set(data.lineOnlyConnections);
       }
-      
-      // Regenerate connections based on relationship data
-      this.regenerateConnections();
 
-      // Add legacy relations[] connections not already encoded in motherId/fatherId/spouseId
-      if (data._legacyRelations && this.renderer) {
-        for (const rel of data._legacyRelations) {
-          if (!this.renderer.nodes.has(rel.source) || !this.renderer.nodes.has(rel.target)) continue;
-          const already = this.renderer.connections.some(c =>
-            (c.from === rel.source && c.to === rel.target) ||
-            (c.from === rel.target && c.to === rel.source)
-          );
-          if (!already) {
-            this.renderer.connections.push({ from: rel.source, to: rel.target, type: 'parent' });
-          }
-        }
-      }
+      // Restore legacy relations (old-format imports or previously saved)
+      this.legacyRelations = data._legacyRelations || data.legacyRelations || [];
+
+      // Regenerate connections based on relationship data (includes legacyRelations)
+      this.regenerateConnections();
 
       // Update UI
       if (this.renderer) {
@@ -2039,6 +2043,7 @@ export class TreeEngine {
       camera: this.renderer?.camera || { x: 0, y: 0, scale: 1 },
       hiddenConnections: Array.from(this.hiddenConnections),
       lineOnlyConnections: Array.from(this.lineOnlyConnections),
+      legacyRelations: this.legacyRelations,
       nextId: this.nextId
     };
   }

@@ -1,6 +1,7 @@
 ---
 import '@/styles/global.css';
 import '@/styles/modal.css';
+
 import SEO from '@/components/SEO.astro';
 import type { Locale } from '@/i18n';
 
@@ -42,7 +43,17 @@ const { title, description, canonicalPath, locale = 'en', jsonLd = [] } = Astro.
     <link rel="preload" href="/assets/fonts/inter-v12-latin-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/assets/fonts/inter-v12-latin-600.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/assets/fonts/fonts.css" />
-
+    <style is:global>
+      html, body {
+        height: 100%;
+        height: 100dvh;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-overflow-scrolling: touch;
+        position: fixed;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <div id="offlineBadge" class="offline-badge hidden" role="status" aria-live="polite">
