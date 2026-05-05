@@ -1,11 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { fileURLToPath } from 'url';
-import { join, dirname } from 'path';
+import { join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const TINY_GED_PATH = join(__dirname, '../../tests/fixtures/gedcom/tiny.ged');
+const TINY_GED_PATH = join(process.cwd(), 'tests/fixtures/gedcom/tiny.ged');
 
 test.describe('GEDCOM import', () => {
   test.beforeEach(async ({ page }) => {
