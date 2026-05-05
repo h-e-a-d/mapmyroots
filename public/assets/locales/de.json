@@ -44,6 +44,147 @@
     },
     "note": "✓ Keine Registrierung erforderlich ✓ Keine Kreditkarte erforderlich ✓ Jederzeit exportieren"
   },
+  "about": {
+    "title": "Was ist MapMyRoots?",
+    "description": "MapMyRoots ist ein <strong>kostenloses Online-Tool zur Erstellung von Stammbäumen</strong>, das Ihnen hilft, Ihre Familiengeschichte zu visualisieren und zu bewahren. Im Gegensatz zu teuren Genealogie-Diensten konzentrieren wir uns darauf, den Stammbaum-Aufbau einfach, schön und für jeden zugänglich zu machen.",
+    "points": {
+      "purpose": {
+        "title": "🎯 Speziell für Stammbäume entwickelt",
+        "description": "Speziell für die Erstellung visueller Stammbäume entwickelt, nicht für überwältigende genealogische Forschung"
+      },
+      "free": {
+        "title": "💰 Völlig kostenlos",
+        "description": "Keine Abonnementgebühren, Premium-Stufen oder versteckte Kosten. Alle Funktionen dauerhaft enthalten"
+      },
+      "control": {
+        "title": "🔒 Ihre Daten, Ihre Kontrolle",
+        "description": "Exportieren Sie Ihre Stammbäume jederzeit in mehreren Formaten. Keine Anbieterabhängigkeit"
+      }
+    },
+    "demo": {
+      "title": "Interaktive Stammbaum-Vorschau",
+      "description": "Sehen Sie, wie einfach es ist, schöne Stammbäume zu erstellen",
+      "link": "Live-Demo ausprobieren →"
+    }
+  },
+  "features": {
+    "title": "Leistungsstarke Stammbaum-Funktionen",
+    "subtitle": "Alles, was Sie benötigen, um umfassende Stammbäume zu erstellen und Ihre Familiengeschichte zu bewahren",
+    "cards": {
+      "drag_drop": {
+        "title": "Intuitive Drag & Drop Oberfläche",
+        "description": "Erstellen Sie Stammbäume mühelos mit unserer intuitiven Drag-and-Drop-Oberfläche. Fügen Sie Familienmitglieder hinzu, verschieben und verbinden Sie sie mit einfachen Gesten. Perfekt für Genealogie-Anfänger und Experten."
+      },
+      "interactive": {
+        "title": "Interaktive Stammbaum-Leinwand",
+        "description": "Schöne, responsive Stammbäume mit flüssigen Animationen, Zoom-Steuerungen und mehreren Ansichtsmodi. Funktioniert perfekt auf Desktop, Tablet und Mobilgeräten."
+      },
+      "profiles": {
+        "title": "Detaillierte Familienprofile",
+        "description": "Speichern Sie umfassende Informationen für jedes Familienmitglied, einschließlich Namen, Geburts-/Sterbedaten, Beziehungen, Fotos und persönliche Notizen. Bauen Sie reiche Familiengeschichten auf."
+      },
+      "views": {
+        "title": "Mehrere Ansichtsmodi",
+        "description": "Wechseln Sie zwischen visueller Baumansicht und organisierter Tabellenansicht. Sortieren, filtern und suchen Sie Ihre Familiendaten auf die Weise, die am besten für Ihre genealogische Forschung geeignet ist."
+      },
+      "export": {
+        "title": "Export- und Freigabeoptionen",
+        "description": "Exportieren Sie Ihren Stammbaum als hochauflösende Bilder, PDFs zum Drucken oder JSON-Daten zur Sicherung. Teilen Sie Ihre Familiengeschichte mit Verwandten weltweit."
+      },
+      "free": {
+        "title": "100% Kostenlos für immer",
+        "description": "Keine versteckten Kosten, Abonnementgebühren oder Premium-Funktionen. Erstellen Sie unbegrenzte Stammbäume und bewahren Sie Ihre Familiengeschichte für immer, völlig kostenlos."
+      }
+    }
+  },
+  "examples": {
+    "title": "Stammbaum-Beispiele und Anwendungsfälle",
+    "subtitle": "Sehen Sie, wie Familien MapMyRoots für verschiedene Zwecke nutzen",
+    "cards": {
+      "reunions": {
+        "title": "Familientreffen",
+        "description": "Perfekt für Familientreffen - erstellen Sie großformatige Bäume für Veranstaltungen und helfen Sie Verwandten, sich zu verbinden"
+      },
+      "school": {
+        "title": "Schulprojekte",
+        "description": "Schüler lieben MapMyRoots für Genealogie-Aufgaben und Familiengeschichtsprojekte"
+      },
+      "memorial": {
+        "title": "Gedenkgeschenke",
+        "description": "Erstellen Sie schöne Stammbäume als Gedenkgeschenke oder um das Vermächtnis älterer Verwandter zu bewahren"
+      }
+    }
+  },
+  "how_it_works": {
+    "title": "Wie Sie Ihren Stammbaum erstellen",
+    "subtitle": "In wenigen Minuten starten mit unserem einfachen 3-Schritte-Prozess",
+    "steps": {
+      "add": {
+        "title": "Familienmitglieder hinzufügen",
+        "description": "Beginnen Sie mit sich selbst und bauen Sie nach außen. Fügen Sie Eltern, Geschwister, Kinder und die erweiterte Familie mit detaillierten Profilen inklusive Fotos und persönlichen Informationen hinzu."
+      },
+      "connect": {
+        "title": "Beziehungen verbinden",
+        "description": "Verwenden Sie unsere einfachen Verbindungstools, um Familienmitglieder zu verknüpfen. Definieren Sie Beziehungen wie Eltern-Kind, Ehepartner oder benutzerdefinierte Verbindungen. Der Stammbaum wird automatisch aktualisiert."
+      },
+      "customize": {
+        "title": "Anpassen und teilen",
+        "description": "Personalisieren Sie Ihren Baum mit Farben und Stilen. Exportieren Sie als schöne hochauflösende Bilder, PDFs zum Drucken oder teilen Sie Ihre Familiengeschichte digital mit Ihren Lieben."
+      }
+    }
+  },
+  "comparison": {
+    "title": "Warum MapMyRoots wählen?",
+    "subtitle": "Sehen Sie, wie wir uns mit anderer Stammbaum-Software vergleichen",
+    "header": {
+      "feature": "Funktion"
+    },
+    "rows": {
+      "cost": "Monatliche Kosten",
+      "cost_us": "✅ Kostenlos für immer",
+      "cost_ancestry": "❌ 24,99 $/Monat",
+      "cost_heritage": "❌ 12,95 $/Monat",
+      "builder": "Stammbaum-Builder",
+      "builder_us": "✅ Fortgeschritten",
+      "builder_others": "✅ Grundlegend",
+      "export": "Exportoptionen",
+      "export_us": "✅ Alle Formate",
+      "export_others": "❌ Begrenzt",
+      "registration": "Keine Registrierung",
+      "registration_us": "✅ Sofort starten",
+      "registration_others": "❌ Erforderlich"
+    }
+  },
+  "testimonials": {
+    "title": "Was Familien über MapMyRoots sagen",
+    "subtitle": "Schließen Sie sich über 15.000 Familien an, die ihr Erbe mit unserer kostenlosen Stammbaum-Software bewahren",
+    "sarah": {
+      "text": "\"Dieses Tool hat das Erstellen unseres Stammbaums viel einfacher gemacht, als ich erwartet hatte. Die Drag-and-Drop-Oberfläche ist intuitiv und die Ergebnisse sind wunderschön. Meine Großmutter war begeistert, vier Generationen so klar dargestellt zu sehen.\"",
+      "name": "Sarah Martinez",
+      "title": "Familienhistorikerin • 3 Generationen verwendet"
+    },
+    "david": {
+      "text": "\"Wir haben das für unser Familientreffen verwendet und es war ein großer Erfolg! Großformatige Bäume drucken und digital speichern zu können war perfekt, um sie mit Verwandten auf der ganzen Welt zu teilen. Bestes Genealogie-Tool, das ich gefunden habe.\"",
+      "name": "David Johnson",
+      "title": "Genealogie-Enthusiast • Stammbaum mit 50+ Personen"
+    },
+    "maria": {
+      "text": "\"Die canvas-basierte Oberfläche ist so flüssig und responsiv. Ich liebe es, wie ich zoomen, Personen verschieben kann und alles perfekt auf meinem Computer und Tablet funktioniert. Viel besser als teure Alternativen.\"",
+      "name": "Maria Rodriguez",
+      "title": "Familienkoordinatorin • Mobile Nutzerin"
+    }
+  },
+  "cta": {
+    "title": "Beginnen Sie heute mit dem Aufbau Ihres Stammbaums",
+    "description": "Schließen Sie sich über 15.000 Familien an, die bereits ihr Erbe entdeckt haben. Erstellen Sie Ihren ersten Stammbaum in wenigen Minuten, völlig kostenlos ohne Registrierung.",
+    "features": {
+      "credit_card": "✓ Keine Kreditkarte erforderlich",
+      "download": "✓ Keine Software zum Herunterladen",
+      "devices": "✓ Funktioniert auf allen Geräten",
+      "export": "✓ Jederzeit exportieren"
+    },
+    "button": "Jetzt kostenlos starten"
+  },
   "builder": {
     "meta": {
       "title": "MapMyRoots - Erstellen Sie Ihren Stammbaum",
@@ -105,18 +246,18 @@
         "editing": "Bearbeitung:",
         "new_person": "Neue Person",
         "photo": {
-          "label": "Photo",
-          "remove": "Remove photo",
-          "hint": "JPG, PNG or WebP · max 500 KB · stored locally"
+          "label": "Foto",
+          "remove": "Foto entfernen",
+          "hint": "JPG, PNG oder WebP · max 500 KB · lokal gespeichert"
         }
       },
       "gedcom": {
-        "title": "Import from GEDCOM",
-        "intro": "Import a family tree from a GEDCOM file (.ged). GEDCOM is the universal format used by Ancestry, MyHeritage, and FamilySearch.",
-        "conflict_label": "Existing tree detected. Choose how to handle it:",
-        "replace": "Replace existing tree",
-        "merge": "Merge with existing tree",
-        "import_btn": "Import"
+        "title": "Aus GEDCOM importieren",
+        "intro": "Importieren Sie einen Stammbaum aus einer GEDCOM-Datei (.ged). GEDCOM ist das universelle Format, das von Ancestry, MyHeritage und FamilySearch verwendet wird.",
+        "conflict_label": "Vorhandener Stammbaum gefunden. Wählen Sie, wie damit umgegangen werden soll:",
+        "replace": "Vorhandenen Stammbaum ersetzen",
+        "merge": "Mit vorhandenem Stammbaum zusammenführen",
+        "import_btn": "Importieren"
       }
     },
     "buttons": {
@@ -186,6 +327,20 @@
       "font_size": "Schriftgröße:",
       "name_color": "Namen-Farbe:",
       "date_color": "Datum-Farbe:",
+      "tree_shapes": "Stammbaum-Formen",
+      "shape_layout": "Anordnungsform:",
+      "shape_none": "Manuelle Positionierung",
+      "shape_grape": "Weintraube",
+      "shape_tree_branches": "Baumäste",
+      "shape_solar_system": "Sonnensystem",
+      "shape_apple": "Apfel",
+      "shape_heart": "Herz",
+      "shape_egg": "Ei",
+      "shape_diamond": "Diamant",
+      "shape_triangle": "Dreieck",
+      "apply_shape": "Form anwenden",
+      "reset_to_manual": "Auf manuell zurücksetzen",
+      "shape_info": "Formen ordnen Familienmitglieder automatisch nach genealogischen Beziehungen an. Die manuelle Positionierung ermöglicht freie Platzierung.",
       "basic_export": "Grundlegender Export",
       "advanced_export": "Erweiterter Export",
       "pdf_layout": "PDF-Layout",
@@ -334,12 +489,12 @@
       "answer": "Es gibt keine Begrenzung! Sie können so viele Familienmitglieder hinzufügen, wie Sie möchten, und mehrere Stammbäume erstellen. Benutzer haben erfolgreich Bäume mit Hunderten von Familienmitgliedern erstellt."
     },
     "import": {
-      "question": "Can I import data from Ancestry.com or other services?",
-      "answer": "Yes! Use the Import button in the builder to load a GEDCOM file (.ged) — the universal genealogy format supported by Ancestry, MyHeritage, FamilySearch, and most genealogy software. From those services, export your tree as GEDCOM, then import it here."
+      "question": "Kann ich Daten von Ancestry.com oder anderen Diensten importieren?",
+      "answer": "Ja! Verwenden Sie die Import-Schaltfläche im Builder, um eine GEDCOM-Datei (.ged) zu laden — das universelle Genealogieformat, das von Ancestry, MyHeritage, FamilySearch und den meisten Genealogie-Programmen unterstützt wird. Exportieren Sie Ihren Stammbaum von diesen Diensten als GEDCOM und importieren Sie ihn dann hier."
     },
     "photos": {
       "question": "Kann ich Fotos von Familienmitgliedern hinzufügen?",
-      "answer": "Yes — click Edit on any person and add a photo. Photos are resized and stored locally on your device."
+      "answer": "Ja — klicken Sie auf Bearbeiten bei einer Person und fügen Sie ein Foto hinzu. Fotos werden in der Größe angepasst und lokal auf Ihrem Gerät gespeichert."
     },
     "print": {
       "question": "Wie drucke ich meinen Stammbaum?",
@@ -367,17 +522,135 @@
     }
   },
   "footer": {
+    "description": "Kostenloser Stammbaum-Builder und Genealogie-Software. Bewahren Sie Ihre Familiengeschichte für immer.",
+    "stats": {
+      "families": "15.000+ Familien bedient",
+      "rating": "4,8★ Durchschnittsbewertung"
+    },
+    "product": {
+      "title": "Produkt",
+      "features": "Funktionen",
+      "builder": "Stammbaum-Builder",
+      "how_it_works": "Wie es funktioniert",
+      "examples": "Beispiele",
+      "comparison": "vs Wettbewerber"
+    },
     "company": {
       "title": "Unternehmen",
       "about": "Über uns",
       "contact": "Kontakt"
     },
+    "support": {
+      "title": "Support",
+      "faq": "FAQ",
+      "help": "Hilfezentrum",
+      "contact": "Kontaktieren Sie uns",
+      "tutorials": "Tutorials",
+      "community": "Community"
+    },
+    "resources": {
+      "title": "Ressourcen",
+      "glossary": "Genealogie-Glossar",
+      "tips": "Genealogie-Tipps",
+      "blog": "Blog",
+      "templates": "Vorlagen",
+      "export": "Export-Leitfaden",
+      "practices": "Best Practices"
+    },
     "legal": {
       "title": "Rechtliches",
       "privacy": "Datenschutzerklärung",
-      "terms": "Nutzungsbedingungen"
+      "terms": "Nutzungsbedingungen",
+      "cookies": "Cookie-Richtlinie",
+      "opensource": "Open Source"
     },
-    "copyright": "© 2025 MapMyRoots. Alle Rechte vorbehalten."
+    "copyright": "© 2025 MapMyRoots. Alle Rechte vorbehalten. Gemacht mit ❤️ für Familien weltweit.",
+    "badges": {
+      "privacy": "🔒 Datenschutz zuerst",
+      "mobile": "📱 Mobilfreundlich",
+      "free": "💯 Kostenlos für immer"
+    }
+  },
+  "glossary": {
+    "meta": {
+      "title": "Genealogie-Glossar - Wesentliche Begriffe für die Familiengeschichtsforschung | MapMyRoots",
+      "description": "Umfassendes Glossar genealogischer Begriffe und Definitionen. Lernen Sie wichtiges Vokabular für die Familiengeschichtsforschung und den Stammbaum-Aufbau mit MapMyRoots.",
+      "keywords": "Genealogie-Glossar, genealogische Begriffe, Familiengeschichtsvokabular, Ahnen-Definitionen, Genealogie-Wörterbuch, Forschungsbegriffe",
+      "og": {
+        "title": "Genealogie-Glossar - Wesentliche Begriffe für die Familiengeschichtsforschung",
+        "description": "Meistern Sie genealogisches Vokabular mit unserem umfassenden Glossar. Wesentliche Begriffe und Definitionen für erfolgreiche Familiengeschichtsforschung."
+      },
+      "twitter": {
+        "title": "Genealogie-Glossar - Wesentliche Begriffe für die Familiengeschichtsforschung",
+        "description": "Meistern Sie genealogisches Vokabular mit unserem umfassenden Glossar. Wesentliche Begriffe und Definitionen für erfolgreiche Familiengeschichtsforschung."
+      }
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "current": "Glossar"
+    },
+    "hero": {
+      "title": "Genealogie-Glossar",
+      "subtitle": "Meistern Sie die Sprache der Familiengeschichtsforschung mit unserer umfassenden Sammlung genealogischer Begriffe und Definitionen."
+    },
+    "navigation": {
+      "title": "Schnellnavigation"
+    },
+    "search": {
+      "placeholder": "Nach einem Genealogie-Begriff suchen...",
+      "no_results_title": "Keine Ergebnisse gefunden",
+      "no_results_text": "Versuchen Sie, nach einem anderen Begriff zu suchen oder oben nach Buchstaben zu stöbern."
+    },
+    "terms": {
+      "abstract": {
+        "name": "Auszug",
+        "definition": "Eine abgekürzte Transkription eines Dokuments, die das Datum des Eintrags und jeden darin enthaltenen Namen enthält. Kann auch Beziehungen oder Beschreibungen der erwähnten Personen liefern."
+      },
+      "affinity": {
+        "name": "Affinität",
+        "definition": "Eine durch Heirat entstandene Beziehung. Sie bezieht sich auf die Verbindung zwischen einer Person und den Blutsverwandten ihres Ehepartners oder zwischen einer Person und dem Ehepartner ihres Verwandten."
+      },
+      "ahnentafel": {
+        "name": "Ahnentafel",
+        "definition": "Ein deutsches Wort, das 'Ahnen-Tabelle' bedeutet. Dieses Nummerierungssystem weist jedem Vorfahren eine Nummer zu, was die Organisation erleichtert. Das Subjekt ist Nr. 1, Vater Nr. 2, Mutter Nr. 3 usw."
+      },
+      "ancestor": {
+        "name": "Vorfahre",
+        "definition": "Eine Person, von der jemand abstammt, typischerweise weiter entfernt als Großeltern. Umfasst Eltern, Großeltern, Urgroßeltern und frühere Generationen."
+      },
+      "ancestry": {
+        "name": "Abstammung",
+        "definition": "Die familiäre oder ethnische Herkunft; die Linie der Menschen, von denen jemand abstammt. Bezieht sich auch auf die kollektiven Vorfahren einer Familie."
+      },
+      "autosomal_dna": {
+        "name": "Autosomale DNA",
+        "definition": "DNA, die von beiden Elternteilen geerbt wird und helfen kann, Verwandte innerhalb von etwa 5-7 Generationen zu identifizieren. Wird in modernen DNA-Tests für die Genealogie verwendet."
+      },
+      "banns": {
+        "name": "Aufgebote",
+        "definition": "Öffentliche Ankündigungen einer geplanten Ehe, traditionell an drei aufeinanderfolgenden Sonntagen in der Kirche vor der Hochzeitszeremonie gemacht."
+      },
+      "birth_record": {
+        "name": "Geburtsurkunde",
+        "definition": "Ein offizielles Dokument, das die Geburt einer Person aufzeichnet, typischerweise einschließlich Name, Datum, Geburtsort und Namen der Eltern."
+      },
+      "brick_wall": {
+        "name": "Ziegelsteinmauer",
+        "definition": "Ein genealogischer Begriff für ein Forschungshindernis, bei dem keine weiteren Informationen über einen Vorfahren gefunden werden können, was zu einer Sackgasse in der Forschung führt."
+      },
+      "census": {
+        "name": "Volkszählung",
+        "definition": "Eine offizielle Zählung und Erhebung einer Bevölkerung, typischerweise einschließlich Namen, Alter, Berufe und Familienbeziehungen. Wird periodisch von Regierungen durchgeführt."
+      },
+      "family_tree": {
+        "name": "Stammbaum",
+        "definition": "Ein Diagramm, das Familienbeziehungen in einer Baumstruktur zeigt und Vorfahren, Nachkommen und Seitenverwandte darstellt."
+      },
+      "genealogy": {
+        "name": "Genealogie",
+        "definition": "Das Studium und die Rückverfolgung von Familienlinien und -geschichten; die Praxis der Erforschung und Dokumentation von Familienbeziehungen."
+      }
+    }
   },
   "pages": {
     "about": {

@@ -8,6 +8,13 @@
 
 import { EnvelopeShape } from './envelope-shape.js';
 
+const APPLE_BODY_COLORS = [
+    '#C0392B', '#D32F2F', '#B71C1C', '#E53935', '#EF5350',
+    '#C62828', '#E74C3C', '#BF360C', '#F44336', '#D50000'
+];
+const APPLE_STEM_COLORS = ['#5D3A1A', '#7B4F2E', '#6B4020', '#8B5E3C'];
+const APPLE_LEAF_COLORS = ['#1B6B2F', '#2E7D32', '#388E3C', '#43A047', '#1B5E20'];
+
 export class AppleShape extends EnvelopeShape {
     constructor(treeCore, options = {}) {
         super(treeCore, {
@@ -73,6 +80,13 @@ export class AppleShape extends EnvelopeShape {
 
     static leafSilhouette(t) {
         return Math.sin(Math.PI * t) * (0.7 + 0.3 * Math.sin(Math.PI * t));
+    }
+
+    getNodeColor(regionIndex, nodeIndex) {
+        if (regionIndex === 0) return APPLE_BODY_COLORS[nodeIndex % APPLE_BODY_COLORS.length];
+        if (regionIndex === 1) return APPLE_STEM_COLORS[nodeIndex % APPLE_STEM_COLORS.length];
+        if (regionIndex === 2) return APPLE_LEAF_COLORS[nodeIndex % APPLE_LEAF_COLORS.length];
+        return null;
     }
 
     getConfigParameters() {

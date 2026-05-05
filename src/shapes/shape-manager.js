@@ -18,6 +18,7 @@ export class ShapeManager {
         this.currentShape = null;
         this.availableShapes = new Map();
         this.isApplyingShape = false;
+        this._shapeColoredNodes = new Set();
 
         // Genealogy-based shapes
         this.registerShape('treeBranches', TreeBranchesShape);
@@ -124,12 +125,23 @@ export class ShapeManager {
      * @param {Map} positions - Map of person ID to {x, y} position
      */
     updatePositions(positions) {
+        const defaultColor = this.treeCore.renderer?.settings?.nodeColor;
+        const newShapeColoredNodes = new Set();
+
         positions.forEach((position, personId) => {
             this.treeCore.updatePersonPosition(personId, position.x, position.y);
-            if (position.color && this.treeCore.renderer?.nodes?.has(personId)) {
-                this.treeCore.renderer.nodes.get(personId).color = position.color;
+            const node = this.treeCore.renderer?.nodes?.get(personId);
+            if (!node) return;
+
+            if (position.color) {
+                node.color = position.color;
+                newShapeColoredNodes.add(personId);
+            } else if (this._shapeColoredNodes.has(personId) && defaultColor) {
+                node.color = defaultColor;
             }
         });
+
+        this._shapeColoredNodes = newShapeColoredNodes;
     }
 
     /**
@@ -168,6 +180,14 @@ export class ShapeManager {
      * Reset to manual positioning
      */
     resetToManual() {
+        const defaultColor = this.treeCore.renderer?.settings?.nodeColor;
+        if (defaultColor) {
+            this._shapeColoredNodes.forEach(personId => {
+                const node = this.treeCore.renderer?.nodes?.get(personId);
+                if (node) node.color = defaultColor;
+            });
+        }
+        this._shapeColoredNodes.clear();
         this.currentShapeType = 'none';
         this.currentShape = null;
     }

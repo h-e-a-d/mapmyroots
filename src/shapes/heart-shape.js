@@ -10,6 +10,11 @@
 
 import { EnvelopeShape } from './envelope-shape.js';
 
+const HEART_COLORS = [
+    '#C62828', '#D32F2F', '#E53935', '#E91E63', '#AD1457',
+    '#F06292', '#EF9A9A', '#F48FB1', '#C2185B', '#880E4F'
+];
+
 export class HeartShape extends EnvelopeShape {
     constructor(treeCore, options = {}) {
         super(treeCore, options);
@@ -33,6 +38,10 @@ export class HeartShape extends EnvelopeShape {
 
     getAspectRatio() {
         return 0.95;
+    }
+
+    getNodeColor(_regionIndex, nodeIndex) {
+        return HEART_COLORS[nodeIndex % HEART_COLORS.length];
     }
 
     static getDisplayName() {

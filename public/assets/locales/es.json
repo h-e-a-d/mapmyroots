@@ -202,12 +202,12 @@
       "answer": "¡No hay límite! Puedes agregar tantos miembros de la familia como quieras y crear múltiples árboles genealógicos. Los usuarios han creado exitosamente árboles con cientos de miembros familiares."
     },
     "import": {
-      "question": "Can I import data from Ancestry.com or other services?",
-      "answer": "Yes! Use the Import button in the builder to load a GEDCOM file (.ged) — the universal genealogy format supported by Ancestry, MyHeritage, FamilySearch, and most genealogy software. From those services, export your tree as GEDCOM, then import it here."
+      "question": "¿Puedo importar datos de Ancestry.com u otros servicios?",
+      "answer": "¡Sí! Usa el botón Importar en el constructor para cargar un archivo GEDCOM (.ged), el formato universal de genealogía compatible con Ancestry, MyHeritage, FamilySearch y la mayoría del software genealógico. Exporta tu árbol desde esos servicios como GEDCOM y luego impórtalo aquí."
     },
     "photos": {
       "question": "¿Puedo agregar fotos de los miembros de la familia?",
-      "answer": "Yes — click Edit on any person and add a photo. Photos are resized and stored locally on your device."
+      "answer": "Sí — haz clic en Editar en cualquier persona y agrega una foto. Las fotos se redimensionan y se almacenan localmente en tu dispositivo."
     },
     "print": {
       "question": "¿Cómo imprimo mi árbol genealógico?",
@@ -356,18 +356,18 @@
         "editing": "Editando:",
         "new_person": "Nueva Persona",
         "photo": {
-          "label": "Photo",
-          "remove": "Remove photo",
-          "hint": "JPG, PNG or WebP · max 500 KB · stored locally"
+          "label": "Foto",
+          "remove": "Eliminar foto",
+          "hint": "JPG, PNG o WebP · máx 500 KB · almacenado localmente"
         }
       },
       "gedcom": {
-        "title": "Import from GEDCOM",
-        "intro": "Import a family tree from a GEDCOM file (.ged). GEDCOM is the universal format used by Ancestry, MyHeritage, and FamilySearch.",
-        "conflict_label": "Existing tree detected. Choose how to handle it:",
-        "replace": "Replace existing tree",
-        "merge": "Merge with existing tree",
-        "import_btn": "Import"
+        "title": "Importar desde GEDCOM",
+        "intro": "Importa un árbol genealógico desde un archivo GEDCOM (.ged). GEDCOM es el formato universal utilizado por Ancestry, MyHeritage y FamilySearch.",
+        "conflict_label": "Árbol existente detectado. Elige cómo manejarlo:",
+        "replace": "Reemplazar árbol existente",
+        "merge": "Fusionar con árbol existente",
+        "import_btn": "Importar"
       }
     },
     "buttons": {
@@ -452,7 +452,21 @@
       "load_template": "Cargar Plantilla",
       "clear_all_data": "Limpiar Todos los Datos",
       "load_default_tree": "Cargar Árbol Predeterminado",
-      "clear_warning": "Advertencia: Esto eliminará permanentemente todos los datos del árbol genealógico"
+      "clear_warning": "Advertencia: Esto eliminará permanentemente todos los datos del árbol genealógico",
+      "tree_shapes": "Formas del Árbol",
+      "shape_layout": "Forma de Distribución:",
+      "shape_none": "Posicionamiento Manual",
+      "shape_grape": "Racimo de Uvas",
+      "shape_tree_branches": "Ramas del Árbol",
+      "shape_solar_system": "Sistema Solar",
+      "shape_apple": "Manzana",
+      "shape_heart": "Corazón",
+      "shape_egg": "Huevo",
+      "shape_diamond": "Diamante",
+      "shape_triangle": "Triángulo",
+      "apply_shape": "Aplicar Forma",
+      "reset_to_manual": "Restablecer a Manual",
+      "shape_info": "Las formas organizan automáticamente a los miembros de la familia según las relaciones genealógicas. El posicionamiento manual permite la colocación libre."
     },
     "table": {
       "search_placeholder": "Buscar...",

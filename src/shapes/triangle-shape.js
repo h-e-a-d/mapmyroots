@@ -8,6 +8,11 @@
 
 import { EnvelopeShape } from './envelope-shape.js';
 
+const TRIANGLE_COLORS = [
+    '#E65100', '#EF6C00', '#F57C00', '#FF8F00', '#FFA000',
+    '#FF8C00', '#FF7043', '#FF6F00', '#BF360C', '#F44336'
+];
+
 export class TriangleShape extends EnvelopeShape {
     constructor(treeCore, options = {}) {
         super(treeCore, {
@@ -22,6 +27,10 @@ export class TriangleShape extends EnvelopeShape {
 
     getAspectRatio() {
         return 1.0;
+    }
+
+    getNodeColor(_regionIndex, nodeIndex) {
+        return TRIANGLE_COLORS[nodeIndex % TRIANGLE_COLORS.length];
     }
 
     getConfigParameters() {
