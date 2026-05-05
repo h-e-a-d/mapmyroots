@@ -1793,9 +1793,35 @@ export class TreeEngine {
   /**
    * Process loaded data from JSON file or cache
    */
+  _migrateOldFormat(data) {
+    const rawPersons = data.persons || data.people || [];
+    if (rawPersons.length === 0) return data;
+    const sample = rawPersons[0];
+    const isOldFormat = ('cx' in sample) || ('mother_id' in sample) || ('father_name' in sample) || ('birth_name' in sample);
+    if (!isOldFormat) return data;
+    const persons = rawPersons.map(p => ({
+      id: p.id,
+      name: p.name || '',
+      surname: p.surname || '',
+      fatherName: p.fatherName || p.father_name || '',
+      maidenName: p.maidenName || p.birth_name || '',
+      dob: p.dob || '',
+      gender: p.gender || '',
+      motherId: p.motherId || p.mother_id || '',
+      fatherId: p.fatherId || p.father_id || '',
+      spouseId: p.spouseId || p.spouse_id || '',
+      x: p.x ?? p.cx ?? 300,
+      y: p.y ?? p.cy ?? 300,
+      radius: p.radius ?? p.r ?? 50,
+      color: p.color || p.fill || ''
+    }));
+    return { ...data, persons, _legacyRelations: data.relations || [] };
+  }
+
   processLoadedData(data) {
     console.log('Processing loaded data:', data);
-    
+    data = this._migrateOldFormat(data);
+
     try {
       // Clear existing data
       this.personData.clear();
@@ -1913,7 +1939,21 @@ export class TreeEngine {
       
       // Regenerate connections based on relationship data
       this.regenerateConnections();
-      
+
+      // Add legacy relations[] connections not already encoded in motherId/fatherId/spouseId
+      if (data._legacyRelations && this.renderer) {
+        for (const rel of data._legacyRelations) {
+          if (!this.renderer.nodes.has(rel.source) || !this.renderer.nodes.has(rel.target)) continue;
+          const already = this.renderer.connections.some(c =>
+            (c.from === rel.source && c.to === rel.target) ||
+            (c.from === rel.target && c.to === rel.source)
+          );
+          if (!already) {
+            this.renderer.connections.push({ from: rel.source, to: rel.target, type: 'parent' });
+          }
+        }
+      }
+
       // Update UI
       if (this.renderer) {
         this.renderer.needsRedraw = true;
