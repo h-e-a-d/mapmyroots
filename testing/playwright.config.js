@@ -24,7 +24,7 @@ export default defineConfig({
     ['list']
   ],
   use: {
-    baseURL: 'https://mapmyroots.com',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://mapmyroots.com',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
