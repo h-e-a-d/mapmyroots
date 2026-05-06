@@ -19,6 +19,10 @@ describe('detectClans', () => {
     expect(result.clanByPerson.get('c')).toBe(result.clanByPerson.get('d'));
     expect(result.clanByPerson.get('a')).not.toBe(result.clanByPerson.get('c'));
     expect(result.clanByPerson.get('e')).not.toBe(result.clanByPerson.get('a'));
+    // clanSizes should have 3 entries
+    expect(result.clanSizes.size).toBe(3);
+    // Each person is in exactly one clan
+    expect(result.clanSizes.get(result.clanByPerson.get('a'))).toBeGreaterThanOrEqual(1);
   });
 
   it('keeps two clans separate when only joined by marriage (no shared child)', () => {
@@ -73,6 +77,10 @@ describe('assignClanColors', () => {
     expect(c2).toMatch(/^hsl\(/);
     // Largest clan (id=1) gets palette index 0 → hue 0
     expect(c1).toBe('hsl(0, 65%, 55%)');
+    // Clan 0 (size=3) is 2nd largest → palette index 1 → hue = 137.508
+    expect(c0).toBe('hsl(137.508, 65%, 55%)');
+    // Clan 2 (size=1) is smallest → palette index 2 → hue = (2 * 137.508) % 360 = 275.016
+    expect(c2).toBe('hsl(275.016, 65%, 55%)');
   });
 
   it('returns empty map for one clan or fewer', () => {
