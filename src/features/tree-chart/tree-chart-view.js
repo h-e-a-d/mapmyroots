@@ -198,11 +198,13 @@ export function initTreeChartView(containerEl) {
   });
   window.addEventListener('mouseup', () => { state.isPanning = false; });
 
-  // Zoom via wheel
+  // Zoom via wheel — scale by delta magnitude so trackpad gestures feel natural
   svg.addEventListener('wheel', (ev) => {
     ev.preventDefault();
     const vb = svg.viewBox.baseVal;
-    const factor = ev.deltaY > 0 ? 1.1 : 1 / 1.1;
+    // Normalize: cap per-event zoom at ~5% regardless of deltaY magnitude
+    const delta = Math.sign(ev.deltaY) * Math.min(Math.abs(ev.deltaY), 50);
+    const factor = Math.pow(1.002, delta);
     const rect = svg.getBoundingClientRect();
     const mx = ev.clientX - rect.left;
     const my = ev.clientY - rect.top;
