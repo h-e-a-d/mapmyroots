@@ -31,10 +31,10 @@ export default defineConfig({
       i18n: {
         defaultLocale: 'en',
         locales: {
-          en: 'en-US',
-          de: 'de-DE',
-          es: 'es-ES',
-          ru: 'ru-RU'
+          en: 'en',
+          de: 'de',
+          es: 'es',
+          ru: 'ru'
         }
       }
     }),

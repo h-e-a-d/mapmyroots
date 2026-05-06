@@ -2,7 +2,7 @@
 title: Family Tree
 description: A visual or structured representation of a person's family relationships across multiple generations, showing lineage and kinship.
 letter: F
-relatedTerms: []
+relatedTerms: [ancestor, ancestry, genealogy, ahnentafel]
 publishedAt: 2026-04-29
 ---
 

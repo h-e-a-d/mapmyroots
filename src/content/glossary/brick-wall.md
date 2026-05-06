@@ -2,7 +2,7 @@
 title: Brick Wall
 description: A genealogical term for an ancestor or line of research that cannot be traced further due to a lack of records, name changes, or other obstacles.
 letter: B
-relatedTerms: []
+relatedTerms: [genealogy, ancestor, census, autosomal-dna]
 publishedAt: 2026-04-29
 ---
 

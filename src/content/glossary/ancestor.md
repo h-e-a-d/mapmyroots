@@ -2,7 +2,7 @@
 title: Ancestor
 description: Any person from whom an individual is descended, including parents, grandparents, great-grandparents, and beyond.
 letter: A
-relatedTerms: []
+relatedTerms: [ancestry, family-tree, genealogy, ahnentafel]
 publishedAt: 2026-04-29
 ---
 

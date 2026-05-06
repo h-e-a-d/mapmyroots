@@ -32,6 +32,26 @@ const definedTermSchema = JSON.stringify({
   "inDefinedTermSet": "https://mapmyroots.com/glossary"
 });
 
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": term.data.title,
+  "description": term.data.description,
+  "url": `https://mapmyroots.com/glossary/${term.slug}`,
+  "author": {
+    "@type": "Organization",
+    "name": "MapMyRoots",
+    "url": "https://mapmyroots.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "MapMyRoots",
+    "url": "https://mapmyroots.com"
+  },
+  "datePublished": term.data.publishedAt ? term.data.publishedAt.toISOString().split('T')[0] : "2026-04-29",
+  "dateModified": term.data.publishedAt ? term.data.publishedAt.toISOString().split('T')[0] : "2026-04-29"
+});
+
 const related = term.data.relatedTerms.length > 0
   ? await Promise.all(term.data.relatedTerms.map((slug: string) => getEntry('glossary', slug)))
   : [];
@@ -41,13 +61,18 @@ const related = term.data.relatedTerms.length > 0
   title={`${term.data.title} - Genealogy Glossary | MapMyRoots`}
   description={term.data.description}
   canonicalPath={`/glossary/${term.slug}`}
-  jsonLd={[breadcrumbSchema, definedTermSchema]}
+  ogImage={new URL('/og/glossary.png', 'https://mapmyroots.com').toString()}
+  hreflangs={['en']}
+  jsonLd={[breadcrumbSchema, definedTermSchema, articleSchema]}
 >
   <article class="glossary-term">
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <a href="/glossary">← Back to Genealogy Glossary</a>
     </nav>
     <h1>{term.data.title}</h1>
+    {term.data.publishedAt && (
+      <p class="term-meta">Last updated: <time datetime={term.data.publishedAt.toISOString().split('T')[0]}>{term.data.publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></p>
+    )}
     {term.data.aka.length > 0 && (
       <p class="aka">Also known as: <em>{term.data.aka.join(', ')}</em></p>
     )}
@@ -73,6 +98,7 @@ const related = term.data.relatedTerms.length > 0
   .breadcrumb a { color: var(--primary-color, #0f866c); text-decoration: none; }
   .breadcrumb a:hover { text-decoration: underline; }
   .glossary-term h1 { color: var(--primary-color, #0f866c); font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .term-meta { color: var(--text-secondary, #4a5568); font-size: 0.85rem; margin-bottom: 1rem; }
   .aka { color: var(--text-secondary, #4a5568); font-size: 0.95rem; margin-bottom: 1.5rem; }
   .term-body { line-height: 1.7; }
   .term-body h2 { margin-top: 2rem; color: var(--text-primary, #2c3e50); }

@@ -3,7 +3,7 @@ title: Ahnentafel
 description: A German term meaning "ancestor table" — a numbering system for listing ancestors in a structured, mathematical format.
 letter: A
 aka: [ancestor table, Sosa-Stradonitz system]
-relatedTerms: []
+relatedTerms: [ancestor, family-tree, genealogy]
 publishedAt: 2026-04-29
 ---
 

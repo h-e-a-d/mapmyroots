@@ -14,6 +14,10 @@ export interface Props {
   canonicalPath: string;
   /** Page locale for hreflang and html[lang] */
   locale?: Locale;
+  /** Limit hreflang alternates to these locales only. Defaults to all locales. */
+  hreflangs?: Locale[];
+  /** Optional Open Graph image URL (absolute). Defaults to auto-generated slug-based path. */
+  ogImage?: string;
   /** Whether the language switcher should be shown in the header */
   showLanguageSwitcher?: boolean;
   /** Optional list of <script type="application/ld+json"> blocks (raw stringified JSON) */
@@ -27,6 +31,8 @@ const {
   description,
   canonicalPath,
   locale = 'en',
+  hreflangs,
+  ogImage,
   showLanguageSwitcher = true,
   jsonLd = [],
   bodyClass = ''
@@ -46,6 +52,8 @@ const {
       description={description}
       canonicalPath={canonicalPath}
       locale={locale}
+      hreflangs={hreflangs}
+      ogImage={ogImage}
       jsonLd={jsonLd}
     />
 

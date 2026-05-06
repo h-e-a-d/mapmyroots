@@ -3,7 +3,7 @@ title: Genealogy
 description: The study and tracing of family history and lineages; the practice of researching and documenting ancestors and their descendants.
 letter: G
 aka: [family history, genealogical research]
-relatedTerms: []
+relatedTerms: [family-tree, ancestor, ancestry, census, brick-wall]
 publishedAt: 2026-04-29
 ---
 

@@ -3,7 +3,7 @@ title: Autosomal DNA
 description: DNA inherited from both parents and all four grandparents, used in genetic genealogy to identify relatives across multiple family lines.
 letter: A
 aka: [atDNA]
-relatedTerms: []
+relatedTerms: [genealogy, ancestor, ancestry, brick-wall]
 publishedAt: 2026-04-29
 ---
 

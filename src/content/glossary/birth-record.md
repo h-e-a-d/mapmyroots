@@ -3,7 +3,7 @@ title: Birth Record
 description: An official document recording a birth, typically including the date, place, parents' names, and the name given to the child.
 letter: B
 aka: [birth certificate, birth registration]
-relatedTerms: []
+relatedTerms: [census, abstract, genealogy, ancestor]
 publishedAt: 2026-04-29
 ---
 

@@ -3,7 +3,7 @@ title: Affinity
 description: A relationship established by marriage rather than blood, such as the relationship between a person and their in-laws.
 letter: A
 aka: [in-law relationship, marriage relationship]
-relatedTerms: []
+relatedTerms: [family-tree, ancestry, banns]
 publishedAt: 2026-04-29
 ---
 

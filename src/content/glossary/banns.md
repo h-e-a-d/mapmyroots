@@ -2,7 +2,7 @@
 title: Banns
 description: A public announcement, typically read in church on three consecutive Sundays, of an intended marriage, giving the community opportunity to raise objections.
 letter: B
-relatedTerms: []
+relatedTerms: [birth-record, family-tree, affinity]
 publishedAt: 2026-04-29
 ---
 

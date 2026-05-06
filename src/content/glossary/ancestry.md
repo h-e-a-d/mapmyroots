@@ -2,7 +2,7 @@
 title: Ancestry
 description: The line of a person's ancestors collectively; one's family lineage or heritage extending back through multiple generations.
 letter: A
-relatedTerms: []
+relatedTerms: [ancestor, genealogy, family-tree, autosomal-dna]
 publishedAt: 2026-04-29
 ---
 

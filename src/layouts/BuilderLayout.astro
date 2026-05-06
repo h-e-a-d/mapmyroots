@@ -10,10 +10,11 @@ export interface Props {
   description: string;
   canonicalPath: string;
   locale?: Locale;
+  hreflangs?: Locale[];
   jsonLd?: string[];
 }
 
-const { title, description, canonicalPath, locale = 'en', jsonLd = [] } = Astro.props;
+const { title, description, canonicalPath, locale = 'en', hreflangs, jsonLd = [] } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -29,6 +30,7 @@ const { title, description, canonicalPath, locale = 'en', jsonLd = [] } = Astro.
       description={description}
       canonicalPath={canonicalPath}
       locale={locale}
+      hreflangs={hreflangs}
       jsonLd={jsonLd}
     />
 

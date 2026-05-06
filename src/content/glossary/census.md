@@ -2,7 +2,7 @@
 title: Census
 description: A periodic government enumeration of population, recording information about individuals and households at a specific point in time.
 letter: C
-relatedTerms: []
+relatedTerms: [birth-record, genealogy, ancestor, abstract]
 publishedAt: 2026-04-29
 ---
 

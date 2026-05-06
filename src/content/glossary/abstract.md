@@ -2,7 +2,7 @@
 title: Abstract
 description: An abbreviated transcription of a document that includes the date of the record and every name it contains.
 letter: A
-relatedTerms: []
+relatedTerms: [genealogy, census, birth-record]
 publishedAt: 2026-04-29
 ---
 

@@ -8,6 +8,8 @@ export interface Props {
   canonicalPath: string;
   /** Page locale; defaults to English. */
   locale?: Locale;
+  /** Limit hreflang alternates to these locales only. Defaults to all locales. */
+  hreflangs?: Locale[];
   /** Optional Open Graph image URL (absolute) */
   ogImage?: string;
   /** Optional Twitter card image URL (absolute) */
@@ -21,6 +23,7 @@ const {
   description,
   canonicalPath,
   locale = defaultLocale,
+  hreflangs = locales,
   jsonLd = []
 } = Astro.props;
 
@@ -30,10 +33,13 @@ const twitterImage = Astro.props.twitterImage ?? ogImage;
 
 const canonicalUrl = new URL(localizedPath(locale, canonicalPath), Astro.site).toString();
 
-const alternates = locales.map((alt) => ({
+const alternates = hreflangs.map((alt) => ({
   hreflang: alt,
   href: new URL(localizedPath(alt, canonicalPath), Astro.site).toString()
 }));
+
+const ogLocaleMap: Record<string, string> = { en: 'en_US', de: 'de_DE', es: 'es_ES', ru: 'ru_RU' };
+const ogLocale = ogLocaleMap[locale] ?? 'en_US';
 ---
 
 <title>{title}</title>
@@ -58,6 +64,7 @@ const alternates = locales.map((alt) => ({
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImage} />
 <meta property="og:site_name" content="MapMyRoots" />
+<meta property="og:locale" content={ogLocale} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
