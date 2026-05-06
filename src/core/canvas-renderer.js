@@ -40,6 +40,10 @@ export class CanvasRenderer {
     this.rafId = null;
     this._imageCache = new Map(); // personId -> HTMLImageElement
 
+    // Smooth zoom state
+    this._zoomLogAccum = 0;
+    this._zoomOriginScreen = null;
+
     // Settings
     this.settings = {
       nodeRadius: 50,
@@ -719,21 +723,28 @@ export class CanvasRenderer {
 
   handleWheel(e) {
     e.preventDefault();
-    
+    const normalized = e.deltaMode === 1 ? e.deltaY * 20 :
+                       e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
+    this._zoomLogAccum = Math.max(-2, Math.min(2,
+      this._zoomLogAccum - normalized * 0.003));
     const rect = this.canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(0.1, Math.min(5, this.camera.scale * delta));
-    
-    if (newScale !== this.camera.scale) {
-      const factor = newScale / this.camera.scale;
-      this.camera.x = mouseX - factor * (mouseX - this.camera.x);
-      this.camera.y = mouseY - factor * (mouseY - this.camera.y);
-      this.camera.scale = newScale;
-      this.needsRedraw = true;
+    this._zoomOriginScreen = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  _applyZoomStep() {
+    if (Math.abs(this._zoomLogAccum) < 0.0005) { this._zoomLogAccum = 0; return; }
+    const step = this._zoomLogAccum * 0.2;
+    this._zoomLogAccum -= step;
+    const factor = Math.exp(step);
+    const newScale = Math.max(0.1, Math.min(5, this.camera.scale * factor));
+    const applied = newScale / this.camera.scale;
+    if (this._zoomOriginScreen) {
+      const { x, y } = this._zoomOriginScreen;
+      this.camera.x = x - (x - this.camera.x) * applied;
+      this.camera.y = y - (y - this.camera.y) * applied;
     }
+    this.camera.scale = newScale;
+    this.needsRedraw = true;
   }
 
   handleDoubleClick(e) {
@@ -925,6 +936,7 @@ export class CanvasRenderer {
   // Rendering
   startRenderLoop() {
     const render = () => {
+      this._applyZoomStep();
       if (this.needsRedraw) {
         this.draw();
         this.needsRedraw = false;

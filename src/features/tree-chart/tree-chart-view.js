@@ -199,47 +199,45 @@ export function initTreeChartView(containerEl) {
   });
   window.addEventListener('mouseup', () => { state.isPanning = false; });
 
-  // Zoom via wheel — one application per animation frame, direction only, fixed step.
-  // Batching all events in a frame into a single step prevents momentum-scroll stacking.
-  let zoomAccum = 0;
-  let zoomCursor = null; // {mx, my} from latest event
+  // Smooth zoom — accumulate log-scale delta, drain 20% per rAF frame (exponential ease-out)
+  let zoomLogAccum = 0;
+  let zoomOriginX = 0, zoomOriginY = 0; // SVG-space coordinates of zoom focus point
   let zoomRaf = null;
 
   function applyZoomFrame() {
     zoomRaf = null;
-    if (!zoomAccum || !zoomCursor) return;
+    if (Math.abs(zoomLogAccum) < 0.0005) { zoomLogAccum = 0; return; }
+    const step = zoomLogAccum * 0.2;
+    zoomLogAccum -= step;
+    const factor = Math.exp(step);
     const vb = svg.viewBox.baseVal;
-    const STEP = 1.07; // 7% per animation frame, regardless of scroll speed
-    const factor = zoomAccum > 0 ? STEP : 1 / STEP;
-    zoomAccum = 0;
-    const { mx, my } = zoomCursor;
-    const rect = svg.getBoundingClientRect();
-    const px = vb.x + (mx / rect.width) * vb.width;
-    const py = vb.y + (my / rect.height) * vb.height;
     const newW = vb.width * factor;
     const newH = vb.height * factor;
-    svg.setAttribute('viewBox',
-      `${px - (mx / rect.width) * newW} ${py - (my / rect.height) * newH} ${newW} ${newH}`);
+    const newX = zoomOriginX - (zoomOriginX - vb.x) * factor;
+    const newY = zoomOriginY - (zoomOriginY - vb.y) * factor;
+    svg.setAttribute('viewBox', `${newX} ${newY} ${newW} ${newH}`);
+    zoomRaf = requestAnimationFrame(applyZoomFrame);
   }
 
   svg.addEventListener('wheel', (ev) => {
     ev.preventDefault();
-    zoomAccum += ev.deltaY;
-    zoomCursor = { mx: ev.clientX - svg.getBoundingClientRect().left,
-                   my: ev.clientY - svg.getBoundingClientRect().top };
+    const normalized = ev.deltaMode === 1 ? ev.deltaY * 20 :
+                       ev.deltaMode === 2 ? ev.deltaY * 400 : ev.deltaY;
+    zoomLogAccum = Math.max(-2, Math.min(2, zoomLogAccum - normalized * 0.003));
+    const rect = svg.getBoundingClientRect();
+    const vb = svg.viewBox.baseVal;
+    zoomOriginX = vb.x + ((ev.clientX - rect.left) / rect.width) * vb.width;
+    zoomOriginY = vb.y + ((ev.clientY - rect.top) / rect.height) * vb.height;
     if (!zoomRaf) zoomRaf = requestAnimationFrame(applyZoomFrame);
   }, { passive: false });
 
   function zoom(direction) {
-    const STEP = 1.07;
-    const factor = direction > 0 ? STEP : 1 / STEP;
     const vb = svg.viewBox.baseVal;
     if (!vb.width) return;
-    const cx = vb.x + vb.width / 2;
-    const cy = vb.y + vb.height / 2;
-    const newW = vb.width * factor;
-    const newH = vb.height * factor;
-    svg.setAttribute('viewBox', `${cx - newW / 2} ${cy - newH / 2} ${newW} ${newH}`);
+    zoomOriginX = vb.x + vb.width / 2;
+    zoomOriginY = vb.y + vb.height / 2;
+    zoomLogAccum = Math.max(-2, Math.min(2, zoomLogAccum + direction * -0.5));
+    if (!zoomRaf) zoomRaf = requestAnimationFrame(applyZoomFrame);
   }
 
   if (state.visible) rebuild();
