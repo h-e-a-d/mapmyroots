@@ -1,1 +1,96 @@
 /* tree-chart.css — Styles for the tree chart view (SVG nodes, edges, fades, parking area) */
+
+#treeChartView {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+#treeChartView.hidden { display: none; }
+
+#treeChartView .tc-svg {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  user-select: none;
+}
+
+#treeChartView .tc-svg:active { cursor: grabbing; }
+
+.tc-node-body {
+  fill: #3498db;
+  stroke: #2c3e50;
+  stroke-width: 2;
+}
+
+.tc-node-label {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  fill: #ffffff;
+  pointer-events: none;
+}
+
+.tc-node {
+  cursor: pointer;
+}
+
+.tc-node:focus { outline: none; }
+.tc-node:focus .tc-node-body {
+  stroke: #2980b9;
+  stroke-width: 3;
+}
+
+.tc-node-ring {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 4;
+}
+.tc-node[data-clan] .tc-node-ring {
+  stroke: var(--clan-color, transparent);
+}
+
+.tc-edge {
+  stroke: #7f8c8d;
+  stroke-width: 2;
+  fill: none;
+}
+.tc-edge--spouse {
+  stroke: #e74c3c;
+  stroke-dasharray: 6 4;
+}
+.tc-edge--lineOnly {
+  stroke: #9b59b6;
+  stroke-dasharray: 4 2 1 2;
+}
+
+.tc-has-highlight .tc-node:not(.tc-on-line) { opacity: 0.25; }
+.tc-has-highlight .tc-edge:not(.tc-on-line) { opacity: 0.15; }
+
+.tc-parking-line {
+  stroke: #cccccc;
+  stroke-width: 1;
+  stroke-dasharray: 6 6;
+}
+.tc-parking-label {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  fill: #888;
+  font-style: italic;
+}
+
+.tc-node-body, .tc-node-ring, .tc-edge {
+  transition: opacity 200ms ease-out;
+}
+
+.tc-live-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
