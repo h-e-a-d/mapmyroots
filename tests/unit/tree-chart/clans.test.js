@@ -20,4 +20,21 @@ describe('detectClans', () => {
     expect(result.clanByPerson.get('a')).not.toBe(result.clanByPerson.get('c'));
     expect(result.clanByPerson.get('e')).not.toBe(result.clanByPerson.get('a'));
   });
+
+  it('keeps two clans separate when only joined by marriage (no shared child)', () => {
+    const john = person({ id: 'john', spouseId: 'maria' });
+    const johnDad = person({ id: 'johnDad' });
+    const maria = person({ id: 'maria', spouseId: 'john' });
+    const mariaMom = person({ id: 'mariaMom' });
+    john.fatherId = 'johnDad';
+    maria.motherId = 'mariaMom';
+    const map = buildPersonMap([john, johnDad, maria, mariaMom]);
+
+    const result = detectClans(map);
+
+    expect(result.clanCount).toBe(2);
+    expect(result.clanByPerson.get('john')).toBe(result.clanByPerson.get('johnDad'));
+    expect(result.clanByPerson.get('maria')).toBe(result.clanByPerson.get('mariaMom'));
+    expect(result.clanByPerson.get('john')).not.toBe(result.clanByPerson.get('maria'));
+  });
 });
