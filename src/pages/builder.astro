@@ -1347,13 +1347,15 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     }
 
     function triggerCanvasZoom(deltaY: number) {
+      if (currentView === 'treeChart') {
+        (window as any)._treeChartView?.zoom(deltaY > 0 ? 1 : -1);
+        return;
+      }
       let target: Element | null = null;
       if (currentView === 'graphic') {
         const graphicView = document.getElementById('graphicView');
         const canvas = graphicView?.querySelector('canvas');
         target = canvas || document.getElementById('svgArea');
-      } else if (currentView === 'treeChart') {
-        target = document.querySelector('#treeChartView svg');
       } else {
         return;
       }

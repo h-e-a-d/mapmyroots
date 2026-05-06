@@ -183,18 +183,19 @@ export function initTreeChartView(containerEl) {
   svg.addEventListener('mousedown', (ev) => {
     if (ev.target.closest('.tc-node')) return;
     state.isPanning = true;
-    state.panStart = { x: ev.clientX, y: ev.clientY, vb: svg.viewBox.baseVal };
+    // Copy primitives — svg.viewBox.baseVal is a live SVGRect that mutates on setAttribute
+    const b = svg.viewBox.baseVal;
+    state.panStart = { x: ev.clientX, y: ev.clientY, vbX: b.x, vbY: b.y, vbW: b.width, vbH: b.height };
   });
   window.addEventListener('mousemove', (ev) => {
     if (!state.isPanning) return;
-    const vb = svg.viewBox.baseVal;
+    const { vbX, vbY, vbW, vbH } = state.panStart;
     const rect = svg.getBoundingClientRect();
-    const sx = vb.width / rect.width;
-    const sy = vb.height / rect.height;
+    const sx = vbW / rect.width;
+    const sy = vbH / rect.height;
     const dx = (ev.clientX - state.panStart.x) * sx;
     const dy = (ev.clientY - state.panStart.y) * sy;
-    svg.setAttribute('viewBox',
-      `${state.panStart.vb.x - dx} ${state.panStart.vb.y - dy} ${vb.width} ${vb.height}`);
+    svg.setAttribute('viewBox', `${vbX - dx} ${vbY - dy} ${vbW} ${vbH}`);
   });
   window.addEventListener('mouseup', () => { state.isPanning = false; });
 
@@ -229,7 +230,21 @@ export function initTreeChartView(containerEl) {
     if (!zoomRaf) zoomRaf = requestAnimationFrame(applyZoomFrame);
   }, { passive: false });
 
+  function zoom(direction) {
+    const STEP = 1.07;
+    const factor = direction > 0 ? STEP : 1 / STEP;
+    const vb = svg.viewBox.baseVal;
+    if (!vb.width) return;
+    const cx = vb.x + vb.width / 2;
+    const cy = vb.y + vb.height / 2;
+    const newW = vb.width * factor;
+    const newH = vb.height * factor;
+    svg.setAttribute('viewBox', `${cx - newW / 2} ${cy - newH / 2} ${newW} ${newH}`);
+  }
+
   if (state.visible) rebuild();
 
-  return { rebuild };
+  const api = { rebuild, zoom };
+  window._treeChartView = api;
+  return api;
 }
