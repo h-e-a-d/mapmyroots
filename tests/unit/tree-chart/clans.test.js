@@ -1,6 +1,6 @@
 // tests/unit/tree-chart/clans.test.js
 import { describe, it, expect } from 'vitest';
-import { detectClans } from '../../../src/features/tree-chart/tree-chart-clans.js';
+import { detectClans, assignClanColors } from '../../../src/features/tree-chart/tree-chart-clans.js';
 import { person, buildPersonMap, twoFamiliesPlusParked } from './fixtures.js';
 
 describe('detectClans', () => {
@@ -55,5 +55,28 @@ describe('detectClans', () => {
     const result = detectClans(new Map());
     expect(result.clanCount).toBe(0);
     expect(result.clanByPerson.size).toBe(0);
+  });
+});
+
+describe('assignClanColors', () => {
+  it('returns one stable color per clan, ordered by size descending', () => {
+    const clanSizes = new Map([[0, 3], [1, 7], [2, 1]]);
+
+    const colors = assignClanColors(clanSizes);
+
+    expect(colors.size).toBe(3);
+    const c0 = colors.get(0);
+    const c1 = colors.get(1);
+    const c2 = colors.get(2);
+    expect(c0).toMatch(/^hsl\(/);
+    expect(c1).toMatch(/^hsl\(/);
+    expect(c2).toMatch(/^hsl\(/);
+    // Largest clan (id=1) gets palette index 0 → hue 0
+    expect(c1).toBe('hsl(0, 65%, 55%)');
+  });
+
+  it('returns empty map for one clan or fewer', () => {
+    expect(assignClanColors(new Map([[0, 5]])).size).toBe(0);
+    expect(assignClanColors(new Map()).size).toBe(0);
   });
 });
