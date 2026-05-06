@@ -2668,3 +2668,17 @@ html, body {
   background: #f0f9f6;
   color: var(--primary-color, #0f866c);
 }
+
+.view-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  padding: 2px;
+}
+.view-selector .view-btn { background: transparent; }
+.view-selector .view-btn.active {
+  background: var(--surface, #fff);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
