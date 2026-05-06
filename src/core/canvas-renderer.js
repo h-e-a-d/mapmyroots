@@ -726,14 +726,14 @@ export class CanvasRenderer {
     const normalized = e.deltaMode === 1 ? e.deltaY * 20 :
                        e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
     this._zoomLogAccum = Math.max(-2, Math.min(2,
-      this._zoomLogAccum - normalized * 0.003));
+      this._zoomLogAccum - normalized * 0.005));
     const rect = this.canvas.getBoundingClientRect();
     this._zoomOriginScreen = { x: e.clientX - rect.left, y: e.clientY - rect.top };
   }
 
   _applyZoomStep() {
     if (Math.abs(this._zoomLogAccum) < 0.0005) { this._zoomLogAccum = 0; return; }
-    const step = this._zoomLogAccum * 0.2;
+    const step = this._zoomLogAccum * 0.25;
     this._zoomLogAccum -= step;
     const factor = Math.exp(step);
     const newScale = Math.max(0.1, Math.min(5, this.camera.scale * factor));

@@ -207,7 +207,7 @@ export function initTreeChartView(containerEl) {
   function applyZoomFrame() {
     zoomRaf = null;
     if (Math.abs(zoomLogAccum) < 0.0005) { zoomLogAccum = 0; return; }
-    const step = zoomLogAccum * 0.2;
+    const step = zoomLogAccum * 0.25;
     zoomLogAccum -= step;
     const factor = Math.exp(step);
     const vb = svg.viewBox.baseVal;
@@ -223,7 +223,8 @@ export function initTreeChartView(containerEl) {
     ev.preventDefault();
     const normalized = ev.deltaMode === 1 ? ev.deltaY * 20 :
                        ev.deltaMode === 2 ? ev.deltaY * 400 : ev.deltaY;
-    zoomLogAccum = Math.max(-2, Math.min(2, zoomLogAccum - normalized * 0.003));
+    // SVG viewBox: larger = zoomed out, so sign is opposite to canvas scale
+    zoomLogAccum = Math.max(-2, Math.min(2, zoomLogAccum + normalized * 0.005));
     const rect = svg.getBoundingClientRect();
     const vb = svg.viewBox.baseVal;
     zoomOriginX = vb.x + ((ev.clientX - rect.left) / rect.width) * vb.width;
@@ -236,7 +237,8 @@ export function initTreeChartView(containerEl) {
     if (!vb.width) return;
     zoomOriginX = vb.x + vb.width / 2;
     zoomOriginY = vb.y + vb.height / 2;
-    zoomLogAccum = Math.max(-2, Math.min(2, zoomLogAccum + direction * -0.5));
+    // direction: -1 = zoom in (shrink viewBox), +1 = zoom out (grow viewBox)
+    zoomLogAccum = Math.max(-2, Math.min(2, zoomLogAccum + direction * 0.5));
     if (!zoomRaf) zoomRaf = requestAnimationFrame(applyZoomFrame);
   }
 
