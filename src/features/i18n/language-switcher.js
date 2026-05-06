@@ -150,25 +150,40 @@ class LanguageSwitcher {
     }
   }
 
+  getLocalizedUrl(lang) {
+    const locales = ['en', 'es', 'ru', 'de'];
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    if (parts.length > 0 && locales.includes(parts[0])) parts.shift();
+    const clean = '/' + parts.join('/');
+    return lang === 'en' ? (clean || '/') : `/${lang}${clean === '/' ? '' : clean}`;
+  }
+
   async switchLanguage(lang) {
     if (!this.languageData[lang]) {
       console.warn(`Unsupported language: ${lang}`);
       return;
     }
 
-    const oldLanguage = this.currentLanguage;
-    this.currentLanguage = lang;
-
     // Track language change
     if (window.gtmTrack) {
       window.gtmTrack('language_change', {
-        previous_language: oldLanguage,
+        previous_language: this.currentLanguage,
         new_language: lang,
         method: 'dropdown_selection',
         page_url: window.location.href,
         timestamp: new Date().toISOString()
       });
     }
+
+    // On server-rendered pages redirect to the localized URL.
+    // Only the builder page does live runtime translation.
+    if (!window.location.pathname.startsWith('/builder')) {
+      window.location.href = this.getLocalizedUrl(lang);
+      return;
+    }
+
+    const oldLanguage = this.currentLanguage;
+    this.currentLanguage = lang;
 
     // Update UI immediately
     this.updateCurrentLanguageDisplay();
@@ -181,13 +196,11 @@ class LanguageSwitcher {
         const success = await window.i18n.setLocale(lang);
         if (!success) {
           console.error(`Failed to switch to locale: ${lang}`);
-          // Revert UI changes
           this.currentLanguage = oldLanguage;
           this.updateCurrentLanguageDisplay();
         }
       } catch (error) {
         console.error('Error switching language:', error);
-        // Revert UI changes
         this.currentLanguage = oldLanguage;
         this.updateCurrentLanguageDisplay();
       }

@@ -94,13 +94,13 @@ const {
 
     <a href="#main" class="skip-link">Skip to main content</a>
 
-    <Header showLanguageSwitcher={showLanguageSwitcher} />
+    <Header showLanguageSwitcher={showLanguageSwitcher} locale={locale} />
 
     <main id="main">
       <slot />
     </main>
 
-    <Footer />
+    <Footer locale={locale} />
 
     <!-- Font load detection -->
     <script is:inline>

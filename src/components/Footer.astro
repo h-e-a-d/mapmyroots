@@ -1,41 +1,48 @@
 ---
+import { t, localizedPath, type Locale } from '@/i18n';
+
+export interface Props {
+  locale?: Locale;
+}
+const { locale = 'en' } = Astro.props;
 const year = new Date().getFullYear();
+const base = locale === 'en' ? '' : `/${locale}`;
 ---
 
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col">
-      <a href="/" class="logo" aria-label="MapMyRoots Home">
+      <a href={localizedPath(locale, '/')} class="logo" aria-label="MapMyRoots Home">
         <span class="logo-icon">🌳</span>
         <span>MapMyRoots</span>
       </a>
-      <p class="footer-tagline">Free family tree builder. Your data stays on your device.</p>
+      <p class="footer-tagline">{t(locale, 'footer.description')}</p>
     </div>
 
     <div class="footer-col">
-      <h3>Product</h3>
+      <h3>{t(locale, 'footer.product.title')}</h3>
       <ul>
-        <li><a href="/builder">Builder</a></li>
-        <li><a href="/#features">Features</a></li>
-        <li><a href="/#how-it-works">How It Works</a></li>
-        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/builder">{t(locale, 'footer.product.builder')}</a></li>
+        <li><a href={`${base}/#features`}>{t(locale, 'footer.product.features')}</a></li>
+        <li><a href={`${base}/#how-it-works`}>{t(locale, 'footer.product.how_it_works')}</a></li>
+        <li><a href={`${base}/#faq`}>{t(locale, 'nav.faq')}</a></li>
       </ul>
     </div>
 
     <div class="footer-col">
-      <h3>Company</h3>
+      <h3>{t(locale, 'footer.company.title')}</h3>
       <ul>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/terms">Terms</a></li>
+        <li><a href={localizedPath(locale, '/about')}>{t(locale, 'footer.company.about')}</a></li>
+        <li><a href={localizedPath(locale, '/contact')}>{t(locale, 'footer.company.contact')}</a></li>
+        <li><a href="/privacy">{t(locale, 'footer.legal.privacy')}</a></li>
+        <li><a href="/terms">{t(locale, 'footer.legal.terms')}</a></li>
       </ul>
     </div>
 
     <div class="footer-col">
-      <h3>Resources</h3>
+      <h3>{t(locale, 'footer.resources.title')}</h3>
       <ul>
-        <li><a href="/glossary">Glossary</a></li>
+        <li><a href={localizedPath(locale, '/glossary')}>{t(locale, 'footer.resources.glossary')}</a></li>
       </ul>
     </div>
   </div>

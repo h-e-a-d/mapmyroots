@@ -158,10 +158,13 @@ if (mobileMenuToggle && mobileMenu) {
         matchingDesktopOption.classList.add('active');
       }
 
-      // Switch language if i18n is available
-      if (window.i18n && window.i18n.setLocale) {
-        window.i18n.setLocale(lang);
-      }
+      // Redirect to the localized URL (server-rendered pages only)
+      const _locales = ['en', 'es', 'ru', 'de'];
+      const _parts = window.location.pathname.split('/').filter(Boolean);
+      if (_parts.length > 0 && _locales.includes(_parts[0])) _parts.shift();
+      const _clean = '/' + _parts.join('/');
+      window.location.href = lang === 'en' ? (_clean || '/') : `/${lang}${_clean === '/' ? '' : _clean}`;
+      return;
 
       // Track language change
       gtmTrack('language_change', {

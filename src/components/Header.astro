@@ -1,23 +1,27 @@
 ---
+import { t, localizedPath, type Locale } from '@/i18n';
+
 export interface Props {
   showLanguageSwitcher?: boolean;
+  locale?: Locale;
 }
-const { showLanguageSwitcher = true } = Astro.props;
+const { showLanguageSwitcher = true, locale = 'en' } = Astro.props;
+const base = locale === 'en' ? '' : `/${locale}`;
 ---
 
 <header class="header" id="header">
   <nav class="nav" role="navigation" aria-label="Main navigation">
-    <a href="/" class="logo" aria-label="MapMyRoots Home - Free Family Tree Builder">
+    <a href={localizedPath(locale, '/')} class="logo" aria-label="MapMyRoots Home - Free Family Tree Builder">
       <div class="logo-icon">🌳</div>
       <span>MapMyRoots</span>
     </a>
 
     <ul class="nav-menu">
-      <li><a href="/#features" class="nav-link">Features</a></li>
-      <li><a href="/#how-it-works" class="nav-link">How It Works</a></li>
-      <li><a href="/#examples" class="nav-link">Examples</a></li>
-      <li><a href="/#faq" class="nav-link">FAQ</a></li>
-      <li><a href="/glossary" class="nav-link">Glossary</a></li>
+      <li><a href={`${base}/#features`} class="nav-link">{t(locale, 'nav.features')}</a></li>
+      <li><a href={`${base}/#how-it-works`} class="nav-link">{t(locale, 'nav.how_it_works')}</a></li>
+      <li><a href={`${base}/#examples`} class="nav-link">{t(locale, 'nav.examples')}</a></li>
+      <li><a href={`${base}/#faq`} class="nav-link">{t(locale, 'nav.faq')}</a></li>
+      <li><a href={localizedPath(locale, '/glossary')} class="nav-link">{t(locale, 'nav.glossary')}</a></li>
     </ul>
 
     <div class="nav-actions">
@@ -39,7 +43,7 @@ const { showLanguageSwitcher = true } = Astro.props;
         </div>
       )}
 
-      <a href="/builder" class="cta-button">Start Building Free</a>
+      <a href="/builder" class="cta-button">{t(locale, 'nav.start_building')}</a>
 
       <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" id="mobile-menu-toggle">
         <span class="hamburger-icon">

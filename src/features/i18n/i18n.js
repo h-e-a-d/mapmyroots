@@ -101,6 +101,17 @@ class I18n {
   // Load saved locale from localStorage
   loadSavedLocale() {
     try {
+      // The page's declared language is authoritative — server-rendered pages
+      // are already in the right locale and must not be overwritten by a
+      // stored preference from a different page visit.
+      const pageLang = typeof document !== 'undefined'
+        ? document.documentElement.getAttribute('lang')
+        : null;
+      if (pageLang && this.isValidLocale(pageLang)) {
+        this.currentLocale = pageLang;
+        return;
+      }
+
       const saved = localStorage.getItem(this.storageKey);
       if (saved && this.isValidLocale(saved)) {
         this.currentLocale = saved;
