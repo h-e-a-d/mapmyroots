@@ -505,6 +505,9 @@
       "mother": "Madre",
       "father": "Padre",
       "spouse": "Cónyuge",
+      "select_mother": "Seleccionar Madre",
+      "select_father": "Seleccionar Padre",
+      "select_spouse": "Seleccionar Cónyuge",
       "select_person": "Seleccionar una persona...",
       "no_selection": "Sin selección"
     },

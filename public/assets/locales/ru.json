@@ -395,6 +395,9 @@
       "mother": "Мать",
       "father": "Отец",
       "spouse": "Супруг(а)",
+      "select_mother": "Выбрать мать",
+      "select_father": "Выбрать отца",
+      "select_spouse": "Выбрать супруга(у)",
       "select_person": "Выберите человека...",
       "no_selection": "Не выбрано"
     },

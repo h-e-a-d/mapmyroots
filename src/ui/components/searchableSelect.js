@@ -145,9 +145,10 @@ export function updateSearchableSelects(existingModalData = {}) {
   }
 
   // Build each searchable select
-  createSearchable(motherContainer, 'Select Mother', 'female', existingModalData.motherId);
-  createSearchable(fatherContainer, 'Select Father', 'male', existingModalData.fatherId);
-  createSearchable(spouseContainer, 'Select Spouse', null, existingModalData.spouseId);
+  const ti = (key, fallback) => window.i18n?.t(key) || fallback;
+  createSearchable(motherContainer, ti('builder.form.select_mother', 'Select Mother'), 'female', existingModalData.motherId);
+  createSearchable(fatherContainer, ti('builder.form.select_father', 'Select Father'), 'male', existingModalData.fatherId);
+  createSearchable(spouseContainer, ti('builder.form.select_spouse', 'Select Spouse'), null, existingModalData.spouseId);
 }
 
 // Close all dropdowns when clicking outside
