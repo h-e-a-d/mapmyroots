@@ -1,4 +1,11 @@
 // tree-chart-layout.js — Layout primitives (pure)
+import {
+  NODE_WIDTH,
+  NODE_HEIGHT,
+  NODE_GAP_X,
+  COUPLE_GAP,
+  ROW_HEIGHT
+} from './tree-chart-config.js';
 
 /**
  * Connected components over parent-child AND spouse edges.
@@ -196,4 +203,115 @@ export function assignGenerations(personData, couples) {
     for (const memberId of c.members) personGen.set(memberId, g);
   }
   return personGen;
+}
+
+/**
+ * Lay out one cluster horizontally using subtree-width centering (Reingold-Tilford adapted).
+ * Returns per-person positions in cluster-local coordinates.
+ *
+ * @param {Map<string, Person>} personData
+ * @param {Array} couples — output of groupIntoCouples
+ * @param {Map<string, number>} generations — output of assignGenerations
+ * @param {Set<string>} includeIds — only persons in this set are positioned
+ * @returns {Map<string, { x: number, y: number, width: number, height: number }>}
+ */
+export function layoutCluster(personData, couples, generations, includeIds) {
+  const localCouples = couples.filter(c => c.members.every(m => includeIds.has(m)));
+  if (!localCouples.length) return new Map();
+
+  const coupleOf = localCouples[0].coupleByPerson;
+
+  // Build child relation among couples
+  const childrenOf = new Map();
+  for (const c of localCouples) childrenOf.set(c.id, []);
+  for (const c of localCouples) {
+    const childCouples = new Set();
+    for (const memberId of c.members) {
+      for (const [otherId, other] of personData) {
+        if (!includeIds.has(otherId)) continue;
+        if (other.fatherId === memberId || other.motherId === memberId) {
+          const otherCouple = coupleOf.get(otherId);
+          if (otherCouple && otherCouple !== c.id) childCouples.add(otherCouple);
+        }
+      }
+    }
+    childrenOf.set(c.id, Array.from(childCouples));
+  }
+
+  // Roots = couples with no incoming parent edge inside this cluster
+  const isChild = new Set();
+  for (const [, kids] of childrenOf) for (const k of kids) isChild.add(k);
+  const roots = localCouples.filter(c => !isChild.has(c.id)).map(c => c.id);
+
+  const coupleById = new Map(localCouples.map(c => [c.id, c]));
+
+  // Width of a couple unit
+  const coupleWidth = new Map();
+  for (const c of localCouples) {
+    coupleWidth.set(c.id, c.members.length === 2
+      ? 2 * NODE_WIDTH + COUPLE_GAP
+      : NODE_WIDTH);
+  }
+
+  // Recursively compute subtree widths
+  const subtreeWidth = new Map();
+  function computeSubtreeWidth(coupleId, visiting = new Set()) {
+    if (subtreeWidth.has(coupleId)) return subtreeWidth.get(coupleId);
+    if (visiting.has(coupleId)) return coupleWidth.get(coupleId);
+    visiting.add(coupleId);
+    const kids = childrenOf.get(coupleId) || [];
+    let kidsTotal = 0;
+    for (let i = 0; i < kids.length; i++) {
+      kidsTotal += computeSubtreeWidth(kids[i], visiting);
+      if (i < kids.length - 1) kidsTotal += NODE_GAP_X;
+    }
+    visiting.delete(coupleId);
+    const w = Math.max(coupleWidth.get(coupleId), kidsTotal);
+    subtreeWidth.set(coupleId, w);
+    return w;
+  }
+  for (const r of roots) computeSubtreeWidth(r);
+
+  // Place couples
+  const coupleX = new Map();
+  function place(coupleId, leftEdge, visiting = new Set()) {
+    if (visiting.has(coupleId)) return;
+    visiting.add(coupleId);
+    const w = subtreeWidth.get(coupleId);
+    const center = leftEdge + w / 2;
+    coupleX.set(coupleId, center);
+
+    const kids = childrenOf.get(coupleId) || [];
+    const kidsWidth = kids.reduce((acc, k, i) =>
+      acc + subtreeWidth.get(k) + (i > 0 ? NODE_GAP_X : 0), 0);
+    let kidLeft = leftEdge + (w - kidsWidth) / 2;
+    for (const k of kids) {
+      place(k, kidLeft, visiting);
+      kidLeft += subtreeWidth.get(k) + NODE_GAP_X;
+    }
+    visiting.delete(coupleId);
+  }
+
+  let cursorX = 0;
+  for (const r of roots) {
+    place(r, cursorX);
+    cursorX += subtreeWidth.get(r) + NODE_GAP_X;
+  }
+
+  // Convert couple positions to per-person positions
+  const positions = new Map();
+  for (const c of localCouples) {
+    const cx = coupleX.get(c.id);
+    if (cx === undefined) continue;
+    const g = generations.get(c.members[0]) ?? 0;
+    const y = g * ROW_HEIGHT;
+    if (c.members.length === 1) {
+      positions.set(c.members[0], { x: cx - NODE_WIDTH / 2, y, width: NODE_WIDTH, height: NODE_HEIGHT });
+    } else {
+      const halfCouple = (NODE_WIDTH + COUPLE_GAP) / 2;
+      positions.set(c.members[0], { x: cx - halfCouple - NODE_WIDTH / 2, y, width: NODE_WIDTH, height: NODE_HEIGHT });
+      positions.set(c.members[1], { x: cx + halfCouple - NODE_WIDTH / 2, y, width: NODE_WIDTH, height: NODE_HEIGHT });
+    }
+  }
+  return positions;
 }

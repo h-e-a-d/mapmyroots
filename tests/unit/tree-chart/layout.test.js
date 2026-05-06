@@ -4,6 +4,8 @@ import { detectClusters } from '../../../src/features/tree-chart/tree-chart-layo
 import { assignParking } from '../../../src/features/tree-chart/tree-chart-layout.js';
 import { groupIntoCouples } from '../../../src/features/tree-chart/tree-chart-layout.js';
 import { assignGenerations } from '../../../src/features/tree-chart/tree-chart-layout.js';
+import { layoutCluster } from '../../../src/features/tree-chart/tree-chart-layout.js';
+import { NODE_WIDTH, ROW_HEIGHT } from '../../../src/features/tree-chart/tree-chart-config.js';
 import { person, buildPersonMap } from './fixtures.js';
 
 describe('detectClusters', () => {
@@ -160,5 +162,55 @@ describe('assignGenerations', () => {
     expect(gens.get('dadJ')).toBe(2);
     expect(gens.get('grandJ')).toBe(1);
     expect(gens.get('greatGrandJ')).toBe(0);
+  });
+});
+
+describe('layoutCluster', () => {
+  it('lays out a 3-generation chain top-down', () => {
+    const grand = person({ id: 'grand' });
+    const par = person({ id: 'par', fatherId: 'grand' });
+    const child = person({ id: 'child', fatherId: 'par' });
+    const map = buildPersonMap([grand, par, child]);
+    const couples = groupIntoCouples(map);
+    const gens = assignGenerations(map, couples);
+
+    const positions = layoutCluster(map, couples, gens, new Set([...map.keys()]));
+
+    expect(positions.get('grand').y).toBeLessThan(positions.get('par').y);
+    expect(positions.get('par').y).toBeLessThan(positions.get('child').y);
+    expect(positions.get('par').y - positions.get('grand').y).toBe(ROW_HEIGHT);
+  });
+
+  it('places spouses adjacent at the same y', () => {
+    const a = person({ id: 'a', spouseId: 'b' });
+    const b = person({ id: 'b', spouseId: 'a' });
+    const map = buildPersonMap([a, b]);
+    const couples = groupIntoCouples(map);
+    const gens = assignGenerations(map, couples);
+
+    const positions = layoutCluster(map, couples, gens, new Set(['a', 'b']));
+
+    expect(positions.get('a').y).toBe(positions.get('b').y);
+    expect(Math.abs(positions.get('a').x - positions.get('b').x)).toBeGreaterThan(0);
+    expect(Math.abs(positions.get('a').x - positions.get('b').x)).toBeLessThanOrEqual(NODE_WIDTH * 2);
+  });
+
+  it('does not overlap two sibling subtrees', () => {
+    const parent = person({ id: 'parent' });
+    const c1 = person({ id: 'c1', fatherId: 'parent' });
+    const c2 = person({ id: 'c2', fatherId: 'parent' });
+    const g1a = person({ id: 'g1a', fatherId: 'c1' });
+    const g1b = person({ id: 'g1b', fatherId: 'c1' });
+    const g2a = person({ id: 'g2a', fatherId: 'c2' });
+    const g2b = person({ id: 'g2b', fatherId: 'c2' });
+    const map = buildPersonMap([parent, c1, c2, g1a, g1b, g2a, g2b]);
+    const couples = groupIntoCouples(map);
+    const gens = assignGenerations(map, couples);
+
+    const positions = layoutCluster(map, couples, gens, new Set([...map.keys()]));
+
+    const right1 = Math.max(positions.get('g1a').x, positions.get('g1b').x);
+    const left2 = Math.min(positions.get('g2a').x, positions.get('g2b').x);
+    expect(right1 + NODE_WIDTH).toBeLessThanOrEqual(left2);
   });
 });
