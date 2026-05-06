@@ -5,10 +5,10 @@
 export function updateSearchableSelects(existingModalData = {}) {
   // Use global tree core instead of importing
   const treeCore = window.treeCore;
-  
+
   // Build an array of all current persons from canvas nodes
   const persons = [];
-  
+
   if (treeCore.renderer && treeCore.renderer.nodes) {
     for (const [id, node] of treeCore.renderer.nodes) {
       const personData = treeCore.getPersonData(id) || {};
@@ -17,7 +17,7 @@ export function updateSearchableSelects(existingModalData = {}) {
         name: node.name || personData.name || '',
         fatherName: node.fatherName || personData.fatherName || '',
         surname: node.surname || personData.surname || '',
-        maidenName: node.maidenName || personData.maidenName || '', // Changed from birthName
+        maidenName: node.maidenName || personData.maidenName || '',
         gender: node.gender || personData.gender || ''
       });
     }
@@ -28,25 +28,17 @@ export function updateSearchableSelects(existingModalData = {}) {
     const filtered = persons
       .filter(p => filterGender === null || p.gender === filterGender)
       .sort((a, b) => a.name.localeCompare(b.name));
-    
+
     let options = '<div class="select-option" data-id="">None</div>';
     options += filtered.map(p => {
       const isSelected = p.id === selectedId ? 'selected' : '';
-      // Build display name: Name + Father's Name + Surname (+ Maiden Name if applicable)
       let displayName = p.name;
-      if (p.fatherName) {
-        displayName += ` ${p.fatherName}`;
-      }
-      if (p.surname) {
-        displayName += ` ${p.surname}`;
-      }
-      // Add maiden name in parentheses if it exists and is different from surname
+      if (p.fatherName) displayName += ` ${p.fatherName}`;
+      if (p.surname) displayName += ` ${p.surname}`;
       if (p.maidenName && p.maidenName !== p.surname && p.maidenName.trim() !== '') {
         displayName += ` (${p.maidenName})`;
       }
-      return `<div class="select-option" data-id="${p.id}" ${isSelected}>
-                ${displayName.trim()}
-              </div>`;
+      return `<div class="select-option" data-id="${p.id}" ${isSelected}>${displayName.trim()}</div>`;
     }).join('');
     return options;
   }
@@ -61,6 +53,22 @@ export function updateSearchableSelects(existingModalData = {}) {
     if (c) c.innerHTML = '';
   });
 
+  function closeDropdown(wrapper) {
+    const searchInput = wrapper.querySelector('.select-search');
+    if (searchInput) {
+      searchInput.value = '';
+      wrapper.querySelectorAll('.select-option').forEach(opt => {
+        opt.style.display = '';
+      });
+      const noResults = wrapper.querySelector('.select-no-results');
+      if (noResults) noResults.classList.add('hidden');
+    }
+    wrapper.classList.add('hidden');
+    const inputBox = wrapper.parentNode.querySelector('.select-input');
+    if (inputBox) inputBox.classList.remove('open');
+    wrapper.closest('.form-group')?.style.removeProperty('z-index');
+  }
+
   // Create the "input box" and the hidden <input> for each
   function createSearchable(container, placeholder, filterGender, existingId) {
     if (!container) return;
@@ -71,13 +79,8 @@ export function updateSearchableSelects(existingModalData = {}) {
       const selectedPerson = persons.find(p => p.id === existingId);
       if (selectedPerson) {
         let name = selectedPerson.name;
-        if (selectedPerson.fatherName) {
-          name += ` ${selectedPerson.fatherName}`;
-        }
-        if (selectedPerson.surname) {
-          name += ` ${selectedPerson.surname}`;
-        }
-        // Add maiden name in parentheses if it exists and is different from surname
+        if (selectedPerson.fatherName) name += ` ${selectedPerson.fatherName}`;
+        if (selectedPerson.surname) name += ` ${selectedPerson.surname}`;
         if (selectedPerson.maidenName && selectedPerson.maidenName !== selectedPerson.surname && selectedPerson.maidenName.trim() !== '') {
           name += ` (${selectedPerson.maidenName})`;
         }
@@ -85,14 +88,14 @@ export function updateSearchableSelects(existingModalData = {}) {
       }
     }
 
-    // Visible box
+    // Visible trigger box
     const inputBox = document.createElement('div');
     inputBox.className = 'select-input';
     inputBox.textContent = displayText;
     inputBox.dataset.selectedId = existingId || '';
     container.appendChild(inputBox);
 
-    // Hidden actual <input> to store the selected ID
+    // Hidden <input> to store the selected ID
     const hidden = document.createElement('input');
     hidden.type = 'hidden';
     hidden.value = existingId || '';
@@ -102,19 +105,51 @@ export function updateSearchableSelects(existingModalData = {}) {
     // Dropdown options wrapper
     const optionsWrapper = document.createElement('div');
     optionsWrapper.className = 'options hidden';
-    optionsWrapper.innerHTML = buildOptions(filterGender, existingId);
+
+    // Search input at top of dropdown
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'select-search';
+    searchInput.placeholder = 'Search…';
+    searchInput.setAttribute('aria-label', 'Search options');
+    optionsWrapper.appendChild(searchInput);
+
+    // Options list
+    const optionsList = document.createElement('div');
+    optionsList.className = 'select-options-list';
+    optionsList.innerHTML = buildOptions(filterGender, existingId);
+    optionsWrapper.appendChild(optionsList);
+
+    // No-results message
+    const noResults = document.createElement('div');
+    noResults.className = 'select-no-results hidden';
+    noResults.textContent = 'No results';
+    optionsWrapper.appendChild(noResults);
+
     container.appendChild(optionsWrapper);
+
+    // Filter options as user types
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const options = optionsList.querySelectorAll('.select-option');
+      let anyVisible = false;
+      options.forEach(opt => {
+        const matches = !query || opt.textContent.trim().toLowerCase().includes(query);
+        opt.style.display = matches ? '' : 'none';
+        if (matches) anyVisible = true;
+      });
+      noResults.classList.toggle('hidden', anyVisible);
+    });
+
+    // Prevent search input click from bubbling to the document close handler
+    searchInput.addEventListener('click', (e) => e.stopPropagation());
 
     // Clicking on inputBox toggles options
     inputBox.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Close other open dropdowns and reset their form-group z-index
+      // Close other open dropdowns
       document.querySelectorAll('.searchable-select .options').forEach(opt => {
-        if (opt !== optionsWrapper) {
-          opt.classList.add('hidden');
-          opt.parentNode.querySelector('.select-input').classList.remove('open');
-          opt.closest('.form-group')?.style.removeProperty('z-index');
-        }
+        if (opt !== optionsWrapper) closeDropdown(opt);
       });
 
       optionsWrapper.classList.toggle('hidden');
@@ -127,10 +162,15 @@ export function updateSearchableSelects(existingModalData = {}) {
       if (formGroup) {
         formGroup.style.zIndex = optionsWrapper.classList.contains('hidden') ? '' : '100';
       }
+
+      // Focus search input when opening
+      if (!optionsWrapper.classList.contains('hidden')) {
+        searchInput.focus();
+      }
     });
 
-    // When clicking an option:
-    optionsWrapper.addEventListener('click', (e) => {
+    // When clicking an option
+    optionsList.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!e.target.classList.contains('select-option')) return;
 
@@ -141,16 +181,12 @@ export function updateSearchableSelects(existingModalData = {}) {
       inputBox.dataset.selectedId = chosenId;
       hidden.value = chosenId;
 
-      // Update selected state
-      optionsWrapper.querySelectorAll('.select-option').forEach(opt => {
+      optionsList.querySelectorAll('.select-option').forEach(opt => {
         opt.classList.remove('selected');
       });
       e.target.classList.add('selected');
 
-      // Close dropdown and reset form-group z-index
-      optionsWrapper.classList.add('hidden');
-      inputBox.classList.remove('open');
-      container.closest('.form-group')?.style.removeProperty('z-index');
+      closeDropdown(optionsWrapper);
     });
   }
 
@@ -167,8 +203,16 @@ document.addEventListener('click', (e) => {
     document.querySelectorAll('.searchable-select .options').forEach(options => {
       options.classList.add('hidden');
       const inputBox = options.parentNode.querySelector('.select-input');
-      if (inputBox) {
-        inputBox.classList.remove('open');
+      if (inputBox) inputBox.classList.remove('open');
+      // Clear search state
+      const searchInput = options.querySelector('.select-search');
+      if (searchInput) {
+        searchInput.value = '';
+        options.querySelectorAll('.select-option').forEach(opt => {
+          opt.style.display = '';
+        });
+        const noResults = options.querySelector('.select-no-results');
+        if (noResults) noResults.classList.add('hidden');
       }
       options.closest('.form-group')?.style.removeProperty('z-index');
     });
