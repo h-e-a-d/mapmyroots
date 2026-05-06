@@ -818,8 +818,32 @@ export class TreeEngine {
         photoBase64: formData.photoBase64 || ''
       };
       
+      // Capture previous spouse before overwriting
+      const previousSpouseId = isEdit ? (this.personData.get(personId)?.spouseId || '') : '';
+
       // Store in personData map
       this.personData.set(personId, personData);
+
+      // Sync bidirectional spouse relationship
+      const newSpouseId = personData.spouseId;
+
+      // Clear old spouse's back-reference if spouse changed
+      if (previousSpouseId && previousSpouseId !== newSpouseId) {
+        const oldSpouse = this.personData.get(previousSpouseId);
+        if (oldSpouse && oldSpouse.spouseId === personId) {
+          oldSpouse.spouseId = '';
+          this.personData.set(previousSpouseId, oldSpouse);
+        }
+      }
+
+      // Set new spouse's back-reference
+      if (newSpouseId) {
+        const newSpouse = this.personData.get(newSpouseId);
+        if (newSpouse && newSpouse.spouseId !== personId) {
+          newSpouse.spouseId = personId;
+          this.personData.set(newSpouseId, newSpouse);
+        }
+      }
 
       // Emit analytics event for person created/updated
       const eventBus = appContext.getEventBus();
