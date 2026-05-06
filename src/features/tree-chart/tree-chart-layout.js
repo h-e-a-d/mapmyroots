@@ -1,4 +1,5 @@
 // tree-chart-layout.js — Layout primitives (pure)
+import { generateEdges } from './tree-chart-edges.js';
 import {
   NODE_WIDTH,
   NODE_HEIGHT,
@@ -460,7 +461,7 @@ export function runLayout(personData, options = {}) {
 
   return {
     nodes,
-    edges: [],
+    edges: generateEdges(personData, nodes, options.lineOnlyConnections || []),
     parking,
     bounds: { minX, minY, maxX, maxY }
   };
