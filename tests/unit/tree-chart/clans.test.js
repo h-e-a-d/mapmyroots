@@ -37,4 +37,17 @@ describe('detectClans', () => {
     expect(result.clanByPerson.get('maria')).toBe(result.clanByPerson.get('mariaMom'));
     expect(result.clanByPerson.get('john')).not.toBe(result.clanByPerson.get('maria'));
   });
+
+  it('merges two clans when they share a child', () => {
+    const johnDad = person({ id: 'johnDad' });
+    const john = person({ id: 'john', fatherId: 'johnDad' });
+    const mariaMom = person({ id: 'mariaMom' });
+    const maria = person({ id: 'maria', motherId: 'mariaMom' });
+    const anna = person({ id: 'anna', fatherId: 'john', motherId: 'maria' });
+    const map = buildPersonMap([johnDad, john, mariaMom, maria, anna]);
+
+    const result = detectClans(map);
+
+    expect(result.clanCount).toBe(1);
+  });
 });
