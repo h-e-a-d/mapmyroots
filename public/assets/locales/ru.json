@@ -291,8 +291,18 @@
       "zoom_out": "Уменьшить",
       "settings": "Открыть настройки",
       "toggle_view": "Переключить режим просмотра",
+      "view_graphic": "Графический вид",
+      "view_tree_chart": "Древо",
+      "view_table": "Таблица",
+      "view_selector_label": "Выберите режим просмотра",
       "undo": "Отменить последнее действие",
       "redo": "Повторить последнее действие"
+    },
+    "tree_chart": {
+      "parking_area": "Связи не определены",
+      "empty_state": "Добавьте первого человека, чтобы увидеть древо",
+      "lineage_announce": "Показана линия {name}: {ancestors} предков, {descendants} потомков",
+      "highlight_cleared": "Выделение снято"
     },
     "settings": {
       "title": "Настройки генеалогического древа",

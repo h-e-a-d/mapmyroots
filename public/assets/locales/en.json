@@ -401,8 +401,18 @@
       "zoom_out": "Zoom Out",
       "settings": "Open Settings",
       "toggle_view": "Toggle View Mode",
+      "view_graphic": "Graphic view",
+      "view_tree_chart": "Tree chart",
+      "view_table": "Table view",
+      "view_selector_label": "Choose view mode",
       "undo": "Undo Last Action",
       "redo": "Redo Last Action"
+    },
+    "tree_chart": {
+      "parking_area": "No relation defined",
+      "empty_state": "Add your first person to see the tree chart",
+      "lineage_announce": "Showing {name}'s lineage: {ancestors} ancestors, {descendants} descendants",
+      "highlight_cleared": "Highlight cleared"
     },
     "settings": {
       "title": "Family Tree Settings",

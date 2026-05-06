@@ -401,8 +401,18 @@
       "zoom_out": "Alejar",
       "settings": "Abrir Configuración",
       "toggle_view": "Cambiar Modo de Vista",
+      "view_graphic": "Vista gráfica",
+      "view_tree_chart": "Árbol genealógico",
+      "view_table": "Vista de tabla",
+      "view_selector_label": "Elegir modo de vista",
       "undo": "Deshacer Última Acción",
       "redo": "Rehacer Última Acción"
+    },
+    "tree_chart": {
+      "parking_area": "Sin relación definida",
+      "empty_state": "Añade a tu primera persona para ver el árbol",
+      "lineage_announce": "Mostrando el linaje de {name}: {ancestors} antepasados, {descendants} descendientes",
+      "highlight_cleared": "Resaltado eliminado"
     },
     "settings": {
       "title": "Configuración del Árbol Genealógico",

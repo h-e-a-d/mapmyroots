@@ -291,8 +291,18 @@
       "zoom_out": "Verkleinern",
       "settings": "Einstellungen öffnen",
       "toggle_view": "Ansichtsmodus wechseln",
+      "view_graphic": "Grafische Ansicht",
+      "view_tree_chart": "Stammbaum",
+      "view_table": "Tabellenansicht",
+      "view_selector_label": "Ansichtsmodus wählen",
       "undo": "Letzte Aktion rückgängig",
       "redo": "Letzte Aktion wiederholen"
+    },
+    "tree_chart": {
+      "parking_area": "Keine Beziehung definiert",
+      "empty_state": "Füge deine erste Person hinzu, um den Stammbaum zu sehen",
+      "lineage_announce": "Zeige {name}s Linie: {ancestors} Vorfahren, {descendants} Nachkommen",
+      "highlight_cleared": "Hervorhebung entfernt"
     },
     "settings": {
       "title": "Stammbaum-Einstellungen",
