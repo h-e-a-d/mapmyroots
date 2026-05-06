@@ -92,6 +92,19 @@ describe('groupIntoCouples', () => {
     expect(couples.length).toBe(1);
     expect(couples[0].members).toEqual(expect.arrayContaining(['a', 'b']));
   });
+
+  it('shares the same coupleByPerson Map instance across all couple entries', () => {
+    const a = person({ id: 'a', spouseId: 'b' });
+    const b = person({ id: 'b', spouseId: 'a' });
+    const c = person({ id: 'c' });
+    const map = buildPersonMap([a, b, c]);
+
+    const couples = groupIntoCouples(map);
+
+    expect(couples.length).toBe(2);
+    // All entries share the same Map object reference
+    expect(couples[0].coupleByPerson).toBe(couples[1].coupleByPerson);
+  });
 });
 
 describe('assignGenerations', () => {
@@ -124,5 +137,28 @@ describe('assignGenerations', () => {
 
     expect(Number.isFinite(gens.get('a'))).toBe(true);
     expect(Number.isFinite(gens.get('b'))).toBe(true);
+  });
+
+  it('pulls up multiple ancestor levels when shallower spouse has a 2-level chain', () => {
+    // John's chain: greatGrandJ -> grandJ -> dadJ -> john (gen 3)
+    // Maria's chain: mariaMom -> maria (gen 1 before merge)
+    // After merge: maria must be at gen 3, mariaMom at gen 2
+    const greatGrandJ = person({ id: 'greatGrandJ' });
+    const grandJ = person({ id: 'grandJ', fatherId: 'greatGrandJ' });
+    const dadJ = person({ id: 'dadJ', fatherId: 'grandJ' });
+    const john = person({ id: 'john', fatherId: 'dadJ', spouseId: 'maria' });
+    const mariaMom = person({ id: 'mariaMom' });
+    const maria = person({ id: 'maria', motherId: 'mariaMom', spouseId: 'john' });
+    const map = buildPersonMap([greatGrandJ, grandJ, dadJ, john, mariaMom, maria]);
+
+    const couples = groupIntoCouples(map);
+    const gens = assignGenerations(map, couples);
+
+    expect(gens.get('john')).toBe(gens.get('maria'));
+    expect(gens.get('john')).toBe(3);
+    expect(gens.get('mariaMom')).toBe(2);
+    expect(gens.get('dadJ')).toBe(2);
+    expect(gens.get('grandJ')).toBe(1);
+    expect(gens.get('greatGrandJ')).toBe(0);
   });
 });
