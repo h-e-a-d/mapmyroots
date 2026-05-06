@@ -198,23 +198,35 @@ export function initTreeChartView(containerEl) {
   });
   window.addEventListener('mouseup', () => { state.isPanning = false; });
 
-  // Zoom via wheel — scale by delta magnitude so trackpad gestures feel natural
-  svg.addEventListener('wheel', (ev) => {
-    ev.preventDefault();
+  // Zoom via wheel — one application per animation frame, direction only, fixed step.
+  // Batching all events in a frame into a single step prevents momentum-scroll stacking.
+  let zoomAccum = 0;
+  let zoomCursor = null; // {mx, my} from latest event
+  let zoomRaf = null;
+
+  function applyZoomFrame() {
+    zoomRaf = null;
+    if (!zoomAccum || !zoomCursor) return;
     const vb = svg.viewBox.baseVal;
-    // Normalize: cap per-event zoom at ~5% regardless of deltaY magnitude
-    const delta = Math.sign(ev.deltaY) * Math.min(Math.abs(ev.deltaY), 50);
-    const factor = Math.pow(1.002, delta);
+    const STEP = 1.07; // 7% per animation frame, regardless of scroll speed
+    const factor = zoomAccum > 0 ? STEP : 1 / STEP;
+    zoomAccum = 0;
+    const { mx, my } = zoomCursor;
     const rect = svg.getBoundingClientRect();
-    const mx = ev.clientX - rect.left;
-    const my = ev.clientY - rect.top;
     const px = vb.x + (mx / rect.width) * vb.width;
     const py = vb.y + (my / rect.height) * vb.height;
     const newW = vb.width * factor;
     const newH = vb.height * factor;
-    const newX = px - (mx / rect.width) * newW;
-    const newY = py - (my / rect.height) * newH;
-    svg.setAttribute('viewBox', `${newX} ${newY} ${newW} ${newH}`);
+    svg.setAttribute('viewBox',
+      `${px - (mx / rect.width) * newW} ${py - (my / rect.height) * newH} ${newW} ${newH}`);
+  }
+
+  svg.addEventListener('wheel', (ev) => {
+    ev.preventDefault();
+    zoomAccum += ev.deltaY;
+    zoomCursor = { mx: ev.clientX - svg.getBoundingClientRect().left,
+                   my: ev.clientY - svg.getBoundingClientRect().top };
+    if (!zoomRaf) zoomRaf = requestAnimationFrame(applyZoomFrame);
   }, { passive: false });
 
   if (state.visible) rebuild();
