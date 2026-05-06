@@ -314,6 +314,22 @@ function setupTopToolbar(treeCore) {
 
   function handleExport(treeCore, format) {
     try {
+      // If tree-chart view is active, route SVG/PNG exports to its SVG element
+      const treeChartView = document.getElementById('treeChartView');
+      const isTreeChartActive = treeChartView && !treeChartView.classList.contains('hidden');
+      if (isTreeChartActive) {
+        const svgEl = treeChartView.querySelector('svg');
+        if (format === 'svg') {
+          if (svgEl) exportSvgElement(svgEl, 'family-tree.svg');
+          return;
+        }
+        if (format === 'png' || format === 'png-transparent') {
+          if (svgEl) rasterizeSvgToPng(svgEl, format === 'png-transparent');
+          return;
+        }
+        // Other formats fall through to canvas-based export
+      }
+
       switch (format) {
         case 'svg':
           exportAsSVG(treeCore);
@@ -385,6 +401,49 @@ function setupTopToolbar(treeCore) {
     } else {
       showNotification('SVG export not implemented yet', 'warning');
     }
+  }
+
+  function exportSvgElement(svgEl, filename) {
+    const serializer = new XMLSerializer();
+    const xml = serializer.serializeToString(svgEl);
+    const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function rasterizeSvgToPng(svgEl, transparent) {
+    const serializer = new XMLSerializer();
+    const xml = serializer.serializeToString(svgEl);
+    const svgBlob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    const img = new Image();
+    img.onload = () => {
+      const vb = svgEl.viewBox.baseVal;
+      const canvas = document.createElement('canvas');
+      canvas.width = vb.width || 1200;
+      canvas.height = vb.height || 800;
+      const ctx = canvas.getContext('2d');
+      if (!transparent && ctx) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx?.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const dlUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = dlUrl;
+        a.download = transparent ? 'family-tree-transparent.png' : 'family-tree.png';
+        a.click();
+        URL.revokeObjectURL(dlUrl);
+      }, 'image/png');
+    };
+    img.src = url;
   }
 
   function exportAsGEDCOM(treeCore) {
