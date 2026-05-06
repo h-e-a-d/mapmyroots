@@ -50,4 +50,10 @@ describe('detectClans', () => {
 
     expect(result.clanCount).toBe(1);
   });
+
+  it('returns zero clans for an empty map', () => {
+    const result = detectClans(new Map());
+    expect(result.clanCount).toBe(0);
+    expect(result.clanByPerson.size).toBe(0);
+  });
 });
