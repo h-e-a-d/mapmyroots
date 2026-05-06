@@ -1,5 +1,11 @@
 // tree-chart-clans.js — Clan detection + color palette (pure)
 
+import {
+  CLAN_HUE_STEP_DEG,
+  CLAN_SATURATION,
+  CLAN_LIGHTNESS
+} from './tree-chart-config.js';
+
 /**
  * Connected components over parent-child edges only.
  * Spouses do NOT merge clans; shared children DO (handled naturally by the walk).
@@ -49,12 +55,6 @@ export function detectClans(personData) {
 
   return { clanByPerson, clanCount: nextClanId, clanSizes };
 }
-
-import {
-  CLAN_HUE_STEP_DEG,
-  CLAN_SATURATION,
-  CLAN_LIGHTNESS
-} from './tree-chart-config.js';
 
 /**
  * Assign a CSS HSL color string to each clan, ordered by size (largest first).
