@@ -130,17 +130,20 @@ export class TreeChartRenderer {
     for (const e of edges) {
       const key = `${e.fromId}|${e.toId}|${e.type}`;
       seen.add(key);
-      let pathEl = this._edgeEls.get(key);
-      if (!pathEl) {
-        pathEl = document.createElementNS(SVG_NS, 'path');
-        pathEl.setAttribute('class', `tc-edge tc-edge--${e.type}`);
-        pathEl.setAttribute('fill', 'none');
-        pathEl.dataset.fromId = e.fromId;
-        pathEl.dataset.toId = e.toId;
-        this.edgeLayer.appendChild(pathEl);
-        this._edgeEls.set(key, pathEl);
+      let el = this._edgeEls.get(key);
+      if (!el) {
+        el = e.type === 'spouse' ? this._buildSpouseEdge(e) : this._buildPathEdge(e);
+        this.edgeLayer.appendChild(el);
+        this._edgeEls.set(key, el);
       }
-      pathEl.setAttribute('d', e.path);
+      if (e.type === 'spouse') {
+        el.querySelector('path').setAttribute('d', e.path);
+        const dot = el.querySelector('circle');
+        dot.setAttribute('cx', e.dotX);
+        dot.setAttribute('cy', e.dotY);
+      } else {
+        el.setAttribute('d', e.path);
+      }
     }
     for (const [key, el] of this._edgeEls) {
       if (!seen.has(key)) {
@@ -148,6 +151,35 @@ export class TreeChartRenderer {
         this._edgeEls.delete(key);
       }
     }
+  }
+
+  _buildPathEdge(e) {
+    const path = document.createElementNS(SVG_NS, 'path');
+    const edgeClass = e.type === 'familyDrop' ? 'parent' : e.type;
+    path.setAttribute('class', `tc-edge tc-edge--${edgeClass}`);
+    path.setAttribute('fill', 'none');
+    path.dataset.fromId = e.fromId;
+    if (e.fromId2) path.dataset.fromId2 = e.fromId2;
+    path.dataset.toId = e.toId;
+    return path;
+  }
+
+  _buildSpouseEdge(e) {
+    const g = document.createElementNS(SVG_NS, 'g');
+    g.setAttribute('class', 'tc-edge tc-edge--spouse');
+    g.dataset.fromId = e.fromId;
+    g.dataset.toId = e.toId;
+
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('fill', 'none');
+    g.appendChild(path);
+
+    const circle = document.createElementNS(SVG_NS, 'circle');
+    circle.setAttribute('class', 'tc-spouse-dot');
+    circle.setAttribute('r', '5');
+    g.appendChild(circle);
+
+    return g;
   }
 
   _updateParkingDivider(layout, parkingLabel) {
@@ -185,9 +217,10 @@ export class TreeChartRenderer {
       el.classList.toggle('tc-on-line', bloodLine.has(id));
     }
     for (const [, el] of this._edgeEls) {
-      const a = bloodLine.has(el.dataset.fromId);
-      const b = bloodLine.has(el.dataset.toId);
-      el.classList.toggle('tc-on-line', a && b);
+      const fromOk = bloodLine.has(el.dataset.fromId) ||
+        !!(el.dataset.fromId2 && bloodLine.has(el.dataset.fromId2));
+      const toOk = bloodLine.has(el.dataset.toId);
+      el.classList.toggle('tc-on-line', fromOk && toOk);
     }
   }
 }

@@ -314,7 +314,7 @@ function setupTopToolbar(treeCore) {
 
   function handleExport(treeCore, format) {
     try {
-      // If tree-chart view is active, route SVG/PNG exports to its SVG element
+      // If tree-chart view is active, route image/vector exports to its SVG element
       const treeChartView = document.getElementById('treeChartView');
       const isTreeChartActive = treeChartView && !treeChartView.classList.contains('hidden');
       if (isTreeChartActive) {
@@ -324,10 +324,18 @@ function setupTopToolbar(treeCore) {
           return;
         }
         if (format === 'png' || format === 'png-transparent') {
-          if (svgEl) rasterizeSvgToPng(svgEl, format === 'png-transparent');
+          if (svgEl) rasterizeSvgToImage(svgEl, 'png', format === 'png-transparent');
           return;
         }
-        // Other formats fall through to canvas-based export
+        if (format === 'jpeg') {
+          if (svgEl) rasterizeSvgToImage(svgEl, 'jpeg', false);
+          return;
+        }
+        if (format === 'pdf') {
+          showNotification('PDF export is not available in tree chart view', 'warning');
+          return;
+        }
+        // GEDCOM falls through — data export, view-independent
       }
 
       switch (format) {
@@ -403,9 +411,30 @@ function setupTopToolbar(treeCore) {
     }
   }
 
+  function getTreeChartCss() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      try {
+        for (const rule of sheet.cssRules) {
+          if (rule.selectorText?.includes('tc-')) rules.push(rule.cssText);
+        }
+      } catch (_) { /* cross-origin sheet */ }
+    }
+    return rules.join('\n');
+  }
+
+  function cloneSvgWithStyles(svgEl) {
+    const clone = svgEl.cloneNode(true);
+    const styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+    styleEl.textContent = getTreeChartCss();
+    clone.insertBefore(styleEl, clone.firstChild);
+    return clone;
+  }
+
   function exportSvgElement(svgEl, filename) {
+    const clone = cloneSvgWithStyles(svgEl);
     const serializer = new XMLSerializer();
-    const xml = serializer.serializeToString(svgEl);
+    const xml = serializer.serializeToString(clone);
     const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -413,11 +442,13 @@ function setupTopToolbar(treeCore) {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+    showNotification('Exported as SVG', 'success');
   }
 
-  function rasterizeSvgToPng(svgEl, transparent) {
+  function rasterizeSvgToImage(svgEl, format, transparent) {
+    const clone = cloneSvgWithStyles(svgEl);
     const serializer = new XMLSerializer();
-    const xml = serializer.serializeToString(svgEl);
+    const xml = serializer.serializeToString(clone);
     const svgBlob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
     const img = new Image();
@@ -427,21 +458,27 @@ function setupTopToolbar(treeCore) {
       canvas.width = vb.width || 1200;
       canvas.height = vb.height || 800;
       const ctx = canvas.getContext('2d');
-      if (!transparent && ctx) {
+      const isJpeg = format === 'jpeg';
+      if ((!transparent || isJpeg) && ctx) {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
       ctx?.drawImage(img, 0, 0);
       URL.revokeObjectURL(url);
+      const mimeType = isJpeg ? 'image/jpeg' : 'image/png';
+      const ext = isJpeg ? 'jpg' : 'png';
+      const suffix = transparent ? '-transparent' : '';
       canvas.toBlob((blob) => {
         if (!blob) return;
         const dlUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = dlUrl;
-        a.download = transparent ? 'family-tree-transparent.png' : 'family-tree.png';
+        a.download = `family-tree${suffix}.${ext}`;
         a.click();
         URL.revokeObjectURL(dlUrl);
-      }, 'image/png');
+        const label = isJpeg ? 'JPEG' : transparent ? 'PNG (transparent)' : 'PNG';
+        showNotification(`Exported as ${label}`, 'success');
+      }, mimeType, isJpeg ? 0.92 : undefined);
     };
     img.src = url;
   }

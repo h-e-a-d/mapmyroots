@@ -1,14 +1,12 @@
 // tree-chart-edges.js — Edge path string generation (pure)
 
-import { ROW_HEIGHT } from './tree-chart-config.js';
-
 /**
  * Generate SVG path strings for parent-child, spouse, and line-only edges.
  *
  * @param {Map<string, Person>} personData
  * @param {Map<string, { x, y, width, height, isParked }>} nodes
  * @param {Array<{ from: string, to: string }>} lineOnlyConnections
- * @returns {Array<{ fromId, toId, type, path }>}
+ * @returns {Array<{ fromId, toId, type, path, dotX?, dotY?, fromId2? }>}
  */
 export function generateEdges(personData, nodes, lineOnlyConnections = []) {
   const edges = [];
@@ -18,16 +16,33 @@ export function generateEdges(personData, nodes, lineOnlyConnections = []) {
     const childNode = nodes.get(id);
     if (!childNode || childNode.isParked) continue;
 
-    for (const parentId of [p.fatherId, p.motherId]) {
-      if (!parentId) continue;
-      const parentNode = nodes.get(parentId);
-      if (!parentNode || parentNode.isParked) continue;
+    const fatherNode = p.fatherId ? nodes.get(p.fatherId) : null;
+    const motherNode = p.motherId ? nodes.get(p.motherId) : null;
+    const fatherOk = fatherNode && !fatherNode.isParked;
+    const motherOk = motherNode && !motherNode.isParked;
+
+    const parentsAreCouple = fatherOk && motherOk && (
+      personData.get(p.fatherId)?.spouseId === p.motherId ||
+      personData.get(p.motherId)?.spouseId === p.fatherId
+    );
+
+    if (parentsAreCouple) {
+      const mx = (fatherNode.x + fatherNode.width / 2 + motherNode.x + motherNode.width / 2) / 2;
+      const my = fatherNode.y + fatherNode.height / 2;
       edges.push({
-        fromId: parentId,
+        fromId: p.fatherId,
+        fromId2: p.motherId,
         toId: id,
-        type: 'parent',
-        path: elbowPath(parentNode, childNode)
+        type: 'familyDrop',
+        path: coupleDropPath(mx, my, childNode)
       });
+    } else {
+      if (fatherOk) {
+        edges.push({ fromId: p.fatherId, toId: id, type: 'parent', path: elbowPath(fatherNode, childNode) });
+      }
+      if (motherOk) {
+        edges.push({ fromId: p.motherId, toId: id, type: 'parent', path: elbowPath(motherNode, childNode) });
+      }
     }
 
     if (p.spouseId) {
@@ -36,11 +51,15 @@ export function generateEdges(personData, nodes, lineOnlyConnections = []) {
         const key = [id, p.spouseId].sort().join('|');
         if (!seenSpouse.has(key)) {
           seenSpouse.add(key);
+          const dotX = (childNode.x + childNode.width / 2 + spouseNode.x + spouseNode.width / 2) / 2;
+          const dotY = childNode.y + childNode.height / 2;
           edges.push({
             fromId: id,
             toId: p.spouseId,
             type: 'spouse',
-            path: spousePath(childNode, spouseNode)
+            path: spousePath(childNode, spouseNode),
+            dotX,
+            dotY
           });
         }
       }
@@ -69,6 +88,13 @@ function elbowPath(parent, child) {
   const cy = child.y;
   const busY = py + (cy - py) / 2;
   return `M ${px} ${py} L ${px} ${busY} L ${cx} ${busY} L ${cx} ${cy}`;
+}
+
+function coupleDropPath(mx, my, child) {
+  const cx = child.x + child.width / 2;
+  const cy = child.y;
+  const busY = my + (cy - my) / 2;
+  return `M ${mx} ${my} L ${mx} ${busY} L ${cx} ${busY} L ${cx} ${cy}`;
 }
 
 function spousePath(a, b) {

@@ -59,6 +59,10 @@
   stroke: #e74c3c;
   stroke-dasharray: 6 4;
 }
+.tc-spouse-dot {
+  fill: #e74c3c;
+  stroke: none;
+}
 .tc-edge--lineOnly {
   stroke: #9b59b6;
   stroke-dasharray: 4 2 1 2;
