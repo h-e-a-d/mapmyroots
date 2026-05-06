@@ -5,6 +5,7 @@ import {
   NODE_GAP_X,
   COUPLE_GAP,
   ROW_HEIGHT,
+  CLUSTER_GAP,
   PARKING_GAP,
   PARKING_NODE_GAP_X,
   PARKING_NODE_GAP_Y
@@ -357,5 +358,110 @@ export function layoutParking(parkedIds, personData, chartBounds) {
     y: top,
     height: lastY + NODE_HEIGHT - top,
     items
+  };
+}
+
+/**
+ * Top-level layout entry point. Orchestrates all layout phases.
+ *
+ * @param {Map<string, Person>} personData
+ * @param {{ hasLineOnly?: Set<string>, clanData?: { clanByPerson: Map<string, number> }, lineOnlyConnections?: Array }} [options]
+ * @returns {{ nodes: Map<string, NodeData>, edges: Array, parking: Object|null, bounds: Object }}
+ */
+export function runLayout(personData, options = {}) {
+  const { hasLineOnly = new Set(), clanData } = options;
+
+  const clusters = detectClusters(personData);
+  const parkedSet = assignParking(personData, hasLineOnly);
+  const couples = groupIntoCouples(personData);
+  const generations = assignGenerations(personData, couples);
+
+  // Group person ids by clusterId, excluding parked
+  const clusterMembers = new Map();
+  for (const [id, clusterId] of clusters.clusterByPerson) {
+    if (parkedSet.has(id)) continue;
+    if (!clusterMembers.has(clusterId)) clusterMembers.set(clusterId, new Set());
+    clusterMembers.get(clusterId).add(id);
+  }
+
+  // Sort clusters by size, largest first
+  const orderedClusterIds = Array.from(clusterMembers.entries())
+    .sort((a, b) => b[1].size - a[1].size)
+    .map(([id]) => id);
+
+  const nodes = new Map();
+  let cursorX = 0;
+  let chartMinY = Infinity;
+  let chartMaxY = -Infinity;
+
+  for (const clusterId of orderedClusterIds) {
+    const members = clusterMembers.get(clusterId);
+    const clusterPositions = layoutCluster(personData, couples, generations, members);
+    if (clusterPositions.size === 0) continue;
+
+    let localMinX = Infinity, localMaxX = -Infinity, localMinY = Infinity, localMaxY = -Infinity;
+    for (const [, pos] of clusterPositions) {
+      if (pos.x < localMinX) localMinX = pos.x;
+      if (pos.x + pos.width > localMaxX) localMaxX = pos.x + pos.width;
+      if (pos.y < localMinY) localMinY = pos.y;
+      if (pos.y + pos.height > localMaxY) localMaxY = pos.y + pos.height;
+    }
+
+    const dx = cursorX - localMinX;
+    for (const [pid, pos] of clusterPositions) {
+      nodes.set(pid, {
+        x: pos.x + dx,
+        y: pos.y,
+        width: pos.width,
+        height: pos.height,
+        generation: generations.get(pid) ?? 0,
+        clusterId,
+        clanId: clanData?.clanByPerson.get(pid) ?? null,
+        isParked: false
+      });
+    }
+    if (localMinY < chartMinY) chartMinY = localMinY;
+    if (localMaxY > chartMaxY) chartMaxY = localMaxY;
+    cursorX += (localMaxX - localMinX) + CLUSTER_GAP;
+  }
+
+  if (!Number.isFinite(chartMinY)) { chartMinY = 0; chartMaxY = 0; }
+  const chartMaxX = cursorX > 0 ? cursorX - CLUSTER_GAP : 0;
+
+  const parkedIds = Array.from(parkedSet);
+  const parking = layoutParking(
+    parkedIds,
+    personData,
+    { minX: 0, minY: chartMinY, maxX: chartMaxX, maxY: chartMaxY }
+  );
+  if (parking) {
+    for (const item of parking.items) {
+      nodes.set(item.id, {
+        x: item.x,
+        y: item.y,
+        width: NODE_WIDTH,
+        height: NODE_HEIGHT,
+        generation: null,
+        clusterId: null,
+        clanId: clanData?.clanByPerson.get(item.id) ?? null,
+        isParked: true
+      });
+    }
+  }
+
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const [, n] of nodes) {
+    if (n.x < minX) minX = n.x;
+    if (n.y < minY) minY = n.y;
+    if (n.x + n.width > maxX) maxX = n.x + n.width;
+    if (n.y + n.height > maxY) maxY = n.y + n.height;
+  }
+  if (!Number.isFinite(minX)) { minX = 0; minY = 0; maxX = 0; maxY = 0; }
+
+  return {
+    nodes,
+    edges: [],
+    parking,
+    bounds: { minX, minY, maxX, maxY }
   };
 }

@@ -245,3 +245,43 @@ describe('layoutCluster', () => {
     expect(right1 + NODE_WIDTH).toBeLessThanOrEqual(left2);
   });
 });
+
+import { runLayout } from '../../../src/features/tree-chart/tree-chart-layout.js';
+import { CLUSTER_GAP } from '../../../src/features/tree-chart/tree-chart-config.js';
+
+describe('runLayout', () => {
+  it('produces nodes, parking, bounds for a 2-cluster + 1-parked tree', () => {
+    const fa = person({ id: 'fa' });
+    const fa1 = person({ id: 'fa1', fatherId: 'fa' });
+    const fb = person({ id: 'fb' });
+    const fb1 = person({ id: 'fb1', motherId: 'fb' });
+    const lone = person({ id: 'lone' });
+    const map = buildPersonMap([fa, fa1, fb, fb1, lone]);
+
+    const layout = runLayout(map);
+
+    expect(layout.nodes.size).toBe(5);
+    expect(layout.parking).not.toBeNull();
+    expect(layout.parking.items.length).toBe(1);
+    expect(layout.parking.items[0].id).toBe('lone');
+    expect(layout.bounds.minX).toBeLessThanOrEqual(layout.nodes.get('fa').x);
+    expect(layout.bounds.maxX).toBeGreaterThanOrEqual(layout.nodes.get('fb').x);
+  });
+
+  it('places clusters side-by-side, larger first', () => {
+    const a1 = person({ id: 'a1' });
+    const a2 = person({ id: 'a2', fatherId: 'a1' });
+    const a3 = person({ id: 'a3', fatherId: 'a2' });
+    const b1 = person({ id: 'b1' });
+    const b2 = person({ id: 'b2', fatherId: 'b1' });
+    const map = buildPersonMap([a1, a2, a3, b1, b2]);
+
+    const layout = runLayout(map);
+
+    const aXs = ['a1', 'a2', 'a3'].map(id => layout.nodes.get(id).x);
+    const bXs = ['b1', 'b2'].map(id => layout.nodes.get(id).x);
+    const maxA = Math.max(...aXs);
+    const minB = Math.min(...bXs);
+    expect(maxA).toBeLessThan(minB);
+  });
+});
