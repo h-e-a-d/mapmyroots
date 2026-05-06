@@ -108,39 +108,49 @@ export function updateSearchableSelects(existingModalData = {}) {
     // Clicking on inputBox toggles options
     inputBox.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Close other open dropdowns
+      // Close other open dropdowns and reset their form-group z-index
       document.querySelectorAll('.searchable-select .options').forEach(opt => {
         if (opt !== optionsWrapper) {
           opt.classList.add('hidden');
           opt.parentNode.querySelector('.select-input').classList.remove('open');
+          opt.closest('.form-group')?.style.removeProperty('z-index');
         }
       });
-      
+
       optionsWrapper.classList.toggle('hidden');
       inputBox.classList.toggle('open');
+
+      // The fadeInUp animation leaves transform: translateY(0) on each .form-group,
+      // which creates a stacking context that isolates z-index values inside it.
+      // Elevating the open dropdown's form-group lets it paint above sibling form-groups.
+      const formGroup = container.closest('.form-group');
+      if (formGroup) {
+        formGroup.style.zIndex = optionsWrapper.classList.contains('hidden') ? '' : '100';
+      }
     });
 
     // When clicking an option:
     optionsWrapper.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!e.target.classList.contains('select-option')) return;
-      
+
       const chosenId = e.target.dataset.id;
       const labelText = e.target.textContent.trim();
-      
+
       inputBox.textContent = labelText;
       inputBox.dataset.selectedId = chosenId;
       hidden.value = chosenId;
-      
+
       // Update selected state
       optionsWrapper.querySelectorAll('.select-option').forEach(opt => {
         opt.classList.remove('selected');
       });
       e.target.classList.add('selected');
-      
-      // Close dropdown
+
+      // Close dropdown and reset form-group z-index
       optionsWrapper.classList.add('hidden');
       inputBox.classList.remove('open');
+      container.closest('.form-group')?.style.removeProperty('z-index');
     });
   }
 
@@ -160,6 +170,7 @@ document.addEventListener('click', (e) => {
       if (inputBox) {
         inputBox.classList.remove('open');
       }
+      options.closest('.form-group')?.style.removeProperty('z-index');
     });
   }
 });
