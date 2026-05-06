@@ -165,6 +165,37 @@ describe('assignGenerations', () => {
   });
 });
 
+import { layoutParking } from '../../../src/features/tree-chart/tree-chart-layout.js';
+import { PARKING_GAP, PARKING_NODE_GAP_X, PARKING_NODE_GAP_Y, NODE_WIDTH, NODE_HEIGHT }
+  from '../../../src/features/tree-chart/tree-chart-config.js';
+
+describe('layoutParking', () => {
+  it('returns null when there are no parked persons', () => {
+    expect(layoutParking([], new Map(), { minX: 0, maxX: 100, minY: 0, maxY: 100 }))
+      .toBeNull();
+  });
+
+  it('places parked persons in a left-to-right grid below the chart', () => {
+    const parked = ['p1', 'p2', 'p3'];
+    const personData = buildPersonMap([
+      person({ id: 'p1', name: 'Alpha' }),
+      person({ id: 'p2', name: 'Bravo' }),
+      person({ id: 'p3', name: 'Charlie' })
+    ]);
+    const chartBounds = { minX: 0, minY: 0, maxX: 500, maxY: 100 };
+
+    const result = layoutParking(parked, personData, chartBounds);
+
+    expect(result).not.toBeNull();
+    expect(result.items.length).toBe(3);
+    expect(result.items[0].y).toBe(100 + PARKING_GAP);
+    expect(result.items[0].id).toBe('p1');
+    expect(result.items[1].id).toBe('p2');
+    expect(result.items[2].id).toBe('p3');
+    expect(result.items[1].x - result.items[0].x).toBe(NODE_WIDTH + PARKING_NODE_GAP_X);
+  });
+});
+
 describe('layoutCluster', () => {
   it('lays out a 3-generation chain top-down', () => {
     const grand = person({ id: 'grand' });

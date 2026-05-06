@@ -4,7 +4,10 @@ import {
   NODE_HEIGHT,
   NODE_GAP_X,
   COUPLE_GAP,
-  ROW_HEIGHT
+  ROW_HEIGHT,
+  PARKING_GAP,
+  PARKING_NODE_GAP_X,
+  PARKING_NODE_GAP_Y
 } from './tree-chart-config.js';
 
 /**
@@ -314,4 +317,45 @@ export function layoutCluster(personData, couples, generations, includeIds) {
     }
   }
   return positions;
+}
+
+/**
+ * Position parked persons in a grid below the chart, alphabetical by name.
+ *
+ * @param {string[]} parkedIds
+ * @param {Map<string, Person>} personData
+ * @param {{ minX: number, minY: number, maxX: number, maxY: number }} chartBounds
+ * @returns {{ y: number, height: number, items: Array<{ id, x, y }> } | null}
+ */
+export function layoutParking(parkedIds, personData, chartBounds) {
+  if (parkedIds.length === 0) return null;
+
+  const sorted = [...parkedIds].sort((a, b) => {
+    const na = (personData.get(a)?.name || '').toLowerCase();
+    const nb = (personData.get(b)?.name || '').toLowerCase();
+    return na.localeCompare(nb);
+  });
+
+  const left = chartBounds.minX;
+  const top = chartBounds.maxY + PARKING_GAP;
+  const maxRowWidth = Math.max(chartBounds.maxX - chartBounds.minX, NODE_WIDTH);
+
+  const items = [];
+  let rowX = left;
+  let y = top;
+  for (const id of sorted) {
+    if (rowX > left && rowX + NODE_WIDTH > left + maxRowWidth) {
+      rowX = left;
+      y += NODE_HEIGHT + PARKING_NODE_GAP_Y;
+    }
+    items.push({ id, x: rowX, y });
+    rowX += NODE_WIDTH + PARKING_NODE_GAP_X;
+  }
+
+  const lastY = items[items.length - 1].y;
+  return {
+    y: top,
+    height: lastY + NODE_HEIGHT - top,
+    items
+  };
 }
