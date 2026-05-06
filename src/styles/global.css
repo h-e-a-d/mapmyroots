@@ -2677,8 +2677,15 @@ html, body {
   border-radius: 8px;
   padding: 2px;
 }
-.view-selector .view-btn { background: transparent; }
+.view-selector .view-btn {
+  background: transparent;
+  color: #6b7280;
+}
+.view-selector .view-btn:hover {
+  transform: none;
+}
 .view-selector .view-btn.active {
   background: var(--surface, #fff);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: #3498db;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
