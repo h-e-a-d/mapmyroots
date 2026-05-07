@@ -36,7 +36,8 @@ export class TreeEngine {
     this.displayPreferences = {
       showMaidenName: true,
       showDateOfBirth: true,
-      showFatherName: true
+      showFatherName: true,
+      showPhotos: true
     };
     
     // Node style

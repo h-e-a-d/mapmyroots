@@ -88,7 +88,8 @@ export class CanvasRenderer {
     this.displayPreferences = {
       showMaidenName: true,
       showDateOfBirth: true,
-      showFatherName: true
+      showFatherName: true,
+      showPhotos: true
     };
     
     this.init();
