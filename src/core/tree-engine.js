@@ -2008,7 +2008,10 @@ export class TreeEngine {
       
       // Restore display preferences
       if (data.displayPreferences) {
-        this.displayPreferences = { ...data.displayPreferences };
+        this.displayPreferences = { ...this.displayPreferences, ...data.displayPreferences };
+        if (this.renderer) {
+          this.renderer.updateDisplayPreferences(this.displayPreferences);
+        }
       }
       
       // Restore node style
