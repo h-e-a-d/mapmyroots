@@ -1146,7 +1146,8 @@ export class CanvasRenderer {
       ctx.fill();
     }
     
-    const img = this._getNodeImage(id, node);
+    const showPhotos = this.displayPreferences.showPhotos !== false;
+    const img = showPhotos ? this._getNodeImage(id, node) : null;
     if (img && img.complete && img.naturalWidth > 0) {
       ctx.save();
       ctx.beginPath();
@@ -1156,7 +1157,7 @@ export class CanvasRenderer {
       ctx.restore();
     }
 
-    if (!node.photoBase64) {
+    if (!node.photoBase64 || !showPhotos) {
       this.drawNodeText(ctx, node, radius * 1.8);
     }
   }
