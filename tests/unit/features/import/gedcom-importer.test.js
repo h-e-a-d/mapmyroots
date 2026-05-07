@@ -42,14 +42,15 @@ describe('importFromGedcom', () => {
 
   it('preserves ABT date qualifiers', () => {
     const { persons } = importFromGedcom(fixture('edge-cases.ged'));
-    const abt = persons.find(p => p.dob?.includes('ABT') || p.dob?.includes('abt'));
-    expect(abt).toBeDefined();
+    const pierre = persons.find(p => p.name === 'Pierre');
+    expect(pierre?.birth?.date?.estimated).toBe(true);
   });
 
   it('preserves BEF date qualifiers', () => {
     const { persons } = importFromGedcom(fixture('edge-cases.ged'));
-    const bef = persons.find(p => p.dob?.includes('BEF'));
-    expect(bef).toBeDefined();
+    const heinrich = persons.find(p => p.name === 'Heinrich');
+    expect(heinrich?.birth?.date?.year).toBeDefined();
+    expect(heinrich?.birth?.date?.estimated).toBe(true);
   });
 
   it('handles missing SEX tag gracefully (empty gender)', () => {
