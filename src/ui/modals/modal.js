@@ -7,6 +7,10 @@ import { updateSearchableSelects } from '../components/searchableSelect.js';
 import { SecurityUtils, DOMUtils } from '../../utils/security-utils.js';
 import { RetryManager } from '../../utils/error-handling.js';
 import { appContext, EVENTS } from '../../utils/event-bus.js';
+import { createDateInput } from '../components/date-input.js';
+import { setupInlineReveal } from '../components/inline-reveal.js';
+import { createMarriagesList } from '../components/marriages-list.js';
+import { isValidDateValue } from '../../utils/date-value.js';
 
 let isModalOpen = false;
 let currentEditingId = null;
@@ -185,26 +189,51 @@ function getPersonInitials(name) {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
+let birthDateHandle = null;
+let deathDateHandle = null;
+let marriagesListHandle = null;
+
 // Helper function to populate form fields
 function populateFormFields(node, personData) {
   document.getElementById('personName').value = node?.name || personData?.name || '';
   document.getElementById('personFatherName').value = node?.fatherName || personData?.fatherName || '';
   document.getElementById('personSurname').value = node?.surname || personData?.surname || '';
   document.getElementById('personMaidenName').value = node?.maidenName || personData?.maidenName || '';
-  document.getElementById('personDob').value = node?.dob || personData?.dob || '';
 
-  // Handle gender radio buttons with enhanced UX
   const gender = node?.gender || personData?.gender || '';
   const maleRadio = document.getElementById('genderMale');
   const femaleRadio = document.getElementById('genderFemale');
-
   if (maleRadio && femaleRadio) {
     maleRadio.checked = gender === 'male';
     femaleRadio.checked = gender === 'female';
-
-    // Add visual feedback for pre-selected option
     updateGenderRadioStyles();
   }
+
+  const birth = personData?.birth || { date: null, place: '', note: '' };
+  const death = personData?.death || { date: null, place: '', note: '' };
+  mountEvent('Birth', birth, (h) => { birthDateHandle = h; });
+  mountEvent('Death', death, (h) => { deathDateHandle = h; });
+
+  const allPersons = Array.from(window.treeCore?.personData?.values() || []);
+  const marriagesMount = document.getElementById('personMarriagesMount');
+  if (marriagesMount) {
+    marriagesMount.innerHTML = '';
+    marriagesListHandle = createMarriagesList({
+      container: marriagesMount,
+      marriages: Array.isArray(personData?.marriages) ? personData.marriages : [],
+      getAllPersons: () => Array.from(window.treeCore?.personData?.values() || []),
+      currentPersonId: personData?.id || node?.id || '',
+      confirmSpouseChange: showSpouseChangeConfirmation,
+      t
+    });
+  }
+
+  const notesEl = document.getElementById('personNotes');
+  if (notesEl) notesEl.value = personData?.notes || '';
+  setupInlineReveal({
+    trigger: document.getElementById('personNotesReveal'),
+    target: document.getElementById('personNotesWrapper')
+  });
 
   const storedPhoto = personData?.photoBase64 || '';
   const photoPreview = document.getElementById('personPhotoPreview');
@@ -224,6 +253,41 @@ function populateFormFields(node, personData) {
       if (photoPlaceholder) photoPlaceholder.hidden = false;
       if (removeBtn) removeBtn.hidden = true;
     }
+  }
+}
+
+function mountEvent(kind, event, setHandle) {
+  const dateMount = document.getElementById(`person${kind}DateMount`);
+  if (dateMount) {
+    dateMount.innerHTML = '';
+    const handle = createDateInput({ idPrefix: `person${kind}`, container: dateMount });
+    handle.setValue(isValidDateValue(event.date) ? event.date : null);
+    setHandle(handle);
+  }
+
+  const placeInput = document.getElementById(`person${kind}Place`);
+  if (placeInput) placeInput.value = event.place || '';
+  setupInlineReveal({
+    trigger: document.getElementById(`person${kind}PlaceReveal`),
+    target: document.getElementById(`person${kind}PlaceWrapper`)
+  });
+
+  const noteInput = document.getElementById(`person${kind}Note`);
+  if (noteInput) noteInput.value = event.note || '';
+  setupInlineReveal({
+    trigger: document.getElementById(`person${kind}NoteReveal`),
+    target: document.getElementById(`person${kind}NoteWrapper`)
+  });
+}
+
+function showSpouseChangeConfirmation({ previousSpouseId, newSpouseId, confirm, cancel }) {
+  const oldSpouse = window.treeCore?.personData?.get(previousSpouseId);
+  const oldName = oldSpouse ? `${oldSpouse.name || ''} ${oldSpouse.surname || ''}`.trim() : t('builder.notifications.unknown_person', 'Unknown');
+  const message = t('builder.modals.confirm_change_spouse.body', `Changing the spouse will remove this marriage from {{name}}'s record. Continue?`).replace('{{name}}', oldName);
+  if (window.confirm(message)) {
+    confirm();
+  } else {
+    cancel();
   }
 }
 
@@ -348,29 +412,39 @@ export function closeModal() {
 
 function clearForm() {
   const form = document.getElementById('personForm');
-  if (form) {
-    form.reset();
-  }
+  if (form) form.reset();
 
-  // Clear individual inputs manually as well
-  const inputs = ['personName', 'personFatherName', 'personSurname', 'personMaidenName', 'personDob'];
-  inputs.forEach(inputId => {
-    const input = document.getElementById(inputId);
-    if (input) input.value = '';
+  ['personName', 'personFatherName', 'personSurname', 'personMaidenName'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
   });
 
-  // Clear radio buttons with enhanced UX
+  if (birthDateHandle) birthDateHandle.setValue(null);
+  if (deathDateHandle) deathDateHandle.setValue(null);
+  ['personBirthPlace', 'personBirthNote', 'personDeathPlace', 'personDeathNote', 'personNotes'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['personBirthPlaceWrapper', 'personBirthNoteWrapper', 'personDeathPlaceWrapper', 'personDeathNoteWrapper', 'personNotesWrapper'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = true;
+  });
+  ['personBirthPlaceReveal', 'personBirthNoteReveal', 'personDeathPlaceReveal', 'personDeathNoteReveal', 'personNotesReveal'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = false;
+  });
+
+  const marriagesMount = document.getElementById('personMarriagesMount');
+  if (marriagesMount) marriagesMount.innerHTML = '';
+  marriagesListHandle = null;
+
   const maleRadio = document.getElementById('genderMale');
   const femaleRadio = document.getElementById('genderFemale');
   if (maleRadio) maleRadio.checked = false;
   if (femaleRadio) femaleRadio.checked = false;
-  
   updateGenderRadioStyles();
-  
-  // Clear error states
   clearErrorStates();
 
-  // Reset photo fields
   const photoBase64Input = document.getElementById('personPhotoBase64');
   const photoPreview = document.getElementById('personPhotoPreview');
   const photoPlaceholder = document.getElementById('personPhotoPlaceholder');
@@ -518,7 +592,18 @@ function validateForm() {
     });
     isValid = false;
   }
-  
+
+  const dateInvalid = (birthDateHandle?.isInvalid?.()) ||
+    (deathDateHandle?.isInvalid?.()) ||
+    (marriagesListHandle?.hasInvalidDate?.());
+  if (dateInvalid) {
+    errors.push({
+      field: document.querySelector('.date-input-text[aria-invalid="true"]') || document.getElementById('personBirthDate'),
+      message: t('builder.validation.invalid_date_format', 'Use dd.mm.yyyy or yyyy.')
+    });
+    isValid = false;
+  }
+
   // Show errors with enhanced UX and animations
   if (!isValid) {
     showValidationErrors(errors);
@@ -757,16 +842,28 @@ document.addEventListener('DOMContentLoaded', () => {
       devLog('Form validation passed, triggering save');
       
       // Get form data
+      const birthVal = birthDateHandle?.getValue?.() || null;
+      const deathVal = deathDateHandle?.getValue?.() || null;
       const formData = {
         name: document.getElementById('personName')?.value.trim() || '',
         fatherName: document.getElementById('personFatherName')?.value.trim() || '',
         surname: document.getElementById('personSurname')?.value.trim() || '',
         maidenName: document.getElementById('personMaidenName')?.value.trim() || '',
-        dob: document.getElementById('personDob')?.value.trim() || '',
         gender: getSelectedGender(),
         motherId: document.querySelector('#motherSelect input[type="hidden"]')?.value || '',
         fatherId: document.querySelector('#fatherSelect input[type="hidden"]')?.value || '',
-        spouseId: document.querySelector('#spouseSelect input[type="hidden"]')?.value || '',
+        birth: {
+          date: birthVal,
+          place: document.getElementById('personBirthPlace')?.value.trim() || '',
+          note: document.getElementById('personBirthNote')?.value.trim() || ''
+        },
+        death: {
+          date: deathVal,
+          place: document.getElementById('personDeathPlace')?.value.trim() || '',
+          note: document.getElementById('personDeathNote')?.value.trim() || ''
+        },
+        marriages: marriagesListHandle ? marriagesListHandle.getValue() : [],
+        notes: document.getElementById('personNotes')?.value.trim() || '',
         editingId: modal.dataset.editingId || null,
         photoBase64: document.getElementById('personPhotoBase64')?.value || ''
       };
