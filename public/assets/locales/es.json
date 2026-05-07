@@ -423,6 +423,7 @@
       "show_maiden_name": "Mostrar Apellido de Soltera",
       "show_date_of_birth": "Mostrar Fecha de Nacimiento",
       "show_father_name": "Mostrar Nombre del Padre",
+      "show_photos": "Mostrar Fotos",
       "node_appearance": "Apariencia del Nodo",
       "node_color": "Color del Nodo:",
       "node_size": "Tamaño del Nodo:",
