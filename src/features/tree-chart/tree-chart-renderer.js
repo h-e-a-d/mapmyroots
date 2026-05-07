@@ -86,6 +86,11 @@ export class TreeChartRenderer {
     label.setAttribute('text-anchor', 'middle');
     g.appendChild(label);
 
+    const sublabel = document.createElementNS(SVG_NS, 'text');
+    sublabel.setAttribute('class', 'tc-node-sublabel');
+    sublabel.setAttribute('text-anchor', 'middle');
+    g.appendChild(sublabel);
+
     return g;
   }
 
@@ -96,16 +101,17 @@ export class TreeChartRenderer {
     const ring = g.querySelector('.tc-node-ring');
     const body = g.querySelector('.tc-node-body');
     const label = g.querySelector('.tc-node-label');
+    const sublabel = g.querySelector('.tc-node-sublabel');
 
     body.setAttribute('width', n.width);
     body.setAttribute('height', n.height);
-    body.setAttribute('rx', '8');
+    body.setAttribute('rx', '10');
 
     ring.setAttribute('x', '-4');
     ring.setAttribute('y', '-4');
     ring.setAttribute('width', n.width + 8);
     ring.setAttribute('height', n.height + 8);
-    ring.setAttribute('rx', '12');
+    ring.setAttribute('rx', '14');
 
     if (n.clanId !== null && clanColors.has(n.clanId)) {
       g.dataset.clan = String(n.clanId);
@@ -117,9 +123,27 @@ export class TreeChartRenderer {
 
     const p = personData.get(id) || {};
     const fullName = [p.name, p.surname].filter(Boolean).join(' ').trim() || p.id || '';
+    const dob = p.dob ? `b. ${p.dob}` : '';
+
+    // Gender → color class
+    g.classList.remove('c-purple', 'c-teal', 'c-gray');
+    if (p.gender === 'male') g.classList.add('c-purple');
+    else if (p.gender === 'female') g.classList.add('c-teal');
+    else g.classList.add('c-gray');
+
+    const cx = n.width / 2;
     SecurityUtils.setTextContent(label, fullName);
-    label.setAttribute('x', n.width / 2);
-    label.setAttribute('y', n.height / 2 + 4);
+    label.setAttribute('x', cx);
+
+    if (dob) {
+      label.setAttribute('y', n.height / 2 - 2);
+      SecurityUtils.setTextContent(sublabel, dob);
+      sublabel.setAttribute('x', cx);
+      sublabel.setAttribute('y', n.height / 2 + 13);
+    } else {
+      label.setAttribute('y', n.height / 2 + 5);
+      SecurityUtils.setTextContent(sublabel, '');
+    }
 
     const genStr = n.generation === null ? 'unassigned' : `generation ${n.generation}`;
     g.setAttribute('aria-label', `${fullName}, ${genStr}, click to highlight lineage`);
@@ -138,9 +162,12 @@ export class TreeChartRenderer {
       }
       if (e.type === 'spouse') {
         el.querySelector('path').setAttribute('d', e.path);
-        const dot = el.querySelector('circle');
-        dot.setAttribute('cx', e.dotX);
-        dot.setAttribute('cy', e.dotY);
+        const symBg = el.querySelector('.tc-spouse-symbol-bg');
+        symBg.setAttribute('x', e.dotX - 11);
+        symBg.setAttribute('y', e.dotY - 10);
+        const sym = el.querySelector('.tc-spouse-symbol');
+        sym.setAttribute('x', e.dotX);
+        sym.setAttribute('y', e.dotY);
       } else {
         el.setAttribute('d', e.path);
       }
@@ -174,10 +201,19 @@ export class TreeChartRenderer {
     path.setAttribute('fill', 'none');
     g.appendChild(path);
 
-    const circle = document.createElementNS(SVG_NS, 'circle');
-    circle.setAttribute('class', 'tc-spouse-dot');
-    circle.setAttribute('r', '5');
-    g.appendChild(circle);
+    const symBg = document.createElementNS(SVG_NS, 'rect');
+    symBg.setAttribute('class', 'tc-spouse-symbol-bg');
+    symBg.setAttribute('width', '22');
+    symBg.setAttribute('height', '20');
+    symBg.setAttribute('rx', '3');
+    g.appendChild(symBg);
+
+    const sym = document.createElementNS(SVG_NS, 'text');
+    sym.setAttribute('class', 'tc-spouse-symbol');
+    sym.setAttribute('text-anchor', 'middle');
+    sym.setAttribute('dominant-baseline', 'central');
+    sym.textContent = '⚭';
+    g.appendChild(sym);
 
     return g;
   }

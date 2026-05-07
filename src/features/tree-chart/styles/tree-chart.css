@@ -4,7 +4,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #fafafa;
+  background: #ffffff;
 }
 
 #treeChartView.hidden { display: none; }
@@ -18,75 +18,125 @@
 
 #treeChartView .tc-svg:active { cursor: grabbing; }
 
-.tc-node-body {
-  fill: #3498db;
-  stroke: #2c3e50;
-  stroke-width: 2;
-}
-
-.tc-node-label {
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  fill: #ffffff;
+/* ── Typography ── */
+.tc-svg text {
+  font-family: system-ui, sans-serif;
   pointer-events: none;
 }
 
-.tc-node {
-  cursor: pointer;
+.tc-node-label {
+  font-size: 13px;
+  font-weight: 600;
+  fill: #1a1a18;
 }
 
+.tc-node-sublabel {
+  font-size: 11px;
+  font-weight: 400;
+  fill: #5f5e5a;
+}
+
+/* ── Base node ── */
+.tc-node { cursor: pointer; }
 .tc-node:focus { outline: none; }
-.tc-node:focus .tc-node-body {
-  stroke: #2980b9;
-  stroke-width: 3;
+
+.tc-node-body {
+  fill: #F1EFE8;
+  stroke: #888780;
+  stroke-width: 1.5;
 }
 
 .tc-node-ring {
   fill: none;
   stroke: transparent;
-  stroke-width: 4;
+  stroke-width: 2;
 }
+
 .tc-node[data-clan] .tc-node-ring {
   stroke: var(--clan-color, transparent);
 }
 
+.tc-node:hover .tc-node-body { opacity: 0.82; }
+.tc-node:focus .tc-node-body { stroke-width: 2.5; }
+
+/* ── Color ramps — male: purple, female: teal, unknown: gray ── */
+.tc-node.c-purple .tc-node-body    { fill: #EEEDFE; stroke: #534AB7; }
+.tc-node.c-purple .tc-node-label   { fill: #3C3489; }
+.tc-node.c-purple .tc-node-sublabel { fill: #534AB7; }
+
+.tc-node.c-teal .tc-node-body      { fill: #E1F5EE; stroke: #0F6E56; }
+.tc-node.c-teal .tc-node-label     { fill: #085041; }
+.tc-node.c-teal .tc-node-sublabel  { fill: #0F6E56; }
+
+.tc-node.c-coral .tc-node-body     { fill: #FAECE7; stroke: #993C1D; }
+.tc-node.c-coral .tc-node-label    { fill: #712B13; }
+.tc-node.c-coral .tc-node-sublabel { fill: #993C1D; }
+
+.tc-node.c-green .tc-node-body     { fill: #EAF3DE; stroke: #3B6D11; }
+.tc-node.c-green .tc-node-label    { fill: #27500A; }
+.tc-node.c-green .tc-node-sublabel { fill: #3B6D11; }
+
+.tc-node.c-amber .tc-node-body     { fill: #FAEEDA; stroke: #854F0B; }
+.tc-node.c-amber .tc-node-label    { fill: #633806; }
+.tc-node.c-amber .tc-node-sublabel { fill: #854F0B; }
+
+.tc-node.c-gray .tc-node-body      { fill: #F1EFE8; stroke: #5F5E5A; }
+.tc-node.c-gray .tc-node-label     { fill: #444441; }
+.tc-node.c-gray .tc-node-sublabel  { fill: #5F5E5A; }
+
+/* ── Edges ── */
 .tc-edge {
-  stroke: #7f8c8d;
-  stroke-width: 2;
+  stroke: #b4b2a9;
+  stroke-width: 1.5;
   fill: none;
 }
+
 .tc-edge--spouse {
-  stroke: #e74c3c;
-  stroke-dasharray: 6 4;
+  stroke: #888780;
+  stroke-dasharray: 5 3;
 }
-.tc-spouse-dot {
-  fill: #e74c3c;
+
+.tc-spouse-symbol-bg {
+  fill: #ffffff;
   stroke: none;
 }
+
+.tc-spouse-symbol {
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  fill: #888780;
+  pointer-events: none;
+}
+
 .tc-edge--lineOnly {
-  stroke: #9b59b6;
+  stroke: #b4b2a9;
   stroke-dasharray: 4 2 1 2;
 }
 
-.tc-has-highlight .tc-node:not(.tc-on-line) { opacity: 0.25; }
-.tc-has-highlight .tc-edge:not(.tc-on-line) { opacity: 0.15; }
+/* ── Highlight ── */
+.tc-has-highlight .tc-node:not(.tc-on-line) { opacity: 0.22; }
+.tc-has-highlight .tc-edge:not(.tc-on-line) { opacity: 0.1; }
 
+/* ── Parking area ── */
 .tc-parking-line {
-  stroke: #cccccc;
+  stroke: #d0cec6;
   stroke-width: 1;
   stroke-dasharray: 6 6;
 }
+
 .tc-parking-label {
-  font-family: Inter, sans-serif;
-  font-size: 14px;
-  fill: #888;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  fill: #9c9a92;
   font-style: italic;
 }
 
+/* ── Transitions ── */
 .tc-node-body, .tc-node-ring, .tc-edge {
   transition: opacity 200ms ease-out;
 }
 
+/* ── ARIA live region ── */
 .tc-live-region {
   position: absolute;
   width: 1px;
@@ -97,4 +147,43 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ── Dark mode ── */
+@media (prefers-color-scheme: dark) {
+  #treeChartView { background: #1e1e1c; }
+
+  .tc-node-body    { fill: #2a2a27; stroke: #6b6960; }
+  .tc-node-label   { fill: #e8e6de; }
+  .tc-node-sublabel { fill: #9c9a92; }
+
+  .tc-node.c-purple .tc-node-body    { fill: #3C3489; stroke: #AFA9EC; }
+  .tc-node.c-purple .tc-node-label   { fill: #CECBF6; }
+  .tc-node.c-purple .tc-node-sublabel { fill: #AFA9EC; }
+
+  .tc-node.c-teal .tc-node-body      { fill: #085041; stroke: #5DCAA5; }
+  .tc-node.c-teal .tc-node-label     { fill: #9FE1CB; }
+  .tc-node.c-teal .tc-node-sublabel  { fill: #5DCAA5; }
+
+  .tc-node.c-coral .tc-node-body     { fill: #712B13; stroke: #F0997B; }
+  .tc-node.c-coral .tc-node-label    { fill: #F5C4B3; }
+  .tc-node.c-coral .tc-node-sublabel { fill: #F0997B; }
+
+  .tc-node.c-green .tc-node-body     { fill: #27500A; stroke: #97C459; }
+  .tc-node.c-green .tc-node-label    { fill: #C0DD97; }
+  .tc-node.c-green .tc-node-sublabel { fill: #97C459; }
+
+  .tc-node.c-amber .tc-node-body     { fill: #633806; stroke: #EF9F27; }
+  .tc-node.c-amber .tc-node-label    { fill: #FAC775; }
+  .tc-node.c-amber .tc-node-sublabel { fill: #EF9F27; }
+
+  .tc-node.c-gray .tc-node-body      { fill: #444441; stroke: #B4B2A9; }
+  .tc-node.c-gray .tc-node-label     { fill: #D3D1C7; }
+  .tc-node.c-gray .tc-node-sublabel  { fill: #B4B2A9; }
+
+  .tc-edge              { stroke: #6b6960; }
+  .tc-spouse-symbol-bg  { fill: #1e1e1c; }
+  .tc-spouse-symbol     { fill: #9c9a92; }
+  .tc-parking-line      { stroke: #4a4845; }
+  .tc-parking-label     { fill: #6b6960; }
 }

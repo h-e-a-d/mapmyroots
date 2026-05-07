@@ -1,10 +1,10 @@
 // tree-chart-config.js — Tunable constants for the tree chart view
 
-export const ROW_HEIGHT = 140;
-export const NODE_WIDTH = 100;
-export const NODE_HEIGHT = 60;
-export const NODE_GAP_X = 20;
-export const COUPLE_GAP = 40;
+export const ROW_HEIGHT = 168;
+export const NODE_WIDTH = 160;
+export const NODE_HEIGHT = 72;
+export const NODE_GAP_X = 24;
+export const COUPLE_GAP = 44;
 export const CLUSTER_GAP = 80;
 export const PARKING_GAP = 100;
 export const PARKING_NODE_GAP_X = 24;
