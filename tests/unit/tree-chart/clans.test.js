@@ -63,24 +63,19 @@ describe('detectClans', () => {
 });
 
 describe('assignClanColors', () => {
-  it('returns one stable color per clan, ordered by size descending', () => {
+  it('returns CSS class names for non-primary clans, ordered by size descending', () => {
+    // clans: id=1 (size 7, largest), id=0 (size 3), id=2 (size 1, smallest)
     const clanSizes = new Map([[0, 3], [1, 7], [2, 1]]);
 
     const colors = assignClanColors(clanSizes);
 
-    expect(colors.size).toBe(3);
-    const c0 = colors.get(0);
-    const c1 = colors.get(1);
-    const c2 = colors.get(2);
-    expect(c0).toMatch(/^hsl\(/);
-    expect(c1).toMatch(/^hsl\(/);
-    expect(c2).toMatch(/^hsl\(/);
-    // Largest clan (id=1) gets palette index 0 → hue 0
-    expect(c1).toBe('hsl(0, 65%, 55%)');
-    // Clan 0 (size=3) is 2nd largest → palette index 1 → hue = 137.508
-    expect(c0).toBe('hsl(137.508, 65%, 55%)');
-    // Clan 2 (size=1) is smallest → palette index 2 → hue = (2 * 137.508) % 360 = 275.016
-    expect(c2).toBe('hsl(275.016, 65%, 55%)');
+    // Primary (largest) clan is intentionally absent — it uses gender-based defaults
+    expect(colors.size).toBe(2);
+    expect(colors.has(1)).toBe(false);
+    // 2nd largest gets first extra palette
+    expect(colors.get(0)).toBe('c-coral');
+    // Smallest gets second extra palette
+    expect(colors.get(2)).toBe('c-green');
   });
 
   it('returns empty map for one clan or fewer', () => {

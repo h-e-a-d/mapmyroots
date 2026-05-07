@@ -25,7 +25,8 @@ export function initTreeChartView(containerEl) {
     debounceTimer: null,
     highlightedId: null,
     isPanning: false,
-    panStart: null
+    panStart: null,
+    baseVbWidth: null
   };
 
   function getPersonData() {
@@ -60,6 +61,7 @@ export function initTreeChartView(containerEl) {
       lineOnlyConnections
     });
     renderer.render(layout, personData, clanColors, getParkingLabel());
+    state.baseVbWidth = svg.viewBox.baseVal.width || null;
 
     if (state.highlightedId && personData.has(state.highlightedId)) {
       renderer.applyHighlight(computeBloodLine(state.highlightedId, personData));
@@ -191,10 +193,11 @@ export function initTreeChartView(containerEl) {
     if (!state.isPanning) return;
     const { vbX, vbY, vbW, vbH } = state.panStart;
     const rect = svg.getBoundingClientRect();
-    const sx = vbW / rect.width;
-    const sy = vbH / rect.height;
-    const dx = (ev.clientX - state.panStart.x) * sx;
-    const dy = (ev.clientY - state.panStart.y) * sy;
+    // preserveAspectRatio="meet" uses min(rect.w/vbW, rect.h/vbH) as the render scale,
+    // so both axes must use the same SVG-to-screen ratio (the max) to avoid asymmetric panning.
+    const s = Math.max(vbW / rect.width, vbH / rect.height);
+    const dx = (ev.clientX - state.panStart.x) * s;
+    const dy = (ev.clientY - state.panStart.y) * s;
     svg.setAttribute('viewBox', `${vbX - dx} ${vbY - dy} ${vbW} ${vbH}`);
   });
   window.addEventListener('mouseup', () => { state.isPanning = false; });
@@ -242,9 +245,15 @@ export function initTreeChartView(containerEl) {
     if (!zoomRaf) zoomRaf = requestAnimationFrame(applyZoomFrame);
   }
 
+  function getZoomPercent() {
+    const currentW = svg.viewBox.baseVal.width;
+    if (!state.baseVbWidth || !currentW) return 100;
+    return Math.round(state.baseVbWidth / currentW * 100);
+  }
+
   if (state.visible) rebuild();
 
-  const api = { rebuild, zoom };
+  const api = { rebuild, zoom, getZoomPercent };
   window._treeChartView = api;
   return api;
 }

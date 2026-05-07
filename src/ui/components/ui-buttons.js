@@ -92,34 +92,46 @@ function setupZoomControls(treeCore) {
 
   // Update zoom display
   function updateZoomDisplay() {
-    if (treeCore.renderer && zoomDisplay) {
-      const zoomPercent = Math.round(treeCore.renderer.camera.scale * 100);
-      zoomDisplay.textContent = `${zoomPercent}%`;
+    if (!zoomDisplay) return;
+    if (isTreeChartActive() && window._treeChartView?.getZoomPercent) {
+      zoomDisplay.textContent = `${window._treeChartView.getZoomPercent()}%`;
+    } else if (treeCore.renderer) {
+      zoomDisplay.textContent = `${Math.round(treeCore.renderer.camera.scale * 100)}%`;
     }
+  }
+
+  function isTreeChartActive() {
+    const el = document.getElementById('treeChartView');
+    return el && !el.classList.contains('hidden');
   }
 
   // Zoom In (smaller steps)
   if (zoomInBtn) {
     zoomInBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (isTreeChartActive() && window._treeChartView) {
+        window._treeChartView.zoom(-1);
+        setTimeout(updateZoomDisplay, 400);
+        return;
+      }
       if (treeCore.renderer) {
         const currentScale = treeCore.renderer.camera.scale;
         const newScale = Math.min(5, currentScale * 1.1); // Smaller step: 10% increase, Max zoom 500%
-        
+
         // Zoom towards center of view
         const rect = treeCore.renderer.canvas.getBoundingClientRect();
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
-        
+
         // Calculate world position of center
         const worldX = (centerX - treeCore.renderer.camera.x) / currentScale;
         const worldY = (centerY - treeCore.renderer.camera.y) / currentScale;
-        
+
         // Update camera to keep center point fixed
         treeCore.renderer.camera.x = centerX - worldX * newScale;
         treeCore.renderer.camera.y = centerY - worldY * newScale;
         treeCore.renderer.camera.scale = newScale;
-        
+
         updateZoomDisplay();
         treeCore.renderer.needsRedraw = true;
       }
@@ -130,24 +142,29 @@ function setupZoomControls(treeCore) {
   if (zoomOutBtn) {
     zoomOutBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (isTreeChartActive() && window._treeChartView) {
+        window._treeChartView.zoom(1);
+        setTimeout(updateZoomDisplay, 400);
+        return;
+      }
       if (treeCore.renderer) {
         const currentScale = treeCore.renderer.camera.scale;
         const newScale = Math.max(0.1, currentScale / 1.1); // Smaller step: 10% decrease, Min zoom 10%
-        
+
         // Zoom towards center of view
         const rect = treeCore.renderer.canvas.getBoundingClientRect();
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
-        
+
         // Calculate world position of center
         const worldX = (centerX - treeCore.renderer.camera.x) / currentScale;
         const worldY = (centerY - treeCore.renderer.camera.y) / currentScale;
-        
+
         // Update camera to keep center point fixed
         treeCore.renderer.camera.x = centerX - worldX * newScale;
         treeCore.renderer.camera.y = centerY - worldY * newScale;
         treeCore.renderer.camera.scale = newScale;
-        
+
         updateZoomDisplay();
         treeCore.renderer.needsRedraw = true;
       }

@@ -1748,12 +1748,23 @@ export class TreeEngine {
   createSpouseRelationship(personAId, personBId) {
     const personAData = this.personData.get(personAId);
     const personBData = this.personData.get(personBId);
-    
+
     if (!personAData || !personBData) return;
 
-    personAData.spouseId = personBId;
-    personBData.spouseId = personAId;
-    
+    const aMarriages = Array.isArray(personAData.marriages) ? [...personAData.marriages] : [];
+    const bMarriages = Array.isArray(personBData.marriages) ? [...personBData.marriages] : [];
+
+    if (!aMarriages.some((m) => m.spouseId === personBId)) {
+      const marriageId = makeMarriageId();
+      aMarriages.push({ id: marriageId, spouseId: personBId, date: null, place: '', note: '' });
+      bMarriages.push({ id: marriageId, spouseId: personAId, date: null, place: '', note: '' });
+    }
+
+    personAData.marriages = aMarriages;
+    personAData.spouseId = aMarriages[0]?.spouseId || '';
+    personBData.marriages = bMarriages;
+    personBData.spouseId = bMarriages[0]?.spouseId || '';
+
     this.personData.set(personAId, personAData);
     this.personData.set(personBId, personBData);
     
@@ -1953,6 +1964,20 @@ export class TreeEngine {
       // Update nextId counter
       if (maxId > 0) {
         this.nextId = maxId;
+      }
+
+      // Backfill marriages array from legacy spouseId for persons saved before marriages was introduced
+      for (const [personId, pd] of this.personData) {
+        if (pd.spouseId && pd.marriages.length === 0) {
+          const spouseData = this.personData.get(pd.spouseId);
+          if (spouseData) {
+            const marriageId = makeMarriageId();
+            pd.marriages = [{ id: marriageId, spouseId: pd.spouseId, date: null, place: '', note: '' }];
+            if (spouseData.marriages.length === 0) {
+              spouseData.marriages = [{ id: marriageId, spouseId: personId, date: null, place: '', note: '' }];
+            }
+          }
+        }
       }
       
       // Restore settings if available

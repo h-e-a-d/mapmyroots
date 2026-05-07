@@ -1650,11 +1650,8 @@
   align-items: center;
   gap: 8px;
 }
-.modal .marriage-spouse-select {
+.modal .marriage-spouse-searchable {
   flex: 1;
-  padding: 6px 8px;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
 }
 .modal .marriage-row-remove {
   background: none;

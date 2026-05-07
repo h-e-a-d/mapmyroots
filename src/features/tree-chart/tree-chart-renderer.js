@@ -115,24 +115,21 @@ export class TreeChartRenderer {
     ring.setAttribute('height', n.height + 8);
     ring.setAttribute('rx', '14');
 
-    if (n.clanId !== null && clanColors.has(n.clanId)) {
-      g.dataset.clan = String(n.clanId);
-      g.style.setProperty('--clan-color', clanColors.get(n.clanId));
-    } else {
-      delete g.dataset.clan;
-      g.style.removeProperty('--clan-color');
-    }
-
     const p = personData.get(id) || {};
     const fullName = [p.name, p.surname].filter(Boolean).join(' ').trim() || p.id || '';
     const locale = (window.i18n?.currentLocale || 'en').slice(0, 2);
     const lifespan = formatLifespanShort(p.birth?.date, p.death?.date, locale);
 
-    // Gender → color class
-    g.classList.remove('c-purple', 'c-teal', 'c-gray');
-    if (p.gender === 'male') g.classList.add('c-purple');
-    else if (p.gender === 'female') g.classList.add('c-teal');
-    else g.classList.add('c-gray');
+    // Color class: non-primary clans get a preset palette; primary clan uses gender-based default.
+    const clanClass = clanColors.get(n.clanId);
+    g.classList.remove('c-purple', 'c-teal', 'c-gray', 'c-coral', 'c-green', 'c-amber');
+    if (clanClass) {
+      g.classList.add(clanClass);
+    } else {
+      if (p.gender === 'male') g.classList.add('c-purple');
+      else if (p.gender === 'female') g.classList.add('c-teal');
+      else g.classList.add('c-gray');
+    }
 
     const cx = n.width / 2;
     SecurityUtils.setTextContent(label, fullName);
@@ -183,7 +180,7 @@ export class TreeChartRenderer {
             const text = formatDateValue({ year: marriage.date.year, estimated: !!marriage.date.estimated }, locale);
             SecurityUtils.setTextContent(marriageLabel, text);
             marriageLabel.setAttribute('x', e.dotX);
-            marriageLabel.setAttribute('y', e.dotY + 16);
+            marriageLabel.setAttribute('y', e.dotY + 24);
           } else {
             SecurityUtils.setTextContent(marriageLabel, '');
           }

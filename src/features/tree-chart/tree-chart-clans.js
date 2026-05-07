@@ -1,11 +1,5 @@
 // tree-chart-clans.js — Clan detection + color palette (pure)
 
-import {
-  CLAN_HUE_STEP_DEG,
-  CLAN_SATURATION,
-  CLAN_LIGHTNESS
-} from './tree-chart-config.js';
-
 /**
  * Connected components over parent-child edges only.
  * Spouses do NOT merge clans; shared children DO (handled naturally by the walk).
@@ -56,12 +50,18 @@ export function detectClans(personData) {
   return { clanByPerson, clanCount: nextClanId, clanSizes };
 }
 
+// CSS class names applied to node bodies for clans beyond the primary (largest) one.
+// Primary clan uses gender-based default (c-purple / c-teal / c-gray).
+const CLAN_EXTRA_PALETTES = ['c-coral', 'c-green', 'c-amber'];
+
 /**
- * Assign a CSS HSL color string to each clan, ordered by size (largest first).
- * Returns empty Map when only 1 clan exists (no color needed).
+ * Assign a body-color CSS class to each non-primary clan, ordered by size (largest first).
+ * Returns empty Map when only 1 clan exists (no override needed).
+ * The largest clan is intentionally absent from the returned Map so the renderer
+ * falls back to gender-based classes (c-purple / c-teal / c-gray).
  *
  * @param {Map<number, number>} clanSizes — clanId -> member count
- * @returns {Map<number, string>} clanId -> "hsl(h, s%, l%)"
+ * @returns {Map<number, string>} clanId -> CSS class name (e.g. 'c-coral')
  */
 export function assignClanColors(clanSizes) {
   if (clanSizes.size < 2) return new Map();
@@ -71,9 +71,9 @@ export function assignClanColors(clanSizes) {
     .map(([clanId]) => clanId);
 
   const colors = new Map();
-  for (let i = 0; i < sortedClans.length; i++) {
-    const hue = (i * CLAN_HUE_STEP_DEG) % 360;
-    colors.set(sortedClans[i], `hsl(${hue}, ${CLAN_SATURATION}%, ${CLAN_LIGHTNESS}%)`);
+  // Index 0 = largest clan → skip (use gender-based default)
+  for (let i = 1; i < sortedClans.length; i++) {
+    colors.set(sortedClans[i], CLAN_EXTRA_PALETTES[(i - 1) % CLAN_EXTRA_PALETTES.length]);
   }
   return colors;
 }

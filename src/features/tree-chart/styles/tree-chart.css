@@ -49,11 +49,7 @@
 .tc-node-ring {
   fill: none;
   stroke: transparent;
-  stroke-width: 2;
-}
-
-.tc-node[data-clan] .tc-node-ring {
-  stroke: var(--clan-color, transparent);
+  stroke-width: 0;
 }
 
 .tc-node:hover .tc-node-body { opacity: 0.82; }
@@ -93,7 +89,6 @@
 
 .tc-edge--spouse {
   stroke: #888780;
-  stroke-dasharray: 5 3;
 }
 
 .tc-spouse-symbol-bg {
