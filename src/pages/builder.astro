@@ -959,11 +959,39 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
             <label for="personMaidenName" data-i18n="builder.form.maiden_name">Maiden Name</label>
             <input type="text" id="personMaidenName" />
           </div>
-          <div class="form-group">
-            <label for="personDob" data-i18n="builder.form.date_of_birth">Date of Birth</label>
-            <input type="text" id="personDob" placeholder="dd.mm.yyyy or yyyy" data-i18n="builder.form.dob_placeholder" />
-            <small class="help-text" data-i18n="builder.form.dob_help">Enter full date dd.mm.yyyy or just year yyyy</small>
+
+          <!-- Birth event -->
+          <div class="form-group form-event" id="personBirthGroup">
+            <label data-i18n="builder.form.birth_date">Birth date</label>
+            <div id="personBirthDateMount"></div>
+            <button type="button" class="reveal-link" id="personBirthPlaceReveal">+ <span data-i18n="builder.form.add_place">add place</span></button>
+            <div class="event-place" id="personBirthPlaceWrapper" hidden>
+              <label for="personBirthPlace" data-i18n="builder.form.birth_place">Birth place</label>
+              <input type="text" id="personBirthPlace" />
+            </div>
+            <button type="button" class="reveal-link" id="personBirthNoteReveal">+ <span data-i18n="builder.form.add_note">add note</span></button>
+            <div class="event-note" id="personBirthNoteWrapper" hidden>
+              <label for="personBirthNote" data-i18n="builder.form.birth_note">Birth note</label>
+              <textarea id="personBirthNote" rows="2"></textarea>
+            </div>
           </div>
+
+          <!-- Death event -->
+          <div class="form-group form-event" id="personDeathGroup">
+            <label data-i18n="builder.form.death_date">Death date</label>
+            <div id="personDeathDateMount"></div>
+            <button type="button" class="reveal-link" id="personDeathPlaceReveal">+ <span data-i18n="builder.form.add_place">add place</span></button>
+            <div class="event-place" id="personDeathPlaceWrapper" hidden>
+              <label for="personDeathPlace" data-i18n="builder.form.death_place">Death place</label>
+              <input type="text" id="personDeathPlace" />
+            </div>
+            <button type="button" class="reveal-link" id="personDeathNoteReveal">+ <span data-i18n="builder.form.add_note">add note</span></button>
+            <div class="event-note" id="personDeathNoteWrapper" hidden>
+              <label for="personDeathNote" data-i18n="builder.form.death_note">Death note</label>
+              <textarea id="personDeathNote" rows="2"></textarea>
+            </div>
+          </div>
+
           <div class="form-group">
             <label data-i18n="builder.modals.person.photo.label">Photo</label>
             <div class="photo-section">
@@ -985,9 +1013,20 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
             <label data-i18n="builder.form.father">Father</label>
             <div class="searchable-select" id="fatherSelect"></div>
           </div>
+
+          <!-- Marriages -->
           <div class="form-group">
-            <label data-i18n="builder.form.spouse">Spouse</label>
-            <div class="searchable-select" id="spouseSelect"></div>
+            <label data-i18n="builder.form.marriages">Marriages</label>
+            <div id="personMarriagesMount"></div>
+          </div>
+
+          <!-- General notes -->
+          <div class="form-group form-general-note">
+            <button type="button" class="reveal-link" id="personNotesReveal">+ <span data-i18n="builder.form.add_general_note">add general note</span></button>
+            <div id="personNotesWrapper" hidden>
+              <label for="personNotes" data-i18n="builder.form.general_notes">General notes</label>
+              <textarea id="personNotes" rows="3"></textarea>
+            </div>
           </div>
         </form>
       </div>
