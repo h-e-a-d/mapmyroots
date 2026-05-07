@@ -1,0 +1,123 @@
+- generic [ref=e1]:
+  - generic [ref=e3] [cursor=pointer]: Auto-save enabled
+  - text: Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit
+  - generic [ref=e4]:
+    - textbox "Search family members..."
+    - button "×" [ref=e5] [cursor=pointer]
+  - button "Select language" [ref=e8] [cursor=pointer]:
+    - generic [ref=e9]: 🇺🇸
+    - generic [ref=e10]: EN
+    - img [ref=e11]
+  - text: Press ESC to close • TAB to navigate • ENTER to submit
+  - generic [ref=e13]:
+    - button [ref=e14] [cursor=pointer]:
+      - img [ref=e15]
+    - button [ref=e19] [cursor=pointer]:
+      - img [ref=e20]
+    - button [ref=e23] [cursor=pointer]:
+      - img [ref=e24]
+    - button [ref=e29] [cursor=pointer]:
+      - img [ref=e30]
+    - tablist "Choose view mode" [ref=e33]:
+      - tab [selected] [ref=e34] [cursor=pointer]:
+        - img [ref=e35]
+      - tab [ref=e45] [cursor=pointer]:
+        - img [ref=e46]
+      - tab [ref=e51] [cursor=pointer]:
+        - img [ref=e52]
+    - button "Nothing to undo" [disabled]:
+      - img
+    - button "Nothing to redo" [disabled]:
+      - img
+  - generic [ref=e66]:
+    - button "Zoom Out (Ctrl + -)" [ref=e67] [cursor=pointer]:
+      - img [ref=e68]
+    - generic [ref=e71]: 100%
+    - button "Zoom In (Ctrl + +)" [ref=e72] [cursor=pointer]:
+      - img [ref=e73]
+  - generic [ref=e76]:
+    - button "Save Family Tree" [ref=e77] [cursor=pointer]:
+      - img [ref=e78]
+    - button "Load Family Tree" [ref=e82] [cursor=pointer]:
+      - img [ref=e83]
+    - button "Export Family Tree" [ref=e86] [cursor=pointer]:
+      - img [ref=e87]
+    - button "Share tree as link" [ref=e90] [cursor=pointer]:
+      - img [ref=e91]
+    - button "Import GEDCOM (.ged)" [ref=e97] [cursor=pointer]:
+      - img [ref=e98]
+  - button "+" [ref=e103] [cursor=pointer]
+  - text: Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit
+  - dialog [ref=e105]:
+    - generic [ref=e106]:
+      - button "×" [ref=e107] [cursor=pointer]
+      - heading "+ Add Person" [level=2] [ref=e109]:
+        - generic [ref=e110]: +
+        - text: Add Person
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - generic [ref=e114]: Gender
+          - generic [ref=e115]:
+            - generic [ref=e116] [cursor=pointer]:
+              - radio "Male"
+              - generic: Male
+            - generic [ref=e117] [cursor=pointer]:
+              - radio "Female"
+              - generic: Female
+        - generic [ref=e118]:
+          - generic [ref=e119]: Given Name
+          - textbox "Given Name" [active] [ref=e120]
+        - generic [ref=e121]:
+          - generic [ref=e122]: Father's Name
+          - textbox "Father's Name" [ref=e123]:
+            - /placeholder: Father's given name
+          - generic [ref=e124]: ℹFather's given name (not surname)
+        - generic [ref=e125]:
+          - generic [ref=e126]: Surname
+          - textbox "Surname" [ref=e127]
+        - generic [ref=e128]:
+          - generic [ref=e129]: Maiden Name
+          - textbox "Maiden Name" [ref=e130]
+        - generic [ref=e131]:
+          - generic [ref=e132]: Birth date
+          - button "+ add place" [ref=e133] [cursor=pointer]
+          - button "+ add note" [ref=e134] [cursor=pointer]
+        - generic [ref=e135]:
+          - generic [ref=e136]: Death date
+          - button "+ add place" [ref=e137] [cursor=pointer]
+          - button "+ add note" [ref=e138] [cursor=pointer]
+        - generic [ref=e139]:
+          - generic [ref=e140]: Photo
+          - generic [ref=e141]:
+            - generic [ref=e142]: 📷
+            - button "Upload person photo" [ref=e143]
+            - paragraph [ref=e144]: ℹJPG, PNG or WebP · max 500 KB · stored locally
+        - generic [ref=e145]:
+          - generic [ref=e146]: Mother
+          - generic [ref=e148] [cursor=pointer]: Select Mother ▼
+        - generic [ref=e149]:
+          - generic [ref=e150]: Father
+          - generic [ref=e152] [cursor=pointer]: Select Father ▼
+        - generic [ref=e154]: Marriages
+        - button "+ add general note" [ref=e156] [cursor=pointer]
+      - generic [ref=e158]:
+        - button "Cancel" [ref=e159] [cursor=pointer]
+        - button "Save" [ref=e160] [cursor=pointer]
+      - text: Press ESC to close • TAB to navigate • ENTER to submit
+  - generic [ref=e163]:
+    - button "Menu" [ref=e164]:
+      - img [ref=e166]
+      - generic: Menu
+    - button "Inspect" [ref=e170]:
+      - img [ref=e172]
+      - generic: Inspect
+    - button "Audit" [ref=e174]:
+      - generic [ref=e175]:
+        - img [ref=e176]
+        - img [ref=e179]
+      - generic: Audit
+    - button "Settings" [ref=e182]:
+      - img [ref=e184]
+      - generic: Settings
+  - link "Skip to main content" [ref=e187] [cursor=pointer]:
+    - /url: "#main-content"

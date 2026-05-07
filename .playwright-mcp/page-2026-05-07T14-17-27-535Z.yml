@@ -1,0 +1,157 @@
+- generic [ref=e1]:
+  - generic [ref=e3] [cursor=pointer]: "Last saved: 4:17:12 PM"
+  - text: Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit
+  - generic [ref=e4]:
+    - textbox "Search family members..."
+    - button "×" [ref=e5] [cursor=pointer]
+  - button "Select language" [ref=e8] [cursor=pointer]:
+    - generic [ref=e9]: 🇺🇸
+    - generic [ref=e10]: EN
+    - img [ref=e11]
+  - text: Press ESC to close • TAB to navigate • ENTER to submit
+  - generic [ref=e13]:
+    - button [ref=e14] [cursor=pointer]:
+      - img [ref=e15]
+    - button [ref=e19] [cursor=pointer]:
+      - img [ref=e20]
+    - button [ref=e23] [cursor=pointer]:
+      - img [ref=e24]
+    - button [ref=e29] [cursor=pointer]:
+      - img [ref=e30]
+    - tablist "Choose view mode" [ref=e33]:
+      - tab [selected] [ref=e34] [cursor=pointer]:
+        - img [ref=e35]
+      - tab [ref=e45] [cursor=pointer]:
+        - img [ref=e46]
+      - tab [ref=e51] [cursor=pointer]:
+        - img [ref=e52]
+    - button "Nothing to undo" [disabled]:
+      - img
+    - button "Nothing to redo" [disabled]:
+      - img
+  - generic [ref=e58]:
+    - button "Zoom Out (Ctrl + -)" [ref=e59] [cursor=pointer]:
+      - img [ref=e60]
+    - generic [ref=e63]: 100%
+    - button "Zoom In (Ctrl + +)" [ref=e64] [cursor=pointer]:
+      - img [ref=e65]
+  - generic [ref=e68]:
+    - button "Save Family Tree" [ref=e69] [cursor=pointer]:
+      - img [ref=e70]
+    - button "Load Family Tree" [ref=e74] [cursor=pointer]:
+      - img [ref=e75]
+    - button "Export Family Tree" [ref=e78] [cursor=pointer]:
+      - img [ref=e79]
+    - button "Share tree as link" [ref=e82] [cursor=pointer]:
+      - img [ref=e83]
+    - button "Import GEDCOM (.ged)" [ref=e89] [cursor=pointer]:
+      - img [ref=e90]
+  - generic [ref=e93]:
+    - button "FRONT" [ref=e194] [cursor=pointer]
+    - button "Edit" [ref=e195] [cursor=pointer]
+    - button "Style" [ref=e196] [cursor=pointer]
+    - button "+" [ref=e95] [cursor=pointer]
+  - text: Press ESC to close • TAB to navigate • ENTER to submit Press ESC to close • TAB to navigate • ENTER to submit
+  - dialog [ref=e120]:
+    - generic [ref=e121]:
+      - button "×" [ref=e122] [cursor=pointer]
+      - heading "IP Ivan Petrov" [level=2] [ref=e197]:
+        - generic [ref=e198]: IP
+        - text: Ivan Petrov
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - generic [ref=e129]: Gender
+          - generic [ref=e130]:
+            - generic [ref=e131] [cursor=pointer]:
+              - radio "Male" [checked]
+              - generic: Male
+            - generic [ref=e132] [cursor=pointer]:
+              - radio "Female"
+              - generic: Female
+        - generic [ref=e133]:
+          - generic [ref=e134]: Given Name
+          - textbox "Given Name" [active] [ref=e135]: Ivan
+        - generic [ref=e136]:
+          - generic [ref=e137]: Father's Name
+          - textbox "Father's Name" [ref=e138]:
+            - /placeholder: Father's given name
+          - generic [ref=e139]: ℹFather's given name (not surname)
+        - generic [ref=e140]:
+          - generic [ref=e141]: Surname
+          - textbox "Surname" [ref=e142]: Petrov
+        - generic [ref=e143]:
+          - generic [ref=e144]: Maiden Name
+          - textbox "Maiden Name" [ref=e145]
+        - generic [ref=e146]:
+          - generic [ref=e147]: Birth date
+          - generic [ref=e199]:
+            - textbox "dd.mm.yyyy or yyyy" [ref=e200]: 15.03.1920
+            - generic [ref=e201]:
+              - checkbox "est." [ref=e202]
+              - text: est.
+          - generic [ref=e191]:
+            - generic [ref=e192]: Birth place
+            - textbox "Birth place" [ref=e193]: Moscow
+          - button "+ add note" [ref=e154] [cursor=pointer]
+        - generic [ref=e155]:
+          - generic [ref=e156]: Death date
+          - generic [ref=e203]:
+            - textbox "dd.mm.yyyy or yyyy" [ref=e204]
+            - generic [ref=e205]:
+              - checkbox "est." [ref=e206]
+              - text: est.
+          - button "+ add place" [ref=e162] [cursor=pointer]
+          - button "+ add note" [ref=e163] [cursor=pointer]
+        - generic [ref=e164]:
+          - generic [ref=e165]: Photo
+          - generic [ref=e166]:
+            - generic [ref=e167]: 📷
+            - button "Upload person photo" [ref=e168]
+            - paragraph [ref=e169]: ℹJPG, PNG or WebP · max 500 KB · stored locally
+        - generic [ref=e170]:
+          - generic [ref=e171]: Mother
+          - generic [ref=e207] [cursor=pointer]: Select Mother ▼
+        - generic [ref=e174]:
+          - generic [ref=e175]: Father
+          - generic [ref=e208] [cursor=pointer]: Select Father ▼
+        - generic [ref=e178]:
+          - generic [ref=e179]: Marriages
+          - generic [ref=e209]:
+            - generic [ref=e211]:
+              - generic [ref=e212]:
+                - generic [ref=e213]: Spouse
+                - combobox [ref=e214]:
+                  - option "Select Spouse" [selected]
+              - generic [ref=e215]: Marriage date
+              - generic [ref=e216]:
+                - textbox "dd.mm.yyyy or yyyy" [ref=e217]
+                - generic [ref=e218]:
+                  - checkbox "est." [ref=e219]
+                  - text: est.
+              - button "+ add place" [ref=e220] [cursor=pointer]
+              - button "+ add note" [ref=e221] [cursor=pointer]
+            - button "+ add another marriage" [ref=e222] [cursor=pointer]
+        - button "+ add general note" [ref=e181] [cursor=pointer]
+      - generic [ref=e182]:
+        - button "Delete" [ref=e223] [cursor=pointer]
+        - generic [ref=e183]:
+          - button "Cancel" [ref=e184] [cursor=pointer]
+          - button "Save" [ref=e185] [cursor=pointer]
+      - text: Press ESC to close • TAB to navigate • ENTER to submit
+  - generic [ref=e98]:
+    - button "Menu" [ref=e99]:
+      - img [ref=e101]
+      - generic: Menu
+    - button "Inspect" [ref=e105]:
+      - img [ref=e107]
+      - generic: Inspect
+    - button "Audit" [ref=e109]:
+      - generic [ref=e110]:
+        - img [ref=e111]
+        - img [ref=e224]
+      - generic: Audit
+    - button "Settings" [ref=e114]:
+      - img [ref=e116]
+      - generic: Settings
+  - link "Skip to main content" [ref=e119] [cursor=pointer]:
+    - /url: "#main-content"
