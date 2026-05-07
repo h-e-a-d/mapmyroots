@@ -752,12 +752,11 @@ export async function exportGEDCOM() {
 }
 
 
-// Generate GEDCOM format
-function generateGEDCOM(treeCore) {
+// Pure GEDCOM generator — takes a flat array of person objects
+export function generateGEDCOMText(persons) {
   const lines = [];
   const currentDate = new Date().toISOString().split('T')[0].replace(/-/g, '');
-  
-  // Header
+
   lines.push('0 HEAD');
   lines.push('1 SOUR MapMyRoots');
   lines.push('2 VERS 2.5');
@@ -768,163 +767,183 @@ function generateGEDCOM(treeCore) {
   lines.push('1 GEDC');
   lines.push('2 VERS 5.5.1');
   lines.push('2 FORM LINEAGE-LINKED');
-  
-  // Collect all individuals
-  const individuals = [];
-  const families = new Map();
+
   let indiCounter = 1;
   let famCounter = 1;
-  
-  // Process individuals
-  for (const [id, node] of treeCore.renderer.nodes) {
-    const personData = treeCore.getPersonData(id) || {};
-    const indiId = `I${indiCounter++}`;
-    
-    const individual = {
-      originalId: id,
-      gedcomId: indiId,
-      node,
-      personData
-    };
-    
-    individuals.push(individual);
-    
-    // Generate individual record
-    lines.push(`0 ${indiId} INDI`);
-    
-    // Name
-    const givenName = node.name || personData.name || '';
-    const surname = node.surname || personData.surname || '';
-    const fullName = `${givenName} /${surname}/`.trim();
-    lines.push(`1 NAME ${fullName}`);
-    
-    if (givenName) {
+  const idToGedId = new Map();
+  for (const p of persons) idToGedId.set(p.id, `@I${indiCounter++}@`);
+
+  // INDI records
+  for (const p of persons) {
+    const gedId = idToGedId.get(p.id);
+    lines.push(`0 ${gedId} INDI`);
+
+    const givenName = p.name || '';
+    const surname = p.surname || '';
+    lines.push(`1 NAME ${givenName} /${surname}/`.trim());
+    if (givenName) lines.push(`2 GIVN ${givenName}`);
+    if (surname) lines.push(`2 SURN ${surname}`);
+
+    if (p.gender === 'female' && p.maidenName) {
+      lines.push(`1 NAME ${givenName} /${p.maidenName}/`);
       lines.push(`2 GIVN ${givenName}`);
-    }
-    if (surname) {
-      lines.push(`2 SURN ${surname}`);
-    }
-    
-    // Maiden name for females
-    if ((node.gender || personData.gender) === 'female' && (node.maidenName || personData.maidenName)) {
-      const maidenName = node.maidenName || personData.maidenName;
-      lines.push(`1 NAME ${givenName} /${maidenName}/`);
-      lines.push(`2 GIVN ${givenName}`);
-      lines.push(`2 SURN ${maidenName}`);
+      lines.push(`2 SURN ${p.maidenName}`);
       lines.push(`2 TYPE maiden`);
     }
-    
-    // Gender
-    const gender = (node.gender || personData.gender || '').toUpperCase();
-    if (gender === 'MALE' || gender === 'FEMALE') {
-      lines.push(`1 SEX ${gender.charAt(0)}`);
-    }
-    
-    // Birth
-    const dob = node.dob || personData.dob;
-    if (dob) {
+
+    if (p.gender === 'male') lines.push('1 SEX M');
+    else if (p.gender === 'female') lines.push('1 SEX F');
+
+    const birth = p.birth || {};
+    if (birth.date?.year || birth.place || birth.note) {
       lines.push('1 BIRT');
-      lines.push(`2 DATE ${formatGEDCOMDate(dob)}`);
+      if (birth.date?.year) lines.push(`2 DATE ${formatDateValueToGEDCOM(birth.date)}`);
+      if (birth.place) lines.push(`2 PLAC ${birth.place}`);
+      if (birth.note) lines.push(`2 NOTE ${birth.note}`);
     }
-    
-    // Father's name as note if available
-    const fatherName = node.fatherName || personData.fatherName;
-    if (fatherName) {
+
+    const death = p.death || {};
+    if (death.date?.year || death.place || death.note) {
+      lines.push('1 DEAT');
+      if (death.date?.year) lines.push(`2 DATE ${formatDateValueToGEDCOM(death.date)}`);
+      if (death.place) lines.push(`2 PLAC ${death.place}`);
+      if (death.note) lines.push(`2 NOTE ${death.note}`);
+    }
+
+    if (p.fatherName) {
       lines.push('1 NOTE');
-      lines.push(`2 CONT Father\'s name: ${fatherName}`);
+      lines.push(`2 CONT Father's name: ${p.fatherName}`);
     }
   }
-  
-  // Process families
+
+  // FAM records
   const processedFamilies = new Set();
-  
-  for (const individual of individuals) {
-    const personData = individual.personData;
-    
-    // Create family for spouse relationship
-    if (personData.spouseId && !processedFamilies.has(`${individual.originalId}-${personData.spouseId}`)) {
-      const spouse = individuals.find(ind => ind.originalId === personData.spouseId);
-      if (spouse) {
-        const famId = `F${famCounter++}`;
-        
-        lines.push(`0 ${famId} FAM`);
-        
-        // Determine husband and wife based on gender
-        const person1Gender = (individual.node.gender || individual.personData.gender || '').toLowerCase();
-        const person2Gender = (spouse.node.gender || spouse.personData.gender || '').toLowerCase();
-        
-        if (person1Gender === 'male') {
-          lines.push(`1 HUSB ${individual.gedcomId}`);
-          lines.push(`1 WIFE ${spouse.gedcomId}`);
-        } else if (person1Gender === 'female') {
-          lines.push(`1 WIFE ${individual.gedcomId}`);
-          lines.push(`1 HUSB ${spouse.gedcomId}`);
-        } else {
-          // Gender unknown, just use spouse relationship
-          lines.push(`1 HUSB ${individual.gedcomId}`);
-          lines.push(`1 WIFE ${spouse.gedcomId}`);
+
+  for (const p of persons) {
+    const pGedId = idToGedId.get(p.id);
+
+    // Marriage-based FAM
+    for (const marriage of (p.marriages || [])) {
+      if (processedFamilies.has(marriage.id)) continue;
+      processedFamilies.add(marriage.id);
+
+      const spouseGedId = idToGedId.get(marriage.spouseId);
+      if (!spouseGedId) continue;
+
+      const famId = `@F${famCounter++}@`;
+      lines.push(`0 ${famId} FAM`);
+
+      if (p.gender === 'female') {
+        lines.push(`1 WIFE ${pGedId}`);
+        lines.push(`1 HUSB ${spouseGedId}`);
+      } else {
+        lines.push(`1 HUSB ${pGedId}`);
+        lines.push(`1 WIFE ${spouseGedId}`);
+      }
+
+      if (marriage.date?.year || marriage.place || marriage.note) {
+        lines.push('1 MARR');
+        if (marriage.date?.year) lines.push(`2 DATE ${formatDateValueToGEDCOM(marriage.date)}`);
+        if (marriage.place) lines.push(`2 PLAC ${marriage.place}`);
+        if (marriage.note) lines.push(`2 NOTE ${marriage.note}`);
+      }
+
+      const spouseId = marriage.spouseId;
+      for (const child of persons) {
+        const bothParents =
+          (child.fatherId === p.id && child.motherId === spouseId) ||
+          (child.motherId === p.id && child.fatherId === spouseId);
+        if (bothParents) {
+          const cGedId = idToGedId.get(child.id);
+          if (cGedId) lines.push(`1 CHIL ${cGedId}`);
         }
-        
-        // Find children
-        const children = individuals.filter(ind => 
-          ind.personData.motherId === individual.originalId || 
-          ind.personData.fatherId === individual.originalId ||
-          ind.personData.motherId === spouse.originalId || 
-          ind.personData.fatherId === spouse.originalId
-        );
-        
-        children.forEach(child => {
-          lines.push(`1 CHIL ${child.gedcomId}`);
-        });
-        
-        // Mark this family as processed
-        processedFamilies.add(`${individual.originalId}-${personData.spouseId}`);
-        processedFamilies.add(`${personData.spouseId}-${individual.originalId}`);
       }
     }
-    
-    // Create family for parent-child relationships
-    if (personData.motherId || personData.fatherId) {
-      const mother = individuals.find(ind => ind.originalId === personData.motherId);
-      const father = individuals.find(ind => ind.originalId === personData.fatherId);
-      
-      if (mother || father) {
-        const familyKey = `${personData.fatherId || 'unknown'}-${personData.motherId || 'unknown'}`;
-        if (!processedFamilies.has(familyKey)) {
-          const famId = `F${famCounter++}`;
-          
+
+    // Fallback: spouseId with no marriages (legacy data)
+    if ((!p.marriages || p.marriages.length === 0) && p.spouseId) {
+      const famKey = [p.id, p.spouseId].sort().join('-');
+      if (!processedFamilies.has(famKey)) {
+        processedFamilies.add(famKey);
+        const spouseGedId = idToGedId.get(p.spouseId);
+        if (spouseGedId) {
+          const famId = `@F${famCounter++}@`;
           lines.push(`0 ${famId} FAM`);
-          
-          if (father) {
-            lines.push(`1 HUSB ${father.gedcomId}`);
+          if (p.gender === 'female') {
+            lines.push(`1 WIFE ${pGedId}`);
+            lines.push(`1 HUSB ${spouseGedId}`);
+          } else {
+            lines.push(`1 HUSB ${pGedId}`);
+            lines.push(`1 WIFE ${spouseGedId}`);
           }
-          if (mother) {
-            lines.push(`1 WIFE ${mother.gedcomId}`);
+        }
+      }
+    }
+
+    // Parent-child FAM for single-parent or orphaned children
+    if (p.motherId || p.fatherId) {
+      const familyKey = `${p.fatherId || 'none'}-${p.motherId || 'none'}`;
+      if (!processedFamilies.has(familyKey)) {
+        processedFamilies.add(familyKey);
+        const fatherGedId = p.fatherId ? idToGedId.get(p.fatherId) : null;
+        const motherGedId = p.motherId ? idToGedId.get(p.motherId) : null;
+        if (fatherGedId || motherGedId) {
+          const famId = `@F${famCounter++}@`;
+          lines.push(`0 ${famId} FAM`);
+          if (fatherGedId) lines.push(`1 HUSB ${fatherGedId}`);
+          if (motherGedId) lines.push(`1 WIFE ${motherGedId}`);
+          lines.push(`1 CHIL ${pGedId}`);
+          for (const sibling of persons) {
+            if (sibling.id !== p.id && sibling.fatherId === p.fatherId && sibling.motherId === p.motherId) {
+              const sibGedId = idToGedId.get(sibling.id);
+              if (sibGedId) lines.push(`1 CHIL ${sibGedId}`);
+            }
           }
-          
-          lines.push(`1 CHIL ${individual.gedcomId}`);
-          
-          // Find other children with same parents
-          const siblings = individuals.filter(ind => 
-            ind.originalId !== individual.originalId &&
-            ind.personData.motherId === personData.motherId &&
-            ind.personData.fatherId === personData.fatherId
-          );
-          
-          siblings.forEach(sibling => {
-            lines.push(`1 CHIL ${sibling.gedcomId}`);
-          });
-          
-          processedFamilies.add(familyKey);
         }
       }
     }
   }
-  
-  // Trailer
+
   lines.push('0 TRLR');
-  
   return lines.join('\n');
+}
+
+// Collect persons from treeCore and delegate to pure generator
+function generateGEDCOM(treeCore) {
+  const persons = [];
+  for (const [id, node] of treeCore.renderer.nodes) {
+    const pd = treeCore.getPersonData(id) || {};
+    persons.push({
+      id,
+      name: node.name || pd.name || '',
+      surname: node.surname || pd.surname || '',
+      fatherName: node.fatherName || pd.fatherName || '',
+      maidenName: node.maidenName || pd.maidenName || '',
+      gender: node.gender || pd.gender || '',
+      motherId: pd.motherId || '',
+      fatherId: pd.fatherId || '',
+      spouseId: pd.spouseId || '',
+      birth: pd.birth || { date: null, place: '', note: '' },
+      death: pd.death || { date: null, place: '', note: '' },
+      marriages: pd.marriages || [],
+      notes: pd.notes || '',
+    });
+  }
+  return generateGEDCOMText(persons);
+}
+
+function formatDateValueToGEDCOM(dv) {
+  if (!dv || !dv.year) return '';
+  const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  let date;
+  if (dv.day && dv.month) {
+    date = `${dv.day} ${MONTHS[dv.month - 1]} ${dv.year}`;
+  } else if (dv.month) {
+    date = `${MONTHS[dv.month - 1]} ${dv.year}`;
+  } else {
+    date = `${dv.year}`;
+  }
+  return dv.estimated ? `ABT ${date}` : date;
 }
 
 // Format date for GEDCOM
