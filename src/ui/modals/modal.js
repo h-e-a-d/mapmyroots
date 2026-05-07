@@ -419,12 +419,9 @@ function clearForm() {
     if (el) el.value = '';
   });
 
-  if (birthDateHandle) birthDateHandle.setValue(null);
-  if (deathDateHandle) deathDateHandle.setValue(null);
-  ['personBirthPlace', 'personBirthNote', 'personDeathPlace', 'personDeathNote', 'personNotes'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
+  const emptyEvent = { date: null, place: '', note: '' };
+  mountEvent('Birth', emptyEvent, (h) => { birthDateHandle = h; });
+  mountEvent('Death', emptyEvent, (h) => { deathDateHandle = h; });
   ['personBirthPlaceWrapper', 'personBirthNoteWrapper', 'personDeathPlaceWrapper', 'personDeathNoteWrapper', 'personNotesWrapper'].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.hidden = true;
@@ -432,6 +429,12 @@ function clearForm() {
   ['personBirthPlaceReveal', 'personBirthNoteReveal', 'personDeathPlaceReveal', 'personDeathNoteReveal', 'personNotesReveal'].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.hidden = false;
+  });
+  const notesEl = document.getElementById('personNotes');
+  if (notesEl) notesEl.value = '';
+  setupInlineReveal({
+    trigger: document.getElementById('personNotesReveal'),
+    target: document.getElementById('personNotesWrapper')
   });
 
   const marriagesMount = document.getElementById('personMarriagesMount');
