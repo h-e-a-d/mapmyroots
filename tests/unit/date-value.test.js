@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parseDateValue, isValidDateValue, formatDateValue, formatLifespanShort } from '../../src/utils/date-value.js';
+import { createDateInput } from '../../src/ui/components/date-input.js';
 
 describe('parseDateValue', () => {
   it('parses dd.mm.yyyy into a full DateValue', () => {
@@ -113,5 +114,48 @@ describe('formatLifespanShort', () => {
       { year: 1956, estimated: false },
       'en'
     )).toBe('est. 1895 – 1956');
+  });
+});
+
+describe('createDateInput', () => {
+  it('returns null DateValue when input is empty', () => {
+    document.body.innerHTML = '';
+    const handle = createDateInput({ idPrefix: 'birth', container: document.body });
+    expect(handle.getValue()).toBeNull();
+  });
+
+  it('parses on blur and reports a valid DateValue', () => {
+    document.body.innerHTML = '';
+    const handle = createDateInput({ idPrefix: 'birth', container: document.body });
+    handle.text.value = '30.10.1906';
+    handle.text.dispatchEvent(new Event('blur'));
+    expect(handle.getValue()).toEqual({ year: 1906, month: 10, day: 30, estimated: false });
+    expect(handle.text.getAttribute('aria-invalid')).toBeNull();
+  });
+
+  it('marks aria-invalid on parse failure and exposes invalid=true', () => {
+    document.body.innerHTML = '';
+    const handle = createDateInput({ idPrefix: 'birth', container: document.body });
+    handle.text.value = 'garbage';
+    handle.text.dispatchEvent(new Event('blur'));
+    expect(handle.text.getAttribute('aria-invalid')).toBe('true');
+    expect(handle.isInvalid()).toBe(true);
+  });
+
+  it('honours the estimated checkbox', () => {
+    document.body.innerHTML = '';
+    const handle = createDateInput({ idPrefix: 'birth', container: document.body });
+    handle.text.value = '1906';
+    handle.checkbox.checked = true;
+    handle.text.dispatchEvent(new Event('blur'));
+    expect(handle.getValue()).toEqual({ year: 1906, estimated: true });
+  });
+
+  it('setValue populates the text and checkbox', () => {
+    document.body.innerHTML = '';
+    const handle = createDateInput({ idPrefix: 'birth', container: document.body });
+    handle.setValue({ year: 1906, month: 10, day: 30, estimated: true });
+    expect(handle.text.value).toBe('30.10.1906');
+    expect(handle.checkbox.checked).toBe(true);
   });
 });
