@@ -260,7 +260,7 @@ export function setupSettings(treeCore) {
   }
 
   // --- Display Preferences ---
-  const preferences = ['showMaidenName', 'showDateOfBirth', 'showFatherName'];
+  const preferences = ['showMaidenName', 'showDateOfBirth', 'showFatherName', 'showPhotos'];
   preferences.forEach(prefId => {
     const checkbox = document.getElementById(prefId);
     if (checkbox) {
