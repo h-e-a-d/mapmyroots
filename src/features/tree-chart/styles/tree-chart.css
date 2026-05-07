@@ -187,3 +187,9 @@
   .tc-parking-line      { stroke: #4a4845; }
   .tc-parking-label     { fill: #6b6960; }
 }
+
+.tc-spouse-date-label {
+  font-size: 10px;
+  fill: #6b7280;
+  pointer-events: none;
+}

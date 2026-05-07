@@ -2,6 +2,7 @@
 
 import { SecurityUtils } from '../../utils/security-utils.js';
 import { TRANSITION_MS } from './tree-chart-config.js';
+import { formatLifespanShort, formatDateValue } from '../../utils/date-value.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -29,6 +30,7 @@ export class TreeChartRenderer {
   }
 
   render(layout, personData, clanColors, parkingLabel) {
+    this._personData = personData;
     this._updateViewBox(layout.bounds);
     this._updateNodes(layout.nodes, personData, clanColors);
     this._updateEdges(layout.edges);
@@ -123,7 +125,8 @@ export class TreeChartRenderer {
 
     const p = personData.get(id) || {};
     const fullName = [p.name, p.surname].filter(Boolean).join(' ').trim() || p.id || '';
-    const dob = p.dob ? `b. ${p.dob}` : '';
+    const locale = (window.i18n?.currentLocale || 'en').slice(0, 2);
+    const lifespan = formatLifespanShort(p.birth?.date, p.death?.date, locale);
 
     // Gender → color class
     g.classList.remove('c-purple', 'c-teal', 'c-gray');
@@ -135,9 +138,9 @@ export class TreeChartRenderer {
     SecurityUtils.setTextContent(label, fullName);
     label.setAttribute('x', cx);
 
-    if (dob) {
+    if (lifespan) {
       label.setAttribute('y', n.height / 2 - 2);
-      SecurityUtils.setTextContent(sublabel, dob);
+      SecurityUtils.setTextContent(sublabel, lifespan);
       sublabel.setAttribute('x', cx);
       sublabel.setAttribute('y', n.height / 2 + 13);
     } else {
@@ -168,6 +171,23 @@ export class TreeChartRenderer {
         const sym = el.querySelector('.tc-spouse-symbol');
         sym.setAttribute('x', e.dotX);
         sym.setAttribute('y', e.dotY);
+
+        const marriageLabel = el.querySelector('.tc-spouse-date-label');
+        if (marriageLabel && this._personData) {
+          const locale = (window.i18n?.currentLocale || 'en').slice(0, 2);
+          const fromPerson = this._personData.get(e.fromId);
+          const toPerson = this._personData.get(e.toId);
+          const marriage = (fromPerson?.marriages || []).find((m) => m.spouseId === e.toId)
+            || (toPerson?.marriages || []).find((m) => m.spouseId === e.fromId);
+          if (marriage?.date?.year) {
+            const text = formatDateValue({ year: marriage.date.year, estimated: !!marriage.date.estimated }, locale);
+            SecurityUtils.setTextContent(marriageLabel, text);
+            marriageLabel.setAttribute('x', e.dotX);
+            marriageLabel.setAttribute('y', e.dotY + 16);
+          } else {
+            SecurityUtils.setTextContent(marriageLabel, '');
+          }
+        }
       } else {
         el.setAttribute('d', e.path);
       }
@@ -214,6 +234,12 @@ export class TreeChartRenderer {
     sym.setAttribute('dominant-baseline', 'central');
     sym.textContent = '⚭';
     g.appendChild(sym);
+
+    const marriageLabel = document.createElementNS(SVG_NS, 'text');
+    marriageLabel.setAttribute('class', 'tc-spouse-date-label');
+    marriageLabel.setAttribute('text-anchor', 'middle');
+    marriageLabel.setAttribute('dominant-baseline', 'central');
+    g.appendChild(marriageLabel);
 
     return g;
   }
