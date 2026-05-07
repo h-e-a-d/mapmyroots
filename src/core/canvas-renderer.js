@@ -1,5 +1,7 @@
 // canvas-renderer.js - Enhanced with improved export functionality and double-tap detection
 
+import { formatLifespanShort, formatDateValue } from '../utils/date-value.js';
+
 export class CanvasRenderer {
   constructor(container) {
     this.container = container;
@@ -417,10 +419,12 @@ export class CanvasRenderer {
       maxWidth = Math.max(maxWidth, maidenWidth + 20);
     }
     
-    // Check DOB width
-    if (this.displayPreferences.showDateOfBirth && node.dob) {
-      const dobWidth = ctx.measureText(node.dob).width;
-      maxWidth = Math.max(maxWidth, dobWidth + 20);
+    if (this.displayPreferences.showDateOfBirth) {
+      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
+      if (lifespan) {
+        const w = ctx.measureText(lifespan).width;
+        maxWidth = Math.max(maxWidth, w + 20);
+      }
     }
     
     return Math.min(maxWidth, 200); // Cap at reasonable maximum
@@ -442,11 +446,11 @@ export class CanvasRenderer {
       lines += 1;
     }
     
-    // DOB line
-    if (this.displayPreferences.showDateOfBirth && node.dob) {
-      lines += 1;
+    if (this.displayPreferences.showDateOfBirth) {
+      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
+      if (lifespan) lines += 1;
     }
-    
+
     return Math.max(40, lines * 16 + 20); // Base height + line spacing + padding
   }
 
@@ -1010,13 +1014,13 @@ export class CanvasRenderer {
   }
 
   drawConnections(ctx) {
+    const locale = this.getLocale();
     for (const conn of this.connections) {
       const fromNode = this.nodes.get(conn.from);
       const toNode = this.nodes.get(conn.to);
-      
+
       if (!fromNode || !toNode) continue;
-      
-      // Set line properties based on connection type
+
       if (conn.type === 'spouse') {
         ctx.strokeStyle = this.settings.spouseLineColor;
         ctx.lineWidth = this.settings.spouseLineThickness;
@@ -1026,20 +1030,43 @@ export class CanvasRenderer {
         ctx.lineWidth = this.settings.lineOnlyThickness;
         this.setLineDash(ctx, this.settings.lineOnlyStyle);
       } else {
-        // Family connections (parent-child)
         ctx.strokeStyle = this.settings.familyLineColor;
         ctx.lineWidth = this.settings.familyLineThickness;
         this.setLineDash(ctx, this.settings.familyLineStyle);
       }
-      
+
       ctx.beginPath();
       ctx.moveTo(fromNode.x, fromNode.y);
       ctx.lineTo(toNode.x, toNode.y);
       ctx.stroke();
+
+      if (conn.type === 'spouse') {
+        const marriage = (fromNode.marriages || []).find((m) => m.spouseId === conn.to)
+          || (toNode.marriages || []).find((m) => m.spouseId === conn.from);
+        if (marriage?.date?.year) {
+          const labelDV = { year: marriage.date.year, estimated: !!marriage.date.estimated };
+          const label = formatDateValue(labelDV, locale);
+          const cx = (fromNode.x + toNode.x) / 2;
+          const cy = (fromNode.y + toNode.y) / 2;
+          ctx.save();
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(cx - 22, cy - 8, 44, 16);
+          ctx.fillStyle = '#555';
+          ctx.font = '11px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(label, cx, cy);
+          ctx.restore();
+        }
+      }
     }
-    
-    // Reset line dash
+
     ctx.setLineDash([]);
+  }
+
+  getLocale() {
+    return (window.i18n?.currentLocale || 'en').slice(0, 2);
   }
 
   // Helper method to set line dash pattern
@@ -1201,9 +1228,9 @@ export class CanvasRenderer {
       totalLines += 1;
     }
     
-    // Count DOB line if it should be shown
-    if (this.displayPreferences.showDateOfBirth && node.dob) {
-      totalLines += 1;
+    if (this.displayPreferences.showDateOfBirth) {
+      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
+      if (lifespan) totalLines += 1;
     }
     
     y = node.y - (totalLines - 1) * lineHeight / 2;
@@ -1229,11 +1256,13 @@ export class CanvasRenderer {
       y += 10;
     }
     
-    // Draw DOB if show preference is enabled (FIXED)
-    if (this.displayPreferences.showDateOfBirth && node.dob) {
-      ctx.font = `${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
-      ctx.fillStyle = this.settings.dobColor;
-      ctx.fillText(node.dob, node.x, y + 5);
+    if (this.displayPreferences.showDateOfBirth) {
+      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
+      if (lifespan) {
+        ctx.font = `${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
+        ctx.fillStyle = this.settings.dobColor;
+        ctx.fillText(lifespan, node.x, y + 5);
+      }
     }
   }
 
