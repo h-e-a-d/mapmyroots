@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseDateValue, isValidDateValue } from '../../src/utils/date-value.js';
+import { parseDateValue, isValidDateValue, formatDateValue, formatLifespanShort } from '../../src/utils/date-value.js';
 
 describe('parseDateValue', () => {
   it('parses dd.mm.yyyy into a full DateValue', () => {
@@ -55,5 +55,63 @@ describe('isValidDateValue', () => {
   it('rejects half-dates (year+month-only or year+day-only)', () => {
     expect(isValidDateValue({ year: 1906, month: 10, estimated: false })).toBe(false);
     expect(isValidDateValue({ year: 1906, day: 30, estimated: false })).toBe(false);
+  });
+});
+
+describe('formatDateValue', () => {
+  it('returns empty string for null', () => {
+    expect(formatDateValue(null, 'en')).toBe('');
+  });
+
+  it('formats year-only DateValue', () => {
+    expect(formatDateValue({ year: 1906, estimated: false }, 'en')).toBe('1906');
+  });
+
+  it('formats full DateValue in English short month form', () => {
+    expect(formatDateValue({ year: 1906, month: 10, day: 30, estimated: false }, 'en')).toBe('30 Oct 1906');
+  });
+
+  it('prefixes "est." for estimated English', () => {
+    expect(formatDateValue({ year: 1906, estimated: true }, 'en')).toBe('est. 1906');
+    expect(formatDateValue({ year: 1906, month: 10, day: 30, estimated: true }, 'en')).toBe('est. 30 Oct 1906');
+  });
+
+  it('uses the German prefix and month forms', () => {
+    expect(formatDateValue({ year: 1906, estimated: true }, 'de')).toBe('ca. 1906');
+    expect(formatDateValue({ year: 1906, month: 10, day: 30, estimated: false }, 'de')).toBe('30. Okt. 1906');
+  });
+
+  it('falls back to English when locale is unknown', () => {
+    expect(formatDateValue({ year: 1906, month: 10, day: 30, estimated: false }, 'xx')).toBe('30 Oct 1906');
+  });
+});
+
+describe('formatLifespanShort', () => {
+  it('returns empty string when both dates are null', () => {
+    expect(formatLifespanShort(null, null, 'en')).toBe('');
+  });
+
+  it('returns birth year only when death is null', () => {
+    expect(formatLifespanShort({ year: 1895, estimated: false }, null, 'en')).toBe('1895');
+  });
+
+  it('returns "– deathYear" when birth is null', () => {
+    expect(formatLifespanShort(null, { year: 1956, estimated: false }, 'en')).toBe('– 1956');
+  });
+
+  it('joins both years with an en-dash', () => {
+    expect(formatLifespanShort(
+      { year: 1895, estimated: false },
+      { year: 1956, estimated: false },
+      'en'
+    )).toBe('1895 – 1956');
+  });
+
+  it('prefixes "est." per side independently', () => {
+    expect(formatLifespanShort(
+      { year: 1895, estimated: true },
+      { year: 1956, estimated: false },
+      'en'
+    )).toBe('est. 1895 – 1956');
   });
 });
