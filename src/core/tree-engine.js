@@ -3,6 +3,8 @@
 
 import { CanvasRenderer } from './canvas-renderer.js';
 import { openModalForEdit, closeModal, getSelectedGender } from '../ui/modals/modal.js';
+import { syncMarriages, makeMarriageId } from '../utils/marriage-sync.js';
+import { migrateToV22 } from '../data/migrations/v2.2-rich-events.js';
 import { rebuildTableView } from '../ui/components/table.js';
 import { exportTree, exportGEDCOM, exportCanvasPDF } from '../features/export/exporter.js';
 import { notifications } from '../ui/components/notifications.js';
@@ -803,46 +805,57 @@ export class TreeEngine {
       
       console.log(`${isEdit ? 'Editing' : 'Creating'} person with ID:`, personId);
       
-      // Create person data object
+      // Capture pre-edit marriages for diff
+      const previousMarriages = isEdit ? (this.personData.get(personId)?.marriages || []) : [];
+
+      // Normalise marriages: assign ids to anything missing one, drop fully-empty rows
+      const normalisedMarriages = (formData.marriages || [])
+        .map((m) => ({
+          id: m.id || makeMarriageId(),
+          spouseId: m.spouseId || '',
+          date: m.date || null,
+          place: m.place || '',
+          note: m.note || ''
+        }))
+        .filter((m) => m.spouseId || m.date || m.place || m.note);
+
+      // Build personData (new shape)
       const personData = {
         id: personId,
         name: formData.name.trim(),
         fatherName: formData.fatherName ? formData.fatherName.trim() : '',
         surname: formData.surname ? formData.surname.trim() : '',
         maidenName: formData.maidenName ? formData.maidenName.trim() : '',
-        dob: formData.dob ? formData.dob.trim() : '',
         gender: formData.gender,
         motherId: formData.motherId || '',
         fatherId: formData.fatherId || '',
-        spouseId: formData.spouseId || '',
+        birth: {
+          date: formData.birth?.date || null,
+          place: formData.birth?.place || '',
+          note: formData.birth?.note || ''
+        },
+        death: {
+          date: formData.death?.date || null,
+          place: formData.death?.place || '',
+          note: formData.death?.note || ''
+        },
+        marriages: normalisedMarriages,
+        notes: formData.notes || '',
+        spouseId: normalisedMarriages[0]?.spouseId || '',
+        dob: '',
         photoBase64: formData.photoBase64 || ''
       };
-      
-      // Capture previous spouse before overwriting
-      const previousSpouseId = isEdit ? (this.personData.get(personId)?.spouseId || '') : '';
 
-      // Store in personData map
       this.personData.set(personId, personData);
 
-      // Sync bidirectional spouse relationship
-      const newSpouseId = personData.spouseId;
-
-      // Clear old spouse's back-reference if spouse changed
-      if (previousSpouseId && previousSpouseId !== newSpouseId) {
-        const oldSpouse = this.personData.get(previousSpouseId);
-        if (oldSpouse && oldSpouse.spouseId === personId) {
-          oldSpouse.spouseId = '';
-          this.personData.set(previousSpouseId, oldSpouse);
-        }
-      }
-
-      // Set new spouse's back-reference
-      if (newSpouseId) {
-        const newSpouse = this.personData.get(newSpouseId);
-        if (newSpouse && newSpouse.spouseId !== personId) {
-          newSpouse.spouseId = personId;
-          this.personData.set(newSpouseId, newSpouse);
-        }
+      // Mirror marriages onto every affected spouse
+      const spouseUpdates = syncMarriages(personId, normalisedMarriages, previousMarriages, this.personData);
+      for (const [spouseId, update] of spouseUpdates) {
+        const spouse = this.personData.get(spouseId);
+        if (!spouse) continue;
+        spouse.marriages = update.marriages;
+        spouse.spouseId = spouse.marriages[0]?.spouseId || '';
+        this.personData.set(spouseId, spouse);
       }
 
       // Emit analytics event for person created/updated
@@ -867,55 +880,65 @@ export class TreeEngine {
             fatherName: personData.fatherName,
             surname: personData.surname,
             maidenName: personData.maidenName,
-            dob: personData.dob,
             gender: personData.gender,
+            birth: personData.birth,
+            death: personData.death,
+            marriages: personData.marriages,
             photoBase64: personData.photoBase64
           });
-          
+
           console.log('✏️ Updated existing node:', personId);
         } else {
           // Create new node with organized positioning
           const existingNodes = Array.from(this.renderer.nodes.values());
           let x = 300, y = 300;
-          
-          // Organized positioning: place new nodes below existing content, centered horizontally
+
           if (existingNodes.length > 0) {
             const position = this.calculateNewNodePosition(existingNodes);
             x = position.x;
             y = position.y;
             console.log(`📍 Positioning new node below existing content at (${x}, ${y})`);
           } else {
-            // First node: center it on the canvas
             x = 400;
             y = 300;
             console.log(`📍 Positioning first node at center (${x}, ${y})`);
           }
-          
+
           nodeData = {
             id: personId,
             name: personData.name,
             fatherName: personData.fatherName,
             surname: personData.surname,
             maidenName: personData.maidenName,
-            dob: personData.dob,
             gender: personData.gender,
+            birth: personData.birth,
+            death: personData.death,
+            marriages: personData.marriages,
             x: x,
             y: y,
             color: this.defaultColor,
             radius: this.nodeRadius,
             photoBase64: personData.photoBase64
           };
-          
+
           this.renderer.setNode(personId, nodeData);
           console.log('➕ Created new node:', personId);
-          
-          // Center camera on newly created node (using search-like approach)
+
           setTimeout(() => {
             this.centerOnNode(personId);
             console.log('📹 Camera centered on new node using search approach');
           }, 200);
         }
-        
+
+        // Refresh affected spouses' rendered nodes
+        for (const [spouseId] of spouseUpdates) {
+          const spouse = this.personData.get(spouseId);
+          const spouseNode = this.renderer?.nodes.get(spouseId);
+          if (spouse && spouseNode) {
+            spouseNode.marriages = spouse.marriages;
+          }
+        }
+
         // Regenerate connections and re-render
         this.regenerateConnections();
         this.renderer.needsRedraw = true;
@@ -1860,6 +1883,7 @@ export class TreeEngine {
   processLoadedData(data) {
     console.log('Processing loaded data:', data);
     data = this._migrateOldFormat(data);
+    data = migrateToV22(data);
 
     try {
       // Clear existing data
@@ -1897,7 +1921,11 @@ export class TreeEngine {
           gender: person.gender || '',
           motherId: person.motherId || '',
           fatherId: person.fatherId || '',
-          spouseId: person.spouseId || ''
+          spouseId: person.spouseId || '',
+          birth: person.birth || { date: null, place: '', note: '' },
+          death: person.death || { date: null, place: '', note: '' },
+          marriages: Array.isArray(person.marriages) ? person.marriages : [],
+          notes: person.notes || ''
         };
         
         this.personData.set(personId, personData);
