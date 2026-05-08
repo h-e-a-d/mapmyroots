@@ -49,4 +49,38 @@ describe('mountDocumentList', () => {
     expect(container.querySelector('.document-count').textContent).toMatch(/1.*30/);
     handle.destroy();
   });
+
+  it('disables add button at limit', async () => {
+    const docs = Array.from({ length: 30 }, (_, i) => ({
+      id: `d${i}`, personId: 'p1', mediaId: 'm', kind: 'image', title: 't', type: 'photo'
+    }));
+    const handle = mountDocumentList({ container, personId: 'p1', repo: makeRepo(docs) });
+    await handle.refresh();
+    const addBtn = container.querySelector('.document-add');
+    expect(addBtn.disabled).toBe(true);
+    handle.destroy();
+  });
+
+  it('_addDocumentForTest appends doc and re-renders', async () => {
+    const repo = makeRepo([], new Map());
+    const handle = mountDocumentList({ container, personId: 'p1', repo });
+    await handle.refresh();
+    await handle._addDocumentForTest({
+      mediaId: 'm1', thumbnailMediaId: 't1', kind: 'image',
+      title: 'New', type: 'photo', eventDate: null, place: '', description: ''
+    });
+    expect(repo.saveDocument).toHaveBeenCalled();
+    handle.destroy();
+  });
+
+  it('_removeDocumentForTest deletes doc and media', async () => {
+    const docs = [{ id: 'd1', personId: 'p1', mediaId: 'm1', kind: 'image', title: 'X', type: 'photo' }];
+    const repo = makeRepo(docs);
+    const handle = mountDocumentList({ container, personId: 'p1', repo });
+    await handle.refresh();
+    await handle._removeDocumentForTest('d1');
+    expect(repo.deleteDocument).toHaveBeenCalledWith('d1');
+    expect(repo.deleteMedia).toHaveBeenCalledWith('m1');
+    handle.destroy();
+  });
 });

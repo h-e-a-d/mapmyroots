@@ -103,8 +103,30 @@ export function mountDocumentList(opts) {
     urlCache = new Map();
   }
 
+  async function addDocument(meta) {
+    await repo.saveDocument({
+      id: `d_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      personId,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      ...meta
+    });
+    await refresh();
+  }
+
+  async function removeDocument(id) {
+    const doc = docs.find((d) => d.id === id);
+    if (!doc) return;
+    await repo.deleteDocument(id);
+    if (doc.mediaId) await repo.deleteMedia(doc.mediaId).catch(() => {});
+    if (doc.thumbnailMediaId) await repo.deleteMedia(doc.thumbnailMediaId).catch(() => {});
+    await refresh();
+  }
+
   return {
     refresh,
-    destroy: () => { revokeUrls(); root.remove(); }
+    destroy: () => { revokeUrls(); root.remove(); },
+    _addDocumentForTest: addDocument,
+    _removeDocumentForTest: removeDocument
   };
 }
