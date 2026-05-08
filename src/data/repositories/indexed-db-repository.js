@@ -14,11 +14,12 @@
 import { ERROR_TYPES, ErrorHandler } from '../../utils/error-handling.js';
 
 const DB_NAME = 'FamilyTreeDB';
-const DB_VERSION = 3;            // v2→v3: ensures media store exists (v2 may have shipped without it)
+const DB_VERSION = 4;            // v3→v4: documents store
 const STORE_PERSONS = 'persons';
 const STORE_METADATA = 'metadata';
 const STORE_CONNECTIONS = 'connections';
 const STORE_MEDIA = 'media';
+const STORE_DOCUMENTS = 'documents';
 
 export class IndexedDBRepository {
   #db;
@@ -94,6 +95,12 @@ export class IndexedDBRepository {
         // Create media store (added in v2)
         if (!db.objectStoreNames.contains(STORE_MEDIA)) {
           db.createObjectStore(STORE_MEDIA, { keyPath: 'id' });
+        }
+
+        // Create documents store (added in v4)
+        if (!db.objectStoreNames.contains(STORE_DOCUMENTS)) {
+          const docStore = db.createObjectStore(STORE_DOCUMENTS, { keyPath: 'id' });
+          docStore.createIndex('personId', 'personId', { unique: false });
         }
       };
     });
