@@ -282,8 +282,8 @@ export function setupExport(treeCore) {
 
 const EXPORT_VERSION = '2.2.0';
 
-export async function buildExport(repo) {
-  const persons = await repo.getAllPersons();
+export async function buildExport(repo, persons = null) {
+  if (!persons) persons = await repo.getAllPersons();
   const allMediaIds = await listAllMediaIds(persons);
   const media = [];
   for (const id of allMediaIds) {

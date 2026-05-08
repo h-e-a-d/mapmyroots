@@ -232,39 +232,31 @@ function setupTopToolbar(treeCore) {
     });
   }
 
-  function saveAsJSON(treeCore) {
+  async function saveAsJSON(treeCore) {
     try {
-      console.log('saveAsJSON called with treeCore:', treeCore);
-      
-      // Use getCurrentState method if available (preferred)
-      let treeData;
-      if (treeCore.getCurrentState) {
-        treeData = treeCore.getCurrentState();
-        console.log('Using getCurrentState, data:', treeData);
-      } else if (treeCore.getAllData) {
-        treeData = treeCore.getAllData();
-        console.log('Using getAllData, data:', treeData);
-      } else {
-        // Fallback to basic structure
-        treeData = {
-          persons: Array.from(treeCore.personData?.values() || []),
-          settings: treeCore.settings || {},
-          version: treeCore.cacheVersion || '1.0.0'
-        };
-        console.log('Using fallback data structure:', treeData);
-      }
+      const state = treeCore.getCurrentState?.();
+      const persons = state?.persons;
 
-      if (!treeData || (!treeData.persons && !treeData.people) || 
-          (treeData.persons && treeData.persons.length === 0) ||
-          (treeData.people && treeData.people.length === 0)) {
+      if (!persons?.length) {
         showNotification('No data to export. Add some people to your family tree first.', 'warning');
         return;
+      }
+
+      // Try full export (persons + media blobs) via buildExport
+      const repo = treeCore.cacheManager?.getIdbRepo?.();
+      let treeData;
+      if (repo) {
+        const { buildExport } = await import('../../data/core-export.js');
+        // Pass in-memory persons so blobs are bundled even before the next autoSave
+        treeData = await buildExport(repo, persons);
+      } else {
+        // IDB unavailable — export persons-only (no blobs)
+        treeData = state;
       }
 
       const dataStr = JSON.stringify(treeData, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
-      
       const link = document.createElement('a');
       link.href = url;
       link.download = `family-tree-${new Date().toISOString().split('T')[0]}.json`;
@@ -273,9 +265,9 @@ function setupTopToolbar(treeCore) {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      // Show success notification
-      showNotification('Family tree saved successfully', 'success');
-      console.log('JSON export completed successfully');
+      const photoCount = treeData.media?.length ?? 0;
+      const msg = photoCount > 0 ? `Saved with ${photoCount} photo${photoCount > 1 ? 's' : ''}` : 'Family tree saved successfully';
+      showNotification(msg, 'success');
     } catch (error) {
       console.error('Error saving family tree:', error);
       showNotification(`Error saving family tree: ${error.message}`, 'error');

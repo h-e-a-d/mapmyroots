@@ -2154,12 +2154,13 @@ export class TreeEngine {
         motherId: personData.motherId || '',
         fatherId: personData.fatherId || '',
         spouseId: personData.spouseId || '',
-        generation: this.getGeneration(personId), // Add generation number
+        generation: this.getGeneration(personId),
         x: node?.x || 300,
         y: node?.y || 300,
         color: node?.color || this.defaultColor,
         radius: node?.radius || this.nodeRadius,
-        zIndex: node?.zIndex || 0
+        zIndex: node?.zIndex || 0,
+        photo: personData.photo || null,
       };
       
       persons.push(person);
