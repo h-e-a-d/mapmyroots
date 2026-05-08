@@ -187,3 +187,60 @@
   color: #9ca3af;
   padding: 0 0.25rem;
 }
+
+/* Document list */
+.document-list-empty { text-align: center; padding: 2rem 1rem; color: #666; }
+.document-list-header { display: flex; justify-content: flex-end; padding: 0.25rem 0; }
+.document-count { font-size: 0.85rem; color: #555; }
+.document-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+.document-tile {
+  position: relative;
+  background: transparent;
+  border: 1px solid #e0e3e7;
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+}
+.document-tile-thumb {
+  width: 100%; aspect-ratio: 1; background: #f4f5f7 center / cover no-repeat;
+  position: relative;
+}
+.document-tile-badge {
+  position: absolute; top: 6px; right: 6px;
+  background: #c0392b; color: #fff; padding: 2px 6px; border-radius: 4px;
+  font-size: 0.7rem; font-weight: 600;
+}
+.document-tile-caption { padding: 0.5rem; }
+.document-tile-title { font-weight: 500; font-size: 0.9rem; line-height: 1.3; }
+.document-tile-year { font-size: 0.8rem; color: #666; margin-top: 2px; }
+.document-tile-actions {
+  position: absolute; top: 4px; left: 4px; display: none; gap: 2px;
+}
+.document-tile:hover .document-tile-actions,
+.document-tile:focus-within .document-tile-actions { display: flex; }
+.document-tile-actions button {
+  background: rgba(0,0,0,0.6); color: #fff; border: 0; border-radius: 4px;
+  width: 28px; height: 28px; cursor: pointer;
+}
+.document-add {
+  width: 100%; aspect-ratio: 1; border: 2px dashed #c0c4ca; background: transparent;
+  border-radius: 8px; cursor: pointer; color: #555; font-size: 0.95rem;
+}
+.document-add:disabled { cursor: not-allowed; opacity: 0.5; }
+.document-editor-mount {
+  margin-top: 1rem; padding: 1rem; background: #f8f9fa;
+  border-radius: 8px; border: 1px solid #e0e3e7;
+}
+.document-field { display: block; margin-bottom: 0.75rem; }
+.document-field span { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.25rem; }
+.document-field input, .document-field textarea, .document-field select {
+  width: 100%; padding: 0.5rem; border: 1px solid #d0d4d9; border-radius: 4px;
+  font: inherit;
+}
+.document-metadata-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; }
