@@ -11,9 +11,12 @@ import { createDateInput } from '../components/date-input.js';
 import { setupInlineReveal } from '../components/inline-reveal.js';
 import { createMarriagesList } from '../components/marriages-list.js';
 import { isValidDateValue } from '../../utils/date-value.js';
+import { mountCropper, DEFAULT_TRANSFORM } from '../../features/photos/avatar-cropper.js';
+import { prepareImageUpload, shouldWarnAboutStorage } from '../../features/photos/photo-utils.js';
 
 let isModalOpen = false;
 let currentEditingId = null;
+let cropperHandle = null;
 
 // Helper function to get translated text
 function t(key, fallback = '') {
@@ -235,25 +238,12 @@ function populateFormFields(node, personData) {
     target: document.getElementById('personNotesWrapper')
   });
 
-  const storedPhoto = personData?.photoBase64 || '';
-  const photoPreview = document.getElementById('personPhotoPreview');
-  const photoPlaceholder = document.getElementById('personPhotoPlaceholder');
-  const photoBase64Input = document.getElementById('personPhotoBase64');
-  const removeBtn = document.getElementById('personPhotoRemove');
-
-  if (photoBase64Input) photoBase64Input.value = storedPhoto;
-  if (photoPreview) {
-    if (storedPhoto) {
-      photoPreview.src = storedPhoto;
-      photoPreview.hidden = false;
-      if (photoPlaceholder) photoPlaceholder.hidden = true;
-      if (removeBtn) removeBtn.hidden = false;
-    } else {
-      photoPreview.hidden = true;
-      if (photoPlaceholder) photoPlaceholder.hidden = false;
-      if (removeBtn) removeBtn.hidden = true;
-    }
-  }
+  const photoMediaIdInput = document.getElementById('personPhotoMediaId');
+  const photoTransformInput = document.getElementById('personPhotoTransform');
+  const photo = personData?.photo || null;
+  if (photoMediaIdInput) photoMediaIdInput.value = photo?.mediaId || '';
+  if (photoTransformInput) photoTransformInput.value = JSON.stringify(photo?.transform || DEFAULT_TRANSFORM);
+  mountAvatarCropperForPerson(photo);
 }
 
 function mountEvent(kind, event, setHandle) {
@@ -280,6 +270,39 @@ function mountEvent(kind, event, setHandle) {
   });
 }
 
+async function mountAvatarCropperForPerson(photo) {
+  const mount = document.getElementById('avatarCropperMount');
+  const removeBtn = document.getElementById('personPhotoRemove');
+  if (!mount) return;
+  if (cropperHandle) { cropperHandle.destroy(); cropperHandle = null; mount.innerHTML = ''; }
+
+  if (!photo?.mediaId) {
+    if (removeBtn) removeBtn.hidden = true;
+    return;
+  }
+
+  const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+  const record = await repo?.getMedia(photo.mediaId).catch(() => null);
+  if (!record?.blob) {
+    if (removeBtn) removeBtn.hidden = true;
+    return;
+  }
+  cropperHandle = mountCropper({
+    container: mount,
+    blob: record.blob,
+    transform: photo.transform || DEFAULT_TRANSFORM,
+    onChange: (t) => {
+      const input = document.getElementById('personPhotoTransform');
+      if (input) input.value = JSON.stringify(t);
+      const zoomSlider = document.getElementById('avatarZoom');
+      if (zoomSlider && Math.abs(Number(zoomSlider.value) - t.scale) > 0.001) {
+        zoomSlider.value = String(t.scale);
+      }
+    }
+  });
+  if (removeBtn) removeBtn.hidden = false;
+}
+
 function showSpouseChangeConfirmation({ previousSpouseId, newSpouseId, confirm, cancel }) {
   const oldSpouse = window.treeCore?.personData?.get(previousSpouseId);
   const oldName = oldSpouse ? `${oldSpouse.name || ''} ${oldSpouse.surname || ''}`.trim() : t('builder.notifications.unknown_person', 'Unknown');
@@ -291,8 +314,36 @@ function showSpouseChangeConfirmation({ previousSpouseId, newSpouseId, confirm, 
   }
 }
 
+function setupTabs() {
+  const tabsEl = document.querySelector('.person-modal-tabs');
+  if (!tabsEl || tabsEl.dataset.wired) return;
+  tabsEl.dataset.wired = 'true';
+  const tabs = tabsEl.querySelectorAll('[role="tab"]');
+  const panels = ['tab-details', 'tab-photo', 'tab-documents'].map((id) => document.getElementById(id));
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => activateTab(tab.id));
+    tab.addEventListener('keydown', (e) => {
+      const idx = Array.from(tabs).indexOf(tab);
+      if (e.key === 'ArrowRight') tabs[(idx + 1) % tabs.length].focus();
+      else if (e.key === 'ArrowLeft') tabs[(idx - 1 + tabs.length) % tabs.length].focus();
+    });
+  });
+  function activateTab(tabBtnId) {
+    tabs.forEach((tab) => {
+      const isActive = tab.id === tabBtnId;
+      tab.setAttribute('aria-selected', String(isActive));
+      tab.tabIndex = isActive ? 0 : -1;
+    });
+    panels.forEach((panel) => {
+      if (panel) panel.hidden = panel.getAttribute('aria-labelledby') !== tabBtnId;
+    });
+  }
+}
+
 // ENHANCED: Enhanced modal show function with better animation and UX
 function showModalWithAnimation(modal) {
+  setupTabs();
+
   // Ensure modal structure is optimized
   ensureModalStructure(modal);
   
@@ -448,16 +499,17 @@ function clearForm() {
   updateGenderRadioStyles();
   clearErrorStates();
 
-  const photoBase64Input = document.getElementById('personPhotoBase64');
-  const photoPreview = document.getElementById('personPhotoPreview');
-  const photoPlaceholder = document.getElementById('personPhotoPlaceholder');
-  const personPhotoRemove = document.getElementById('personPhotoRemove');
-  const personPhotoInput = document.getElementById('personPhotoInput');
-  if (photoBase64Input) photoBase64Input.value = '';
-  if (photoPreview) { photoPreview.src = ''; photoPreview.hidden = true; }
-  if (photoPlaceholder) photoPlaceholder.hidden = false;
-  if (personPhotoRemove) personPhotoRemove.hidden = true;
-  if (personPhotoInput) personPhotoInput.value = '';
+  const photoMediaIdInput = document.getElementById('personPhotoMediaId');
+  const photoTransformInput = document.getElementById('personPhotoTransform');
+  if (photoMediaIdInput) photoMediaIdInput.value = '';
+  if (photoTransformInput) photoTransformInput.value = JSON.stringify(DEFAULT_TRANSFORM);
+  const photoFileInput = document.getElementById('personPhotoInput');
+  if (photoFileInput) photoFileInput.value = '';
+  const photoRemoveBtn = document.getElementById('personPhotoRemove');
+  if (photoRemoveBtn) photoRemoveBtn.hidden = true;
+  if (cropperHandle) { cropperHandle.destroy(); cropperHandle = null; }
+  const cropperMount = document.getElementById('avatarCropperMount');
+  if (cropperMount) cropperMount.innerHTML = '';
 }
 
 export function isModalCurrentlyOpen() {
@@ -791,6 +843,64 @@ function ensureModalStructure(modal) {
   }
 }
 
+function setupAvatarUploadHandlers() {
+  const fileInput = document.getElementById('personPhotoInput');
+  const removeBtn = document.getElementById('personPhotoRemove');
+  const zoomSlider = document.getElementById('avatarZoom');
+  const resetBtn = document.getElementById('avatarReset');
+
+  fileInput?.addEventListener('change', async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+    try {
+      const { blob, width, height, mimeType } = await prepareImageUpload(file);
+      const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+      if (!repo) throw new Error('Storage unavailable');
+      const id = `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      await repo.saveMedia({ id, blob, mimeType, byteLength: blob.size, width, height });
+      const photo = { mediaId: id, transform: { ...DEFAULT_TRANSFORM } };
+      const mediaIdInput = document.getElementById('personPhotoMediaId');
+      const transformInput = document.getElementById('personPhotoTransform');
+      if (mediaIdInput) mediaIdInput.value = id;
+      if (transformInput) transformInput.value = JSON.stringify(photo.transform);
+      await mountAvatarCropperForPerson(photo);
+      if (navigator.storage?.estimate) {
+        const est = await navigator.storage.estimate();
+        if (shouldWarnAboutStorage({ usage: est.usage ?? 0, quota: est.quota ?? 0 })) {
+          const { notifications } = await import('../components/notifications.js');
+          notifications.warning('Storage almost full', 'Consider exporting your tree.');
+        }
+      }
+    } catch (err) {
+      const { notifications } = await import('../components/notifications.js');
+      notifications.error('Photo error', err.message);
+      fileInput.value = '';
+    }
+  });
+
+  removeBtn?.addEventListener('click', async () => {
+    const mediaIdInput = document.getElementById('personPhotoMediaId');
+    const id = mediaIdInput?.value;
+    if (id) {
+      const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+      await repo?.deleteMedia(id).catch((err) => console.warn('[modal] remove photo failed:', err));
+      window.treeCore?.renderer?.clearMediaImage(id);
+    }
+    if (mediaIdInput) mediaIdInput.value = '';
+    const transformInput = document.getElementById('personPhotoTransform');
+    if (transformInput) transformInput.value = JSON.stringify(DEFAULT_TRANSFORM);
+    if (fileInput) fileInput.value = '';
+    await mountAvatarCropperForPerson(null);
+  });
+
+  zoomSlider?.addEventListener('input', () => {
+    if (cropperHandle) cropperHandle.setZoom(Number(zoomSlider.value));
+  });
+  resetBtn?.addEventListener('click', () => {
+    if (cropperHandle) cropperHandle.reset();
+  });
+}
+
 // ENHANCED: Initialize modal when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   devLog('🎨 Enhanced Modal initializing...');
@@ -875,7 +985,13 @@ document.addEventListener('DOMContentLoaded', () => {
         marriages: marriagesListHandle ? marriagesListHandle.getValue() : [],
         notes: document.getElementById('personNotes')?.value.trim() || '',
         editingId: modal.dataset.editingId || null,
-        photoBase64: document.getElementById('personPhotoBase64')?.value || ''
+        photo: (() => {
+          const mediaId = document.getElementById('personPhotoMediaId')?.value || '';
+          if (!mediaId) return null;
+          let transform = DEFAULT_TRANSFORM;
+          try { transform = JSON.parse(document.getElementById('personPhotoTransform')?.value || ''); } catch {}
+          return { mediaId, transform };
+        })()
       };
       
       devLog('Form data to save:', formData);
@@ -986,12 +1102,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Setup avatar upload handlers
+  setupAvatarUploadHandlers();
+
   // Setup delete confirmation modal
   setupDeleteConfirmationModal();
-  
+
   // Add enhanced input event listeners for real-time validation clearing
   setupEnhancedInputValidation();
-  
+
   devLog('🎨 Enhanced Modal initialization complete');
 });
 

@@ -1,0 +1,48 @@
+.person-modal-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid #d0d4d9;
+  margin-bottom: 1rem;
+}
+.person-modal-tabs [role="tab"] {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+}
+.person-modal-tabs [role="tab"][aria-selected="true"] {
+  border-bottom-color: #3498db;
+  color: #1a1a1a;
+}
+.person-modal-tabs [role="tab"]:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+.cropper-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+.cropper-controls input[type=range] { flex: 1; }
+.cropper-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.cropper-hint {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+.avatar-cropper-canvas {
+  display: block;
+  margin: 0 auto;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 50%;
+}

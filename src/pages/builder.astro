@@ -933,6 +933,7 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
       <h2 id="modalTitle" data-i18n="builder.modals.person.add_title">Add Person</h2>
       <div class="modal-body">
         <form id="personForm">
+          <div id="tab-details" role="tabpanel" aria-labelledby="tab-details-btn">
           <div class="form-group">
             <label data-i18n="builder.form.gender">Gender <span class="required">*</span></label>
             <div class="gender-radio-group">
@@ -997,19 +998,6 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
           </div>
 
           <div class="form-group">
-            <label data-i18n="builder.modals.person.photo.label">Photo</label>
-            <div class="photo-section">
-              <div class="photo-preview-wrap">
-                <img id="personPhotoPreview" alt="" hidden style="width:80px;height:80px;object-fit:cover;border-radius:50%;" />
-                <span id="personPhotoPlaceholder" aria-hidden="true" style="font-size:2rem;">📷</span>
-              </div>
-              <input type="file" id="personPhotoInput" accept="image/jpeg,image/png,image/webp" aria-label="Upload person photo" style="margin:.5rem 0;" />
-              <input type="hidden" id="personPhotoBase64" />
-              <button type="button" id="personPhotoRemove" hidden data-i18n="builder.modals.person.photo.remove">Remove photo</button>
-              <p class="help-text" data-i18n="builder.modals.person.photo.hint">JPG, PNG or WebP · max 500 KB · stored locally</p>
-            </div>
-          </div>
-          <div class="form-group">
             <label data-i18n="builder.form.mother">Mother</label>
             <div class="searchable-select" id="motherSelect"></div>
           </div>
@@ -1031,6 +1019,31 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
               <label for="personNotes" data-i18n="builder.form.general_notes">General notes</label>
               <textarea id="personNotes" rows="3"></textarea>
             </div>
+          </div>
+          </div><!-- closes tab-details -->
+
+          <div role="tablist" class="person-modal-tabs" aria-label="Person sections">
+            <button type="button" role="tab" id="tab-details-btn" aria-controls="tab-details" aria-selected="true" data-i18n="builder.modals.person.tabs.details">Details</button>
+            <button type="button" role="tab" id="tab-photo-btn" aria-controls="tab-photo" aria-selected="false" tabindex="-1" data-i18n="builder.modals.person.tabs.photo">Photo</button>
+            <button type="button" role="tab" id="tab-documents-btn" aria-controls="tab-documents" aria-selected="false" tabindex="-1" data-i18n="builder.modals.person.tabs.documents">Documents</button>
+          </div>
+          <div id="tab-photo" role="tabpanel" aria-labelledby="tab-photo-btn" hidden>
+            <div id="avatarCropperMount"></div>
+            <div class="cropper-controls">
+              <label for="avatarZoom" data-i18n="builder.modals.person.cropper.zoom">Zoom</label>
+              <input type="range" id="avatarZoom" min="1" max="4" step="0.05" value="1">
+              <button type="button" id="avatarReset" data-i18n="builder.modals.person.cropper.reset">Reset</button>
+            </div>
+            <div class="cropper-actions">
+              <input type="file" id="personPhotoInput" accept="image/jpeg,image/png,image/webp" aria-label="Upload person photo">
+              <button type="button" id="personPhotoRemove" hidden data-i18n="builder.modals.person.photo.remove">Remove photo</button>
+              <input type="hidden" id="personPhotoMediaId">
+              <input type="hidden" id="personPhotoTransform">
+            </div>
+            <p class="cropper-hint" data-i18n="builder.modals.person.cropper.drag_hint">Drag to reposition · Scroll or pinch to zoom</p>
+          </div>
+          <div id="tab-documents" role="tabpanel" aria-labelledby="tab-documents-btn" hidden>
+            <div id="documentsListMount"></div>
           </div>
         </form>
       </div>
@@ -1078,66 +1091,10 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     import '../../src/features/export/exporter.js';
     import '../../src/ui/components/notifications.js';
     import '../../src/features/search/search.js';
-    import { resizePhotoToDataUrl, shouldWarnAboutStorage } from '@/features/photos/photo-utils.js';
     import { importFromGedcom } from '@/features/import/gedcom-importer.js';
     import { SecurityUtils } from '@/utils/security-utils.js';
     window.__gedcomImport = importFromGedcom;
     window.__SecurityUtils = SecurityUtils;
-
-    (function setupPhotoUpload() {
-      const photoInput = document.getElementById('personPhotoInput') as HTMLInputElement | null;
-      const photoPreview = document.getElementById('personPhotoPreview') as HTMLImageElement | null;
-      const photoPlaceholder = document.getElementById('personPhotoPlaceholder');
-      const photoBase64Input = document.getElementById('personPhotoBase64') as HTMLInputElement | null;
-      const removeBtn = document.getElementById('personPhotoRemove');
-
-      if (!photoInput) return;
-
-      photoInput.addEventListener('change', async () => {
-        const file = photoInput.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const resized = await resizePhotoToDataUrl(e.target!.result as string);
-            if (photoBase64Input) photoBase64Input.value = resized;
-            if (photoPreview) { photoPreview.src = resized; photoPreview.hidden = false; }
-            if (photoPlaceholder) photoPlaceholder.hidden = true;
-            if (removeBtn) removeBtn.hidden = false;
-
-            if (navigator.storage?.estimate) {
-              const est = await navigator.storage.estimate();
-              if (shouldWarnAboutStorage({ usage: est.usage ?? 0, quota: est.quota ?? 0 })) {
-                const { notifications } = await import('@/ui/components/notifications.js');
-                notifications.warning('Storage almost full', 'Consider exporting your tree.');
-              }
-            }
-          } catch (err) {
-            const { notifications } = await import('@/ui/components/notifications.js');
-            notifications.error('Photo error', (err as Error).message);
-            photoInput.value = '';
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-
-      removeBtn?.addEventListener('click', () => {
-        if (photoBase64Input) photoBase64Input.value = '';
-        if (photoPreview) { photoPreview.src = ''; photoPreview.hidden = true; }
-        if (photoPlaceholder) photoPlaceholder.hidden = false;
-        if (removeBtn) removeBtn.hidden = true;
-        photoInput.value = '';
-        const modal = document.getElementById('personModal');
-        const editingId = modal?.dataset.editingId;
-        if (editingId) {
-          const node = window.treeCore?.renderer?.nodes?.get(editingId);
-          const mediaId = node?.photo?.mediaId;
-          if (mediaId) {
-            window.treeCore.renderer.clearMediaImage(mediaId);
-          }
-        }
-      });
-    })();
   </script>
 
   <!-- App initialization -->
