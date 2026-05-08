@@ -449,6 +449,52 @@ export class IndexedDBRepository {
   }
 
   /**
+   * Save a media record (image or PDF blob with metadata).
+   * @param {{id: string, blob: Blob, mimeType: string, byteLength: number, width?: number, height?: number, createdAt?: number}} media
+   * @returns {Promise<string>}
+   */
+  async saveMedia(media) {
+    await this.#ensureInitialized();
+    const record = { createdAt: Date.now(), ...media };
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_MEDIA], 'readwrite');
+      const req = tx.objectStore(STORE_MEDIA).put(record);
+      req.onsuccess = () => resolve(media.id);
+      req.onerror = () => reject(new Error('Failed to save media'));
+    });
+  }
+
+  /**
+   * Get a media record by id.
+   * @param {string} id
+   * @returns {Promise<Object|null>}
+   */
+  async getMedia(id) {
+    await this.#ensureInitialized();
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_MEDIA], 'readonly');
+      const req = tx.objectStore(STORE_MEDIA).get(id);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(new Error('Failed to get media'));
+    });
+  }
+
+  /**
+   * Delete a media record by id. No-op if absent.
+   * @param {string} id
+   * @returns {Promise<void>}
+   */
+  async deleteMedia(id) {
+    await this.#ensureInitialized();
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_MEDIA], 'readwrite');
+      const req = tx.objectStore(STORE_MEDIA).delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(new Error('Failed to delete media'));
+    });
+  }
+
+  /**
    * Ensure database is initialized
    * @private
    */

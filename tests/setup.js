@@ -19,9 +19,15 @@ const localStorageMock = (() => {
   };
 })();
 
-global.localStorage = localStorageMock;
+if (typeof global.localStorage === 'undefined') {
+  global.localStorage = localStorageMock;
+} else {
+  Object.assign(global.localStorage, localStorageMock);
+}
 
-// Mock canvas context
+
+// Mock canvas context (jsdom only — HTMLCanvasElement is not available in node env)
+if (typeof global.HTMLCanvasElement !== 'undefined') {
 global.HTMLCanvasElement.prototype.getContext = () => ({
   fillStyle: '',
   strokeStyle: '',
@@ -50,6 +56,7 @@ global.HTMLCanvasElement.prototype.getContext = () => ({
   setTransform: vi.fn(),
   drawImage: vi.fn()
 });
+} // end HTMLCanvasElement guard
 
 // Reset mocks before each test
 beforeEach(() => {
