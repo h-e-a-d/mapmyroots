@@ -174,6 +174,10 @@ export class CacheManager {
     }
   }
 
+  getIdbRepo() {
+    return this.#idbReady ? this.#idb : null;
+  }
+
   /**
    * Clear all cached data from both storage layers.
    */

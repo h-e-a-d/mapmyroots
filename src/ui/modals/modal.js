@@ -544,6 +544,12 @@ function confirmDeletePerson() {
   }
 
   // Delete the person
+  const removedPerson = treeCore.personData?.get(editingId);
+  if (removedPerson?.photo?.mediaId) {
+    const repo = treeCore.cacheManager?.getIdbRepo?.();
+    repo?.deleteMedia(removedPerson.photo.mediaId).catch(() => {});
+    treeCore.renderer?.clearMediaImage(removedPerson.photo.mediaId);
+  }
   treeCore.renderer.removeNode(editingId);
   treeCore.personData?.delete(editingId);
   

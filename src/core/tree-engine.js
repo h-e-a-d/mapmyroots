@@ -587,6 +587,28 @@ export class TreeEngine {
     return false;
   }
 
+  async _prefetchMedia() {
+    const repo = this.cacheManager?.getIdbRepo?.();
+    if (!repo || !this.renderer) return;
+    const referenced = new Set();
+    for (const p of this.personData.values()) {
+      if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
+    }
+    for (const mediaId of referenced) {
+      const record = await repo.getMedia(mediaId).catch(() => null);
+      if (!record || !record.blob) continue;
+      const url = URL.createObjectURL(record.blob);
+      const img = new Image();
+      img.onload = () => {
+        this.renderer.setMediaImage(mediaId, img);
+        URL.revokeObjectURL(url);
+        this.renderer.render?.();
+      };
+      img.onerror = () => URL.revokeObjectURL(url);
+      img.src = url;
+    }
+  }
+
   pushUndoState() {
     if (this.undoRedoManager) {
       this.undoRedoManager.pushUndoState();
@@ -844,7 +866,7 @@ export class TreeEngine {
         notes: formData.notes || '',
         spouseId: normalisedMarriages[0]?.spouseId || '',
         dob: '',
-        photoBase64: formData.photoBase64 || ''
+        photo: formData.photo || null,
       };
 
       this.personData.set(personId, personData);
@@ -885,7 +907,7 @@ export class TreeEngine {
             birth: personData.birth,
             death: personData.death,
             marriages: personData.marriages,
-            photoBase64: personData.photoBase64
+            photo: personData.photo || null,
           });
 
           console.log('✏️ Updated existing node:', personId);
@@ -919,7 +941,7 @@ export class TreeEngine {
             y: y,
             color: this.defaultColor,
             radius: this.nodeRadius,
-            photoBase64: personData.photoBase64
+            photo: personData.photo || null,
           };
 
           this.renderer.setNode(personId, nodeData);
@@ -2051,7 +2073,22 @@ export class TreeEngine {
       }
       
       console.log(`Successfully loaded ${persons.length} people`);
-      
+
+      // Async — do not await; runs in background after render
+      setTimeout(() => {
+        this._prefetchMedia().catch((err) => console.warn('[tree-engine] prefetch failed:', err));
+        const repo = this.cacheManager?.getIdbRepo?.();
+        if (repo) {
+          const referenced = new Set();
+          for (const p of this.personData.values()) {
+            if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
+          }
+          repo.garbageCollectMedia(referenced).catch((err) => {
+            console.warn('[tree-engine] media GC failed:', err);
+          });
+        }
+      }, 0);
+
     } catch (error) {
       console.error('Error processing loaded data:', error);
       throw error;
