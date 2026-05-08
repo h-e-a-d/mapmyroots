@@ -202,8 +202,7 @@ export function mountDocumentList(opts) {
     await refresh();
   }
 
-  fileInput.addEventListener('change', async () => {
-    const file = fileInput.files?.[0];
+  async function handleUploadedFile(file) {
     if (!file) return;
     try {
       enforceDocumentLimit(docs.length);
@@ -237,6 +236,23 @@ export function mountDocumentList(opts) {
     } catch (err) {
       notifyError(err.message);
     }
+  }
+
+  fileInput.addEventListener('change', async () => {
+    await handleUploadedFile(fileInput.files?.[0]);
+  });
+
+  let dragCount = 0;
+  root.addEventListener('dragenter', (e) => { e.preventDefault(); e.stopPropagation(); if (++dragCount === 1) root.classList.add('dragover'); });
+  root.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); if (--dragCount === 0) root.classList.remove('dragover'); });
+  root.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+  root.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCount = 0;
+    root.classList.remove('dragover');
+    const file = e.dataTransfer?.files?.[0];
+    if (file) await handleUploadedFile(file);
   });
 
   function openMetadataEditor(doc) {

@@ -912,8 +912,7 @@ function setupAvatarUploadHandlers() {
   const zoomSlider = document.getElementById('avatarZoom');
   const resetBtn = document.getElementById('avatarReset');
 
-  fileInput?.addEventListener('change', async () => {
-    const file = fileInput.files?.[0];
+  async function processPhotoFile(file) {
     if (!file) return;
     try {
       const { blob, width, height, mimeType } = await prepareImageUpload(file);
@@ -937,9 +936,29 @@ function setupAvatarUploadHandlers() {
     } catch (err) {
       const { notifications } = await import('../components/notifications.js');
       notifications.error('Photo error', err.message);
-      fileInput.value = '';
+      if (fileInput) fileInput.value = '';
     }
+  }
+
+  fileInput?.addEventListener('change', async () => {
+    await processPhotoFile(fileInput.files?.[0]);
   });
+
+  const uploadLabel = document.querySelector('.photo-upload-label');
+  if (uploadLabel) {
+    let dragCount = 0;
+    uploadLabel.addEventListener('dragenter', (e) => { e.preventDefault(); e.stopPropagation(); if (++dragCount === 1) uploadLabel.classList.add('dragover'); });
+    uploadLabel.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); if (--dragCount === 0) uploadLabel.classList.remove('dragover'); });
+    uploadLabel.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+    uploadLabel.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCount = 0;
+      uploadLabel.classList.remove('dragover');
+      const file = e.dataTransfer?.files?.[0];
+      if (file) await processPhotoFile(file);
+    });
+  }
 
   removeBtn?.addEventListener('click', async () => {
     const mediaIdInput = document.getElementById('personPhotoMediaId');

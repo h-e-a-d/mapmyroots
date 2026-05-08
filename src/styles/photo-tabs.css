@@ -80,7 +80,8 @@
   text-align: center;
   user-select: none;
 }
-.photo-upload-label:hover {
+.photo-upload-label:hover,
+.photo-upload-label.dragover {
   border-color: #3498db;
   background: #f0f7ff;
   color: #2980b9;
@@ -91,7 +92,8 @@
   color: #94a3b8;
   transition: color 0.2s;
 }
-.photo-upload-label:hover svg {
+.photo-upload-label:hover svg,
+.photo-upload-label.dragover svg {
   color: #3498db;
 }
 .photo-upload-hint {
@@ -221,7 +223,8 @@
   text-align: center;
   user-select: none;
 }
-.document-add--empty:hover {
+.document-add--empty:hover,
+.document-list.dragover .document-add--empty {
   border-color: #3498db;
   background: #f0f7ff;
   color: #2980b9;
@@ -232,7 +235,8 @@
   color: #94a3b8;
   transition: color 0.2s;
 }
-.document-add--empty:hover svg {
+.document-add--empty:hover svg,
+.document-list.dragover .document-add--empty svg {
   color: #3498db;
 }
 .document-add-hint {
@@ -240,7 +244,8 @@
   color: #9ca8b4;
   font-weight: 400;
 }
-.document-add--empty:hover .document-add-hint {
+.document-add--empty:hover .document-add-hint,
+.document-list.dragover .document-add--empty .document-add-hint {
   color: #7eb8e0;
 }
 
@@ -357,7 +362,8 @@
   align-items: center;
   justify-content: center;
 }
-.document-add:hover {
+.document-add:hover,
+.document-list.dragover .document-add:not(:disabled) {
   border-color: #3498db;
   color: #3498db;
   background: #f0f7ff;
