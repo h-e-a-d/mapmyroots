@@ -191,19 +191,23 @@ function setupTopToolbar(treeCore) {
   const exportBtn = document.getElementById('exportBtn');
   const exportMenu = document.getElementById('exportMenu');
 
-  // Save functionality
+  // Save / Load — delegate to the canonical handlers wired up in core-export.js
+  // so the toolbar and the data-management panel share one implementation.
   if (saveBtn) {
     saveBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      saveAsJSON(treeCore);
+      const target = document.getElementById('saveData');
+      if (target) target.click();
+      else showNotification('Save is not available', 'error');
     });
   }
 
-  // Load functionality
   if (loadBtn) {
     loadBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      loadFromJSON(treeCore);
+      const target = document.getElementById('loadData');
+      if (target) target.click();
+      else showNotification('Load is not available', 'error');
     });
   }
 
@@ -230,106 +234,6 @@ function setupTopToolbar(treeCore) {
         hideExportMenu();
       }
     });
-  }
-
-  async function saveAsJSON(treeCore) {
-    try {
-      const state = treeCore.getCurrentState?.();
-      const persons = state?.persons;
-
-      if (!persons?.length) {
-        showNotification('No data to export. Add some people to your family tree first.', 'warning');
-        return;
-      }
-
-      // Try full export (persons + media blobs) via buildExport
-      const repo = treeCore.cacheManager?.getIdbRepo?.();
-      let treeData;
-      if (repo) {
-        const { buildExport } = await import('../../data/core-export.js');
-        // Pass in-memory persons so blobs are bundled even before the next autoSave
-        treeData = await buildExport(repo, persons);
-      } else {
-        // IDB unavailable — export persons-only (no blobs)
-        treeData = state;
-      }
-
-      const dataStr = JSON.stringify(treeData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `family-tree-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      const photoCount = treeData.media?.length ?? 0;
-      const msg = photoCount > 0 ? `Saved with ${photoCount} photo${photoCount > 1 ? 's' : ''}` : 'Family tree saved successfully';
-      showNotification(msg, 'success');
-    } catch (error) {
-      console.error('Error saving family tree:', error);
-      showNotification(`Error saving family tree: ${error.message}`, 'error');
-    }
-  }
-
-  function loadFromJSON(treeCore) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-
-    input.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        try {
-          const data = JSON.parse(e.target.result);
-
-          if (!data.persons && !data.people) {
-            showNotification('Invalid File Format: The file does not contain valid family tree data', 'error');
-            return;
-          }
-
-          // Persist media blobs + documents to IDB before refreshing in-memory state
-          if (data.media?.length) {
-            let repo = window.treeCore?.cacheManager?.getIdbRepo?.();
-            for (let i = 0; i < 10 && !repo; i++) {
-              await new Promise((r) => setTimeout(r, 200));
-              repo = window.treeCore?.cacheManager?.getIdbRepo?.();
-            }
-            if (repo) {
-              try {
-                const { applyImport } = await import('../../data/core-export.js');
-                await applyImport(repo, data);
-              } catch (impErr) {
-                console.error('[ui-buttons.loadFromJSON] applyImport failed:', impErr);
-                showNotification(`Import failed: ${impErr?.message || 'Could not write media to storage'}`, 'error');
-                return;
-              }
-            } else {
-              console.warn('[ui-buttons.loadFromJSON] IDB never became ready; media blobs not persisted');
-            }
-          }
-
-          if (treeCore.processLoadedData) {
-            treeCore.processLoadedData(data);
-            showNotification(`Family tree loaded successfully (${data.persons?.length || data.people?.length || 0} people)`, 'success');
-          } else {
-            showNotification('Load functionality not available', 'error');
-          }
-        } catch (error) {
-          console.error('Error loading family tree:', error);
-          showNotification('Error loading family tree. Please check file format.', 'error');
-        }
-      };
-
-      reader.readAsText(file);
-    });
-
-    input.click();
   }
 
   function toggleExportMenu() {

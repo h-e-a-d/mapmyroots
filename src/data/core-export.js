@@ -62,35 +62,12 @@ export function setupExport(treeCore) {
     treeCore.exportCanvasAsPDF();
   });
 
-  document.getElementById('saveData')?.addEventListener('click', async () => {
-    const n = await getNotifications();
-    const loadingId = n.loading('Saving...', 'Generating JSON file');
-    try {
-      setTimeout(() => {
-        treeCore.saveToJSON();
-        n.remove(loadingId);
-        n.success('Save Complete', 'Family tree saved to JSON file');
-      }, 100);
-    } catch (error) {
-      n.remove(loadingId);
-      n.error('Save Failed', 'Error saving family tree');
-      console.error('Save error:', error);
-    }
+  document.getElementById('saveData')?.addEventListener('click', () => {
+    treeCore.saveToJSON();
   });
 
-  document.getElementById('loadData')?.addEventListener('change', async (e) => {
-    const n = await getNotifications();
-    const loadingId = n.loading('Loading...', 'Processing JSON file');
-    try {
-      setTimeout(() => {
-        treeCore.loadFromJSON(e);
-        n.remove(loadingId);
-      }, 100);
-    } catch (error) {
-      n.remove(loadingId);
-      n.error('Load Failed', 'Error loading family tree');
-      console.error('Load error:', error);
-    }
+  document.getElementById('loadData')?.addEventListener('change', (e) => {
+    treeCore.loadFromJSON(e);
   });
 
   // --- Advanced Export ---
@@ -204,33 +181,32 @@ export function setupExport(treeCore) {
   treeCore.saveToJSON = async function() {
     const n = await getNotifications();
     try {
-      console.log('saveToJSON called, treeCore:', this);
-      const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
-      let data;
-      if (repo) {
-        data = await buildExport(repo);
-      } else {
-        data = this.getCurrentState();
-      }
-      console.log('Data to export:', data);
-
-      if (!data || !data.persons || data.persons.length === 0) {
+      const state = this.getCurrentState?.();
+      const persons = state?.persons;
+      if (!persons?.length) {
         n.warning('No Data to Export', 'Your family tree appears to be empty. Add some people first.');
         return;
       }
+
+      // Bundle media blobs from IDB with in-memory persons so any unsaved
+      // edits are exported alongside the photos.
+      const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+      const data = repo ? await buildExport(repo, persons) : state;
 
       const dataStr = JSON.stringify(data, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `family_tree_${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `family-tree-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      console.log('JSON export completed successfully');
+      const photoCount = data.media?.length ?? 0;
+      const detail = photoCount > 0 ? `Saved with ${photoCount} photo${photoCount > 1 ? 's' : ''}` : 'Family tree saved to JSON file';
+      n.success('Save Complete', detail);
     } catch (error) {
       console.error('Error in saveToJSON:', error);
       n.error('Export Failed', `Error exporting JSON: ${error.message}`);
