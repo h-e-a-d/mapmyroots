@@ -23,8 +23,15 @@ export function mountDocumentList(opts) {
   fileInput.hidden = true;
   container.appendChild(fileInput);
 
+  render(); // show empty state immediately while refresh() loads from IDB
+
   async function refresh() {
-    docs = await repo.getDocumentsForPerson(personId);
+    try {
+      docs = await repo.getDocumentsForPerson(personId);
+    } catch (e) {
+      console.warn('[document-list] failed to load documents:', e);
+      docs = [];
+    }
     render();
   }
 
