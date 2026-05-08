@@ -357,7 +357,8 @@
         "new_person": "New Person",
         "photo": {
           "label": "Photo",
-          "remove": "Remove photo",
+          "remove": "Remove",
+          "change": "Change photo",
           "hint": "JPG, PNG or WebP · max 500 KB · stored locally"
         },
         "tabs": { "details": "Details", "photo": "Photo", "documents": "Documents" },

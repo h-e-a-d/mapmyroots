@@ -1028,19 +1028,36 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
           </div><!-- closes tab-details -->
 
           <div id="tab-photo" role="tabpanel" aria-labelledby="tab-photo-btn" hidden>
-            <div id="avatarCropperMount"></div>
-            <div class="cropper-controls">
-              <label for="avatarZoom" data-i18n="builder.modals.person.cropper.zoom">Zoom</label>
-              <input type="range" id="avatarZoom" min="1" max="4" step="0.05" value="1">
-              <button type="button" id="avatarReset" data-i18n="builder.modals.person.cropper.reset">Reset</button>
+            <!-- No-photo state -->
+            <div class="photo-empty-state">
+              <label for="personPhotoInput" class="photo-upload-label">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                <span data-i18n="builder.modals.person.cropper.choose">Upload Photo</span>
+                <span class="photo-upload-hint">JPEG · PNG · WebP · max 10 MB</span>
+              </label>
             </div>
-            <div class="cropper-actions">
-              <input type="file" id="personPhotoInput" accept="image/jpeg,image/png,image/webp" aria-label="Upload person photo">
-              <button type="button" id="personPhotoRemove" hidden data-i18n="builder.modals.person.photo.remove">Remove photo</button>
-              <input type="hidden" id="personPhotoMediaId">
-              <input type="hidden" id="personPhotoTransform">
+            <!-- With-photo state -->
+            <div class="photo-filled-state">
+              <div id="avatarCropperMount"></div>
+              <div class="cropper-controls">
+                <span class="cropper-zoom-icon" aria-hidden="true">⊖</span>
+                <input type="range" id="avatarZoom" min="1" max="4" step="0.05" value="1" aria-label="Zoom">
+                <span class="cropper-zoom-icon" aria-hidden="true">⊕</span>
+                <button type="button" id="avatarReset" class="cropper-reset-btn" data-i18n="builder.modals.person.cropper.reset">Reset</button>
+              </div>
+              <div class="photo-bottom-actions">
+                <label for="personPhotoInput" class="photo-change-label" data-i18n="builder.modals.person.photo.change">Change photo</label>
+                <button type="button" id="personPhotoRemove" class="photo-remove-btn" data-i18n="builder.modals.person.photo.remove">Remove</button>
+              </div>
+              <p class="cropper-hint" data-i18n="builder.modals.person.cropper.drag_hint">Drag to reposition · Scroll or pinch to zoom</p>
             </div>
-            <p class="cropper-hint" data-i18n="builder.modals.person.cropper.drag_hint">Drag to reposition · Scroll or pinch to zoom</p>
+            <!-- Always-hidden form fields -->
+            <input type="file" id="personPhotoInput" accept="image/jpeg,image/png,image/webp" style="display:none" aria-hidden="true" tabindex="-1">
+            <input type="hidden" id="personPhotoMediaId">
+            <input type="hidden" id="personPhotoTransform">
           </div>
           <div id="tab-documents" role="tabpanel" aria-labelledby="tab-documents-btn" hidden>
             <div id="documentsListMount"></div>

@@ -357,7 +357,8 @@
         "new_person": "Nueva Persona",
         "photo": {
           "label": "Foto",
-          "remove": "Eliminar foto",
+          "remove": "Eliminar",
+          "change": "Cambiar foto",
           "hint": "JPG, PNG o WebP · máx 500 KB · almacenado localmente"
         },
         "tabs": { "details": "Detalles", "photo": "Foto", "documents": "Documentos" },

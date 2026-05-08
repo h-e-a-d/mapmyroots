@@ -1,6 +1,7 @@
+/* Tab strip */
 .person-modal-tabs {
   display: flex;
-  gap: 0.25rem;
+  gap: 0;
   border-bottom: 1px solid #d0d4d9;
   margin-bottom: 1rem;
 }
@@ -8,41 +9,181 @@
   background: transparent;
   border: 0;
   border-bottom: 2px solid transparent;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.1rem;
   font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
-  color: #555;
+  color: #6b7280;
+  transition: color 0.15s, border-color 0.15s;
 }
 .person-modal-tabs [role="tab"][aria-selected="true"] {
   border-bottom-color: #3498db;
   color: #1a1a1a;
 }
+.person-modal-tabs [role="tab"]:hover:not([aria-selected="true"]) {
+  color: #374151;
+}
 .person-modal-tabs [role="tab"]:focus-visible {
   outline: 2px solid #3498db;
   outline-offset: 2px;
+  border-radius: 4px 4px 0 0;
 }
-.cropper-controls {
+
+/* ── Photo panel ── */
+#tab-photo {
+  padding: 0.25rem 0 0.5rem;
+}
+
+/* Canvas wrapper — centers the 400×400 buffer at 240px display size */
+#avatarCropperMount {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0.75rem 0;
-}
-.cropper-controls input[type=range] { flex: 1; }
-.cropper-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.cropper-hint {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: #666;
+  justify-content: center;
+  margin-bottom: 0.75rem;
 }
 .avatar-cropper-canvas {
   display: block;
-  margin: 0 auto;
+  width: 240px;
+  height: 240px;
   cursor: grab;
   touch-action: none;
   border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+.avatar-cropper-canvas:active {
+  cursor: grabbing;
+}
+
+/* ── Empty state (shown when no photo) ── */
+.photo-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 0 0.5rem;
+}
+#tab-photo.has-photo .photo-empty-state {
+  display: none;
+}
+
+.photo-upload-label {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.75rem 3rem;
+  border: 2px dashed #c8d4dc;
+  border-radius: 14px;
+  color: #5a6472;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  text-align: center;
+  user-select: none;
+}
+.photo-upload-label:hover {
+  border-color: #3498db;
+  background: #f0f7ff;
+  color: #2980b9;
+}
+.photo-upload-label svg {
+  width: 30px;
+  height: 30px;
+  color: #94a3b8;
+  transition: color 0.2s;
+}
+.photo-upload-label:hover svg {
+  color: #3498db;
+}
+.photo-upload-hint {
+  font-size: 0.76rem;
+  color: #9ca8b4;
+  font-weight: 400;
+  margin-top: 0.1rem;
+}
+
+/* ── Filled state (shown when photo exists) ── */
+.photo-filled-state {
+  display: none;
+}
+#tab-photo.has-photo .photo-filled-state {
+  display: block;
+}
+
+/* Zoom row */
+.cropper-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.25rem 0 0.5rem;
+  padding: 0 0.25rem;
+}
+.cropper-zoom-icon {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  user-select: none;
+  line-height: 1;
+}
+.cropper-controls input[type="range"] {
+  flex: 1;
+  accent-color: #3498db;
+  cursor: pointer;
+}
+.cropper-reset-btn {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+.cropper-reset-btn:hover {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+/* Change / Remove row */
+.photo-bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.25rem;
+  padding: 0 0.25rem;
+}
+.photo-change-label {
+  font-size: 0.84rem;
+  color: #3498db;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.photo-change-label:hover {
+  color: #2980b9;
+}
+.photo-remove-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.84rem;
+  color: #b0b8c2;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s;
+}
+.photo-remove-btn:hover {
+  color: #c0392b;
+}
+
+/* Drag hint */
+.cropper-hint {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: #9ca3af;
+  padding: 0 0.25rem;
 }

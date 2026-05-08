@@ -272,12 +272,12 @@ function mountEvent(kind, event, setHandle) {
 
 async function mountAvatarCropperForPerson(photo) {
   const mount = document.getElementById('avatarCropperMount');
-  const removeBtn = document.getElementById('personPhotoRemove');
+  const panel = document.getElementById('tab-photo');
   if (!mount) return;
   if (cropperHandle) { cropperHandle.destroy(); cropperHandle = null; mount.innerHTML = ''; }
 
   if (!photo?.mediaId) {
-    if (removeBtn) removeBtn.hidden = true;
+    panel?.classList.remove('has-photo');
     return;
   }
 
@@ -291,7 +291,7 @@ async function mountAvatarCropperForPerson(photo) {
   if (mount._mountToken !== mountToken) return;
 
   if (!record?.blob) {
-    if (removeBtn) removeBtn.hidden = true;
+    panel?.classList.remove('has-photo');
     return;
   }
   cropperHandle = mountCropper({
@@ -307,7 +307,7 @@ async function mountAvatarCropperForPerson(photo) {
       }
     }
   });
-  if (removeBtn) removeBtn.hidden = false;
+  panel?.classList.add('has-photo');
 }
 
 function showSpouseChangeConfirmation({ previousSpouseId, newSpouseId, confirm, cancel }) {
@@ -516,8 +516,7 @@ function clearForm() {
   if (photoTransformInput) photoTransformInput.value = JSON.stringify(DEFAULT_TRANSFORM);
   const photoFileInput = document.getElementById('personPhotoInput');
   if (photoFileInput) photoFileInput.value = '';
-  const photoRemoveBtn = document.getElementById('personPhotoRemove');
-  if (photoRemoveBtn) photoRemoveBtn.hidden = true;
+  document.getElementById('tab-photo')?.classList.remove('has-photo');
   if (cropperHandle) { cropperHandle.destroy(); cropperHandle = null; }
   const cropperMount = document.getElementById('avatarCropperMount');
   if (cropperMount) { delete cropperMount._mountToken; cropperMount.innerHTML = ''; }

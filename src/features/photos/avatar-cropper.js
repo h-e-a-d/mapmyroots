@@ -108,22 +108,15 @@ export function mountCropper(opts) {
     const cy = radius - drawH * transform.y;
     ctx.drawImage(img, cx, cy, drawW, drawH);
 
-    // Dim the area outside the circle
+    // Crop boundary — dashed circle so the user sees exactly what will be saved
     ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.55)';
-    ctx.fillRect(0, 0, VIEWPORT_SIZE, VIEWPORT_SIZE);
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.beginPath();
-    ctx.arc(radius, radius, radius - 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    // Mask boundary stroke
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
     ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
     ctx.beginPath();
     ctx.arc(radius, radius, radius - 2, 0, Math.PI * 2);
     ctx.stroke();
+    ctx.restore();
   }
 
   function update(next) {

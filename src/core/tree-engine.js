@@ -616,6 +616,23 @@ export class TreeEngine {
     }
   }
 
+  _loadMediaIntoRenderer(mediaId) {
+    const repo = this.cacheManager?.getIdbRepo?.();
+    if (!repo || !this.renderer) return;
+    repo.getMedia(mediaId).then((record) => {
+      if (!record?.blob) return;
+      const url = URL.createObjectURL(record.blob);
+      const img = new Image();
+      img.onload = () => {
+        this.renderer?.setMediaImage(mediaId, img);
+        this.renderer?.render?.();
+        URL.revokeObjectURL(url);
+      };
+      img.onerror = () => URL.revokeObjectURL(url);
+      img.src = url;
+    }).catch(() => {});
+  }
+
   pushUndoState() {
     if (this.undoRedoManager) {
       this.undoRedoManager.pushUndoState();
@@ -972,8 +989,14 @@ export class TreeEngine {
         // Regenerate connections and re-render
         this.regenerateConnections();
         this.renderer.needsRedraw = true;
+
+        // Load new photo into renderer cache if not already present
+        const mediaId = personData.photo?.mediaId;
+        if (mediaId && !this.renderer._imageCache?.has(mediaId)) {
+          this._loadMediaIntoRenderer(mediaId);
+        }
       }
-      
+
       // Trigger auto-save
       if (this.cacheManager) {
         this.cacheManager.autoSave();
