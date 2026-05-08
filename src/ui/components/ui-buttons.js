@@ -278,23 +278,42 @@ function setupTopToolbar(treeCore) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
-    
+
     input.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         try {
           const data = JSON.parse(e.target.result);
-          
-          // Validate the data structure
+
           if (!data.persons && !data.people) {
             showNotification('Invalid File Format: The file does not contain valid family tree data', 'error');
             return;
           }
-          
-          // Use the proper processLoadedData method
+
+          // Persist media blobs + documents to IDB before refreshing in-memory state
+          if (data.media?.length) {
+            let repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+            for (let i = 0; i < 10 && !repo; i++) {
+              await new Promise((r) => setTimeout(r, 200));
+              repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+            }
+            if (repo) {
+              try {
+                const { applyImport } = await import('../../data/core-export.js');
+                await applyImport(repo, data);
+              } catch (impErr) {
+                console.error('[ui-buttons.loadFromJSON] applyImport failed:', impErr);
+                showNotification(`Import failed: ${impErr?.message || 'Could not write media to storage'}`, 'error');
+                return;
+              }
+            } else {
+              console.warn('[ui-buttons.loadFromJSON] IDB never became ready; media blobs not persisted');
+            }
+          }
+
           if (treeCore.processLoadedData) {
             treeCore.processLoadedData(data);
             showNotification(`Family tree loaded successfully (${data.persons?.length || data.people?.length || 0} people)`, 'success');
@@ -306,7 +325,7 @@ function setupTopToolbar(treeCore) {
           showNotification('Error loading family tree. Please check file format.', 'error');
         }
       };
-      
+
       reader.readAsText(file);
     });
 

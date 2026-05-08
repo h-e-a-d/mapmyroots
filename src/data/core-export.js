@@ -266,17 +266,10 @@ export function setupExport(treeCore) {
             repo = window.treeCore?.cacheManager?.getIdbRepo?.();
           }
           if (repo) {
-            console.log('[loadFromJSON] running applyImport, media=', data.media.length, 'persons=', data.persons.length);
             try {
               await applyImport(repo, data);
-              console.log('[loadFromJSON] applyImport done; sample photo for p41:', data.persons.find((p) => p.id === 'p41')?.photo);
-              const probe = data.persons.find((p) => p.id === 'p41');
-              if (probe?.photo?.mediaId) {
-                const rec = await repo.getMedia(probe.photo.mediaId).catch(() => null);
-                console.log('[loadFromJSON] IDB blob present for p41 mediaId', probe.photo.mediaId, '=>', !!rec?.blob);
-              }
             } catch (impErr) {
-              console.error('[loadFromJSON] applyImport FAILED:', impErr);
+              console.error('[loadFromJSON] applyImport failed:', impErr);
               n.error('Import Failed', impErr?.message || 'Could not write media to storage');
               return;
             }
