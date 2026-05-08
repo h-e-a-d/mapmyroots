@@ -284,7 +284,8 @@ const EXPORT_VERSION = '2.2.0';
 
 export async function buildExport(repo, persons = null) {
   if (!persons) persons = await repo.getAllPersons();
-  const allMediaIds = await listAllMediaIds(persons);
+  const docs = await repo.getAllDocuments();
+  const allMediaIds = await listAllMediaIds(persons, docs);
   const media = [];
   for (const id of allMediaIds) {
     const rec = await repo.getMedia(id);
@@ -298,12 +299,16 @@ export async function buildExport(repo, persons = null) {
       base64: await blobToBase64(rec.blob)
     });
   }
-  return { version: EXPORT_VERSION, cacheFormat: 'enhanced', persons, media, documents: [] };
+  return { version: EXPORT_VERSION, cacheFormat: 'enhanced', persons, media, documents: docs };
 }
 
-function listAllMediaIds(persons) {
+function listAllMediaIds(persons, docs) {
   const ids = new Set();
   for (const p of persons) if (p?.photo?.mediaId) ids.add(p.photo.mediaId);
+  for (const d of docs) {
+    if (d.mediaId) ids.add(d.mediaId);
+    if (d.thumbnailMediaId) ids.add(d.thumbnailMediaId);
+  }
   return Array.from(ids);
 }
 
@@ -338,11 +343,27 @@ export async function applyImport(repo, data) {
     });
     mediaIdsInImport.add(m.id);
   }
+  const personIdsInImport = new Set();
   for (const p of data.persons) {
     if (p.photo?.mediaId && !mediaIdsInImport.has(p.photo.mediaId)) {
       console.warn(`[import] dropping dangling photo for person ${p.id}`);
       p.photo = null;
     }
     await repo.savePerson(p);
+    personIdsInImport.add(p.id);
+  }
+  for (const d of data.documents || []) {
+    if (!personIdsInImport.has(d.personId)) {
+      console.warn(`[import] dropping orphaned document ${d.id} (person ${d.personId} missing)`);
+      continue;
+    }
+    if (d.mediaId && !mediaIdsInImport.has(d.mediaId)) {
+      console.warn(`[import] dropping document ${d.id} (media ${d.mediaId} missing)`);
+      continue;
+    }
+    if (d.thumbnailMediaId && !mediaIdsInImport.has(d.thumbnailMediaId)) {
+      d.thumbnailMediaId = null;
+    }
+    await repo.saveDocument(d);
   }
 }

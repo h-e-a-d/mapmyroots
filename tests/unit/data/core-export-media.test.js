@@ -8,7 +8,7 @@ describe('export/import with media', () => {
   let repo;
   beforeEach(async () => {
     globalThis.indexedDB = new IDBFactory();
-    repo = new IndexedDBRepository('TestDB', 2);
+    repo = new IndexedDBRepository('TestDB', 4);
     await repo.initialize();
   });
 
@@ -24,7 +24,7 @@ describe('export/import with media', () => {
 
     // Wipe and re-import
     globalThis.indexedDB = new IDBFactory();
-    const repo2 = new IndexedDBRepository('TestDB', 2);
+    const repo2 = new IndexedDBRepository('TestDB', 4);
     await repo2.initialize();
     await applyImport(repo2, exported);
 
@@ -43,10 +43,49 @@ describe('export/import with media', () => {
       documents: []
     };
     globalThis.indexedDB = new IDBFactory();
-    const repo2 = new IndexedDBRepository('TestDB', 2);
+    const repo2 = new IndexedDBRepository('TestDB', 4);
     await repo2.initialize();
     await applyImport(repo2, exported);
     const persons = await repo2.getAllPersons();
     expect(persons[0].photo).toBeNull();
+  });
+
+  it('round-trips documents and their thumbnails', async () => {
+    await repo.saveMedia({ id: 'm_main', blob: new Blob(['main']), mimeType: 'application/pdf', byteLength: 4 });
+    await repo.saveMedia({ id: 'm_thumb', blob: new Blob(['thumb']), mimeType: 'image/jpeg', byteLength: 5, width: 256, height: 256 });
+    await repo.saveDocument({
+      id: 'd1', personId: 'p1', mediaId: 'm_main', thumbnailMediaId: 'm_thumb',
+      kind: 'pdf', title: 'Cert', type: 'certificate',
+      eventDate: { year: 1952 }, place: 'Riga', description: '',
+      createdAt: 1, updatedAt: 1
+    });
+    await repo.savePerson({ id: 'p1', name: 'A' });
+    const exported = await buildExport(repo);
+    expect(exported.documents).toHaveLength(1);
+    expect(exported.media.find((m) => m.id === 'm_main')).toBeTruthy();
+    expect(exported.media.find((m) => m.id === 'm_thumb')).toBeTruthy();
+
+    globalThis.indexedDB = new IDBFactory();
+    const repo2 = new IndexedDBRepository('TestDB', 4);
+    await repo2.initialize();
+    await applyImport(repo2, exported);
+    const docs = await repo2.getDocumentsForPerson('p1');
+    expect(docs).toHaveLength(1);
+    expect(docs[0].title).toBe('Cert');
+  });
+
+  it('drops document with missing media on import (warns)', async () => {
+    const exported = {
+      version: '2.2.0',
+      persons: [{ id: 'p1', name: 'A' }],
+      media: [],
+      documents: [{ id: 'd1', personId: 'p1', mediaId: 'absent', kind: 'image', title: 'x', type: 'photo', createdAt: 1, updatedAt: 1 }]
+    };
+    globalThis.indexedDB = new IDBFactory();
+    const repo2 = new IndexedDBRepository('TestDB', 4);
+    await repo2.initialize();
+    await applyImport(repo2, exported);
+    const docs = await repo2.getDocumentsForPerson('p1');
+    expect(docs).toHaveLength(0);
   });
 });
