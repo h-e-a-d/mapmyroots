@@ -359,6 +359,13 @@
           "label": "Foto",
           "remove": "Eliminar foto",
           "hint": "JPG, PNG o WebP · máx 500 KB · almacenado localmente"
+        },
+        "tabs": { "details": "Detalles", "photo": "Foto", "documents": "Documentos" },
+        "cropper": {
+          "drag_hint": "Arrastra para reposicionar · Desplaza o pellizca para hacer zoom",
+          "zoom": "Zoom",
+          "reset": "Restablecer",
+          "choose": "Elegir foto..."
         }
       },
       "gedcom": {
