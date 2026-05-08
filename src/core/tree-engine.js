@@ -2008,7 +2008,10 @@ export class TreeEngine {
             x: person.x || 300,
             y: person.y || 300,
             color: person.color || this.defaultColor,
-            radius: person.radius || this.nodeRadius
+            radius: person.radius || this.nodeRadius,
+            birth: person.birth || { date: null, place: '', note: '' },
+            death: person.death || { date: null, place: '', note: '' },
+            photo: person.photo || null,
           };
           
           this.renderer.setNode(personId, nodeData);
@@ -2170,6 +2173,10 @@ export class TreeEngine {
         radius: node?.radius || this.nodeRadius,
         zIndex: node?.zIndex || 0,
         photo: personData.photo || null,
+        birth: personData.birth || { date: null, place: '', note: '' },
+        death: personData.death || { date: null, place: '', note: '' },
+        marriages: Array.isArray(personData.marriages) ? personData.marriages : [],
+        notes: personData.notes || '',
       };
       
       persons.push(person);
