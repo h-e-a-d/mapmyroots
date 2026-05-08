@@ -1,4 +1,5 @@
 // Test setup file
+import 'fake-indexeddb/auto';
 import { beforeEach, afterEach, vi } from 'vitest';
 
 // Mock localStorage
