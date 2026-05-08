@@ -367,6 +367,30 @@
           "zoom": "Zoom",
           "reset": "Restablecer",
           "choose": "Elegir foto..."
+        },
+        "documents": {
+          "empty": "Aún no hay documentos. Añade escaneos, certificados, cartas y otras fotos aquí.",
+          "add": "+ Añadir documento",
+          "title": "Título",
+          "type": "Tipo",
+          "types": { "certificate": "Certificado", "photo": "Foto", "letter": "Carta", "other": "Otro" },
+          "date": "Fecha (AAAA o AAAA-MM-DD)",
+          "place": "Lugar",
+          "description": "Descripción",
+          "save": "Guardar documento",
+          "cancel": "Cancelar",
+          "edit": "Editar",
+          "delete": "Eliminar",
+          "delete_confirm": "¿Eliminar este documento?",
+          "limit_reached": "Límite alcanzado (30 por persona)",
+          "file_too_large": "Archivo demasiado grande",
+          "invalid_type": "Tipo de archivo no admitido",
+          "decode_failed": "No se pudo leer este archivo",
+          "missing": "Archivo no encontrado.",
+          "prev": "◀ Anterior",
+          "next": "Siguiente ▶",
+          "close": "Cerrar",
+          "storage_full": "Almacenamiento lleno — exporta tu árbol y libera espacio"
         }
       },
       "gedcom": {

@@ -257,6 +257,30 @@
           "zoom": "Zoom",
           "reset": "Zurücksetzen",
           "choose": "Foto wählen..."
+        },
+        "documents": {
+          "empty": "Noch keine Dokumente. Füge Scans, Urkunden, Briefe und andere Fotos hier hinzu.",
+          "add": "+ Dokument hinzufügen",
+          "title": "Titel",
+          "type": "Typ",
+          "types": { "certificate": "Urkunde", "photo": "Foto", "letter": "Brief", "other": "Sonstiges" },
+          "date": "Datum (JJJJ oder JJJJ-MM-TT)",
+          "place": "Ort",
+          "description": "Beschreibung",
+          "save": "Dokument speichern",
+          "cancel": "Abbrechen",
+          "edit": "Bearbeiten",
+          "delete": "Löschen",
+          "delete_confirm": "Dieses Dokument löschen?",
+          "limit_reached": "Limit erreicht (30 pro Person)",
+          "file_too_large": "Datei zu groß",
+          "invalid_type": "Dateityp nicht unterstützt",
+          "decode_failed": "Datei konnte nicht gelesen werden",
+          "missing": "Datei nicht gefunden.",
+          "prev": "◀ Zurück",
+          "next": "Weiter ▶",
+          "close": "Schließen",
+          "storage_full": "Speicher voll — exportiere deinen Baum und gib Platz frei"
         }
       },
       "gedcom": {

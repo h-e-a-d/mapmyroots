@@ -367,6 +367,30 @@
           "zoom": "Zoom",
           "reset": "Reset",
           "choose": "Choose photo..."
+        },
+        "documents": {
+          "empty": "No documents yet. Add scans, certificates, letters, and other photos here.",
+          "add": "+ Add document",
+          "title": "Title",
+          "type": "Type",
+          "types": { "certificate": "Certificate", "photo": "Photo", "letter": "Letter", "other": "Other" },
+          "date": "Date (YYYY or YYYY-MM-DD)",
+          "place": "Place",
+          "description": "Description",
+          "save": "Save document",
+          "cancel": "Cancel",
+          "edit": "Edit",
+          "delete": "Delete",
+          "delete_confirm": "Delete this document?",
+          "limit_reached": "Limit reached (30 per person)",
+          "file_too_large": "File too large",
+          "invalid_type": "File type not supported",
+          "decode_failed": "Could not read this file",
+          "missing": "File missing.",
+          "prev": "◀ Prev",
+          "next": "Next ▶",
+          "close": "Close",
+          "storage_full": "Storage full — export your tree and free up space"
         }
       },
       "gedcom": {
