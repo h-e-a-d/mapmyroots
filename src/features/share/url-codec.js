@@ -3,7 +3,7 @@ import { strToU8, strFromU8, gzipSync, gunzipSync } from 'fflate';
 function stripPhotos(tree) {
   return {
     ...tree,
-    persons: (tree.persons ?? []).map(({ photoBase64: _, ...rest }) => rest)
+    persons: (tree.persons ?? []).map(({ photoBase64: _pb, photo: _p, ...rest }) => rest)
   };
 }
 

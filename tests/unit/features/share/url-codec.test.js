@@ -28,3 +28,22 @@ describe('url-codec', () => {
     await expect(decodeTreeFromParam('not-valid-base64!!')).rejects.toThrow();
   });
 });
+
+describe('url-codec strips media', () => {
+  it('removes person.photo on encode', async () => {
+    const tree = {
+      version: '2.2.0',
+      persons: [{ id: 'p1', name: 'A', photo: { mediaId: 'm1', transform: { x: 0.5, y: 0.5, scale: 1 } } }]
+    };
+    const param = await encodeTreeToParam(tree);
+    const decoded = await decodeTreeFromParam(param);
+    expect(decoded.persons[0].photo).toBeUndefined();
+  });
+
+  it('preserves other person fields', async () => {
+    const tree = { version: '2.2.0', persons: [{ id: 'p1', name: 'Alice', surname: 'X' }] };
+    const decoded = await decodeTreeFromParam(await encodeTreeToParam(tree));
+    expect(decoded.persons[0].name).toBe('Alice');
+    expect(decoded.persons[0].surname).toBe('X');
+  });
+});
