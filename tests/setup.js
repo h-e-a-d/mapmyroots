@@ -58,6 +58,12 @@ global.HTMLCanvasElement.prototype.getContext = () => ({
 });
 } // end HTMLCanvasElement guard
 
+// Mock URL.createObjectURL / revokeObjectURL (not implemented in jsdom)
+if (typeof global.URL.createObjectURL === 'undefined') {
+  global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+  global.URL.revokeObjectURL = vi.fn();
+}
+
 // Reset mocks before each test
 beforeEach(() => {
   localStorage.clear();
