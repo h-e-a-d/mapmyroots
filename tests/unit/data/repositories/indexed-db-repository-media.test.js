@@ -53,4 +53,25 @@ describe('IndexedDBRepository media store', () => {
     await repo.deleteMedia('m_2');
     expect(await repo.getMedia('m_2')).toBeNull();
   });
+
+  it('garbageCollectMedia deletes only unreferenced ids', async () => {
+    repo = new IndexedDBRepository('TestDB', 2);
+    await repo.initialize();
+    for (const id of ['m_a', 'm_b', 'm_c']) {
+      await repo.saveMedia({ id, blob: new Blob(['x']), mimeType: 'image/jpeg', byteLength: 1 });
+    }
+    const removed = await repo.garbageCollectMedia(new Set(['m_a', 'm_c']));
+    expect(removed).toEqual(['m_b']);
+    expect(await repo.getMedia('m_a')).not.toBeNull();
+    expect(await repo.getMedia('m_b')).toBeNull();
+    expect(await repo.getMedia('m_c')).not.toBeNull();
+  });
+
+  it('garbageCollectMedia is a no-op when all referenced', async () => {
+    repo = new IndexedDBRepository('TestDB', 2);
+    await repo.initialize();
+    await repo.saveMedia({ id: 'm_x', blob: new Blob(['x']), mimeType: 'image/jpeg', byteLength: 1 });
+    const removed = await repo.garbageCollectMedia(new Set(['m_x']));
+    expect(removed).toEqual([]);
+  });
 });

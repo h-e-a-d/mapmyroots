@@ -503,6 +503,32 @@ export class IndexedDBRepository {
   }
 
   /**
+   * Delete every media row whose id is not in `referencedIds`.
+   * Returns the list of deleted ids (for logging/tests).
+   * @param {Set<string>} referencedIds
+   * @returns {Promise<string[]>}
+   */
+  async garbageCollectMedia(referencedIds) {
+    await this.#ensureInitialized();
+    const removed = [];
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_MEDIA], 'readwrite');
+      const store = tx.objectStore(STORE_MEDIA);
+      const req = store.openCursor();
+      req.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (!cursor) { resolve(removed); return; }
+        if (!referencedIds.has(cursor.value.id)) {
+          removed.push(cursor.value.id);
+          cursor.delete();
+        }
+        cursor.continue();
+      };
+      req.onerror = () => reject(new Error('GC scan failed'));
+    });
+  }
+
+  /**
    * Ensure database is initialized
    * @private
    */
