@@ -257,11 +257,18 @@ export function setupExport(treeCore) {
           return;
         }
 
-        // Write media blobs + documents to IDB before updating in-memory state
+        // Write media blobs + documents to IDB before updating in-memory state.
+        // Wait briefly if IDB isn't ready yet (e.g. import fired immediately on load).
         if (data.media?.length) {
-          const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+          let repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+          for (let i = 0; i < 10 && !repo; i++) {
+            await new Promise((r) => setTimeout(r, 200));
+            repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+          }
           if (repo) {
             await applyImport(repo, data);
+          } else {
+            console.warn('[loadFromJSON] IDB never became ready; media blobs not persisted');
           }
         }
 
