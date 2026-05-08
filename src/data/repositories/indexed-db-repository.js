@@ -541,6 +541,7 @@ export class IndexedDBRepository {
    * @returns {Promise<string>} Document ID
    */
   async saveDocument(doc) {
+    if (!doc?.id) throw new Error('saveDocument: id is required');
     await this.#ensureInitialized();
     const record = { createdAt: Date.now(), updatedAt: Date.now(), ...doc };
     return new Promise((resolve, reject) => {
