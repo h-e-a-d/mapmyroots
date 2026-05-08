@@ -281,8 +281,15 @@ async function mountAvatarCropperForPerson(photo) {
     return;
   }
 
+  const mountToken = Symbol();
+  mount._mountToken = mountToken;
+
   const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
   const record = await repo?.getMedia(photo.mediaId).catch(() => null);
+
+  // Bail if modal was closed or another mount started while we were waiting
+  if (mount._mountToken !== mountToken) return;
+
   if (!record?.blob) {
     if (removeBtn) removeBtn.hidden = true;
     return;
@@ -314,35 +321,39 @@ function showSpouseChangeConfirmation({ previousSpouseId, newSpouseId, confirm, 
   }
 }
 
+function activateTab(tabBtnId) {
+  const tabs = document.querySelectorAll('.person-modal-tabs [role="tab"]');
+  const panels = document.querySelectorAll('#personForm [role="tabpanel"]');
+  tabs.forEach((tab) => {
+    const isActive = tab.id === tabBtnId;
+    tab.setAttribute('aria-selected', String(isActive));
+    tab.tabIndex = isActive ? 0 : -1;
+  });
+  panels.forEach((panel) => {
+    panel.hidden = panel.getAttribute('aria-labelledby') !== tabBtnId;
+  });
+}
+
 function setupTabs() {
   const tabsEl = document.querySelector('.person-modal-tabs');
   if (!tabsEl || tabsEl.dataset.wired) return;
   tabsEl.dataset.wired = 'true';
   const tabs = tabsEl.querySelectorAll('[role="tab"]');
-  const panels = ['tab-details', 'tab-photo', 'tab-documents'].map((id) => document.getElementById(id));
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => activateTab(tab.id));
     tab.addEventListener('keydown', (e) => {
-      const idx = Array.from(tabs).indexOf(tab);
-      if (e.key === 'ArrowRight') tabs[(idx + 1) % tabs.length].focus();
-      else if (e.key === 'ArrowLeft') tabs[(idx - 1 + tabs.length) % tabs.length].focus();
+      const tabArr = Array.from(tabs);
+      const idx = tabArr.indexOf(tab);
+      if (e.key === 'ArrowRight') tabArr[(idx + 1) % tabArr.length].focus();
+      else if (e.key === 'ArrowLeft') tabArr[(idx - 1 + tabArr.length) % tabArr.length].focus();
     });
   });
-  function activateTab(tabBtnId) {
-    tabs.forEach((tab) => {
-      const isActive = tab.id === tabBtnId;
-      tab.setAttribute('aria-selected', String(isActive));
-      tab.tabIndex = isActive ? 0 : -1;
-    });
-    panels.forEach((panel) => {
-      if (panel) panel.hidden = panel.getAttribute('aria-labelledby') !== tabBtnId;
-    });
-  }
 }
 
 // ENHANCED: Enhanced modal show function with better animation and UX
 function showModalWithAnimation(modal) {
   setupTabs();
+  activateTab('tab-details-btn');
 
   // Ensure modal structure is optimized
   ensureModalStructure(modal);
@@ -509,7 +520,7 @@ function clearForm() {
   if (photoRemoveBtn) photoRemoveBtn.hidden = true;
   if (cropperHandle) { cropperHandle.destroy(); cropperHandle = null; }
   const cropperMount = document.getElementById('avatarCropperMount');
-  if (cropperMount) cropperMount.innerHTML = '';
+  if (cropperMount) { delete cropperMount._mountToken; cropperMount.innerHTML = ''; }
 }
 
 export function isModalCurrentlyOpen() {

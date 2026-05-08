@@ -933,6 +933,11 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
       <h2 id="modalTitle" data-i18n="builder.modals.person.add_title">Add Person</h2>
       <div class="modal-body">
         <form id="personForm">
+          <div role="tablist" class="person-modal-tabs" aria-label="Person sections">
+            <button type="button" role="tab" id="tab-details-btn" aria-controls="tab-details" aria-selected="true" data-i18n="builder.modals.person.tabs.details">Details</button>
+            <button type="button" role="tab" id="tab-photo-btn" aria-controls="tab-photo" aria-selected="false" tabindex="-1" data-i18n="builder.modals.person.tabs.photo">Photo</button>
+            <button type="button" role="tab" id="tab-documents-btn" aria-controls="tab-documents" aria-selected="false" tabindex="-1" data-i18n="builder.modals.person.tabs.documents">Documents</button>
+          </div>
           <div id="tab-details" role="tabpanel" aria-labelledby="tab-details-btn">
           <div class="form-group">
             <label data-i18n="builder.form.gender">Gender <span class="required">*</span></label>
@@ -1022,11 +1027,6 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
           </div>
           </div><!-- closes tab-details -->
 
-          <div role="tablist" class="person-modal-tabs" aria-label="Person sections">
-            <button type="button" role="tab" id="tab-details-btn" aria-controls="tab-details" aria-selected="true" data-i18n="builder.modals.person.tabs.details">Details</button>
-            <button type="button" role="tab" id="tab-photo-btn" aria-controls="tab-photo" aria-selected="false" tabindex="-1" data-i18n="builder.modals.person.tabs.photo">Photo</button>
-            <button type="button" role="tab" id="tab-documents-btn" aria-controls="tab-documents" aria-selected="false" tabindex="-1" data-i18n="builder.modals.person.tabs.documents">Documents</button>
-          </div>
           <div id="tab-photo" role="tabpanel" aria-labelledby="tab-photo-btn" hidden>
             <div id="avatarCropperMount"></div>
             <div class="cropper-controls">
