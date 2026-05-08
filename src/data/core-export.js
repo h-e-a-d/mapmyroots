@@ -1,56 +1,59 @@
 // core-export.js
 // Export and import manager for family tree
 
-import { exportGEDCOM } from '../features/export/exporter.js';
-import { notifications } from '../ui/components/notifications.js';
-
 export function setupExport(treeCore) {
+  // Lazy-loaded UI helpers (not available in Node/test environments)
+  const getNotifications = () => import('../ui/components/notifications.js').then(m => m.notifications);
+
   // --- Export Buttons ---
   document.getElementById('exportSvg')?.addEventListener('click', () => {
     treeCore.exportCanvasAsSVG();
   });
 
-  document.getElementById('exportPng')?.addEventListener('click', () => {
-    const loadingId = notifications.loading('Exporting...', 'Generating PNG file');
+  document.getElementById('exportPng')?.addEventListener('click', async () => {
+    const n = await getNotifications();
+    const loadingId = n.loading('Exporting...', 'Generating PNG file');
     try {
       setTimeout(() => {
         treeCore.exportCanvasAsPNG();
-        notifications.remove(loadingId);
-        notifications.success('Export Complete', 'PNG file has been downloaded');
+        n.remove(loadingId);
+        n.success('Export Complete', 'PNG file has been downloaded');
       }, 100);
     } catch (error) {
-      notifications.remove(loadingId);
-      notifications.error('Export Failed', 'Error generating PNG file');
+      n.remove(loadingId);
+      n.error('Export Failed', 'Error generating PNG file');
       console.error('PNG export error:', error);
     }
   });
 
-  document.getElementById('exportPngTransparent')?.addEventListener('click', () => {
-    const loadingId = notifications.loading('Exporting...', 'Generating PNG file without background');
+  document.getElementById('exportPngTransparent')?.addEventListener('click', async () => {
+    const n = await getNotifications();
+    const loadingId = n.loading('Exporting...', 'Generating PNG file without background');
     try {
       setTimeout(() => {
         treeCore.exportCanvasAsPNGTransparent();
-        notifications.remove(loadingId);
-        notifications.success('Export Complete', 'Transparent PNG file has been downloaded');
+        n.remove(loadingId);
+        n.success('Export Complete', 'Transparent PNG file has been downloaded');
       }, 100);
     } catch (error) {
-      notifications.remove(loadingId);
-      notifications.error('Export Failed', 'Error generating transparent PNG file');
+      n.remove(loadingId);
+      n.error('Export Failed', 'Error generating transparent PNG file');
       console.error('PNG transparent export error:', error);
     }
   });
 
-  document.getElementById('exportJpeg')?.addEventListener('click', () => {
-    const loadingId = notifications.loading('Exporting...', 'Generating JPEG file');
+  document.getElementById('exportJpeg')?.addEventListener('click', async () => {
+    const n = await getNotifications();
+    const loadingId = n.loading('Exporting...', 'Generating JPEG file');
     try {
       setTimeout(() => {
         treeCore.exportCanvasAsJPEG();
-        notifications.remove(loadingId);
-        notifications.success('Export Complete', 'JPEG file has been downloaded');
+        n.remove(loadingId);
+        n.success('Export Complete', 'JPEG file has been downloaded');
       }, 100);
     } catch (error) {
-      notifications.remove(loadingId);
-      notifications.error('Export Failed', 'Error generating JPEG file');
+      n.remove(loadingId);
+      n.error('Export Failed', 'Error generating JPEG file');
       console.error('JPEG export error:', error);
     }
   });
@@ -59,40 +62,44 @@ export function setupExport(treeCore) {
     treeCore.exportCanvasAsPDF();
   });
 
-  document.getElementById('saveData')?.addEventListener('click', () => {
-    const loadingId = notifications.loading('Saving...', 'Generating JSON file');
+  document.getElementById('saveData')?.addEventListener('click', async () => {
+    const n = await getNotifications();
+    const loadingId = n.loading('Saving...', 'Generating JSON file');
     try {
       setTimeout(() => {
         treeCore.saveToJSON();
-        notifications.remove(loadingId);
-        notifications.success('Save Complete', 'Family tree saved to JSON file');
+        n.remove(loadingId);
+        n.success('Save Complete', 'Family tree saved to JSON file');
       }, 100);
     } catch (error) {
-      notifications.remove(loadingId);
-      notifications.error('Save Failed', 'Error saving family tree');
+      n.remove(loadingId);
+      n.error('Save Failed', 'Error saving family tree');
       console.error('Save error:', error);
     }
   });
 
-  document.getElementById('loadData')?.addEventListener('change', (e) => {
-    const loadingId = notifications.loading('Loading...', 'Processing JSON file');
+  document.getElementById('loadData')?.addEventListener('change', async (e) => {
+    const n = await getNotifications();
+    const loadingId = n.loading('Loading...', 'Processing JSON file');
     try {
       setTimeout(() => {
         treeCore.loadFromJSON(e);
-        notifications.remove(loadingId);
+        n.remove(loadingId);
       }, 100);
     } catch (error) {
-      notifications.remove(loadingId);
-      notifications.error('Load Failed', 'Error loading family tree');
+      n.remove(loadingId);
+      n.error('Load Failed', 'Error loading family tree');
       console.error('Load error:', error);
     }
   });
 
   // --- Advanced Export ---
-  document.getElementById('exportGedcom')?.addEventListener('click', () => {
-    exportGEDCOM().catch(error => {
+  document.getElementById('exportGedcom')?.addEventListener('click', async () => {
+    const n = await getNotifications();
+    const { exportGEDCOM } = await import('../features/export/exporter.js');
+    exportGEDCOM().catch(async error => {
       console.error('GEDCOM export error:', error);
-      notifications.error('GEDCOM Export Failed', 'Error exporting GEDCOM file');
+      n.error('GEDCOM Export Failed', 'Error exporting GEDCOM file');
     });
   });
 
@@ -190,21 +197,28 @@ export function setupExport(treeCore) {
       }
     } catch (error) {
       console.error('Error exporting JPEG:', error);
-      notifications.error('Export Failed', 'Could not export JPEG: ' + error.message);
+      getNotifications().then(n => n.error('Export Failed', 'Could not export JPEG: ' + error.message));
     }
   };
 
-  treeCore.saveToJSON = function() {
+  treeCore.saveToJSON = async function() {
+    const n = await getNotifications();
     try {
       console.log('saveToJSON called, treeCore:', this);
-      const data = this.getCurrentState();
+      const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+      let data;
+      if (repo) {
+        data = await buildExport(repo);
+      } else {
+        data = this.getCurrentState();
+      }
       console.log('Data to export:', data);
-      
+
       if (!data || !data.persons || data.persons.length === 0) {
-        notifications.warning('No Data to Export', 'Your family tree appears to be empty. Add some people first.');
+        n.warning('No Data to Export', 'Your family tree appears to be empty. Add some people first.');
         return;
       }
-      
+
       const dataStr = JSON.stringify(data, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
@@ -215,18 +229,19 @@ export function setupExport(treeCore) {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-      
+
       console.log('JSON export completed successfully');
     } catch (error) {
       console.error('Error in saveToJSON:', error);
-      notifications.error('Export Failed', `Error exporting JSON: ${error.message}`);
+      n.error('Export Failed', `Error exporting JSON: ${error.message}`);
     }
   };
 
-  treeCore.loadFromJSON = function(event) {
+  treeCore.loadFromJSON = async function(event) {
+    const n = await getNotifications();
     const file = event.target.files[0];
     if (!file) {
-      notifications.error('No File Selected', 'Please select a JSON file to load');
+      n.error('No File Selected', 'Please select a JSON file to load');
       return;
     }
 
@@ -235,30 +250,99 @@ export function setupExport(treeCore) {
       try {
         const data = JSON.parse(e.target.result);
         console.log('Loaded JSON data:', data);
-        
+
         // Validate the data structure
         if (!data.persons && !data.people) {
-          notifications.error('Invalid File Format', 'The file does not contain valid family tree data');
+          n.error('Invalid File Format', 'The file does not contain valid family tree data');
           return;
         }
-        
+
         // Process the loaded data
         this.processLoadedData(data);
-        notifications.success('Load Complete', `Successfully loaded ${data.persons?.length || data.people?.length || 0} people`);
-        
+        n.success('Load Complete', `Successfully loaded ${data.persons?.length || data.people?.length || 0} people`);
+
         // Clear the file input
         event.target.value = '';
-        
+
       } catch (error) {
         console.error('Error parsing JSON:', error);
-        notifications.error('Parse Error', 'The file could not be parsed as valid JSON');
+        n.error('Parse Error', 'The file could not be parsed as valid JSON');
       }
     };
-    
+
     reader.onerror = () => {
-      notifications.error('File Read Error', 'Could not read the selected file');
+      n.error('File Read Error', 'Could not read the selected file');
     };
-    
+
     reader.readAsText(file);
   };
-} 
+}
+
+// ── Pure data helpers (no DOM, testable in Node) ─────────────────────────────
+
+const EXPORT_VERSION = '2.2.0';
+
+export async function buildExport(repo) {
+  const persons = await repo.getAllPersons();
+  const allMediaIds = await listAllMediaIds(persons);
+  const media = [];
+  for (const id of allMediaIds) {
+    const rec = await repo.getMedia(id);
+    if (!rec) continue;
+    media.push({
+      id: rec.id,
+      mimeType: rec.mimeType,
+      width: rec.width,
+      height: rec.height,
+      byteLength: rec.byteLength,
+      base64: await blobToBase64(rec.blob)
+    });
+  }
+  return { version: EXPORT_VERSION, cacheFormat: 'enhanced', persons, media, documents: [] };
+}
+
+function listAllMediaIds(persons) {
+  const ids = new Set();
+  for (const p of persons) if (p?.photo?.mediaId) ids.add(p.photo.mediaId);
+  return Array.from(ids);
+}
+
+async function blobToBase64(blob) {
+  const buf = await blob.arrayBuffer();
+  let s = '';
+  const arr = new Uint8Array(buf);
+  for (let i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);
+  return btoa(s);
+}
+
+function base64ToBlob(b64, mimeType) {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mimeType });
+}
+
+export async function applyImport(repo, data) {
+  if (!data?.persons) throw new Error('Invalid import: missing persons');
+  const mediaIdsInImport = new Set();
+  for (const m of data.media || []) {
+    if (!m.id || !m.base64 || !m.mimeType) continue;
+    if ((m.byteLength ?? 0) > 10 * 1024 * 1024) continue;
+    await repo.saveMedia({
+      id: m.id,
+      blob: base64ToBlob(m.base64, m.mimeType),
+      mimeType: m.mimeType,
+      byteLength: m.byteLength ?? Math.floor((m.base64.length * 3) / 4),
+      width: m.width,
+      height: m.height
+    });
+    mediaIdsInImport.add(m.id);
+  }
+  for (const p of data.persons) {
+    if (p.photo?.mediaId && !mediaIdsInImport.has(p.photo.mediaId)) {
+      console.warn(`[import] dropping dangling photo for person ${p.id}`);
+      p.photo = null;
+    }
+    await repo.savePerson(p);
+  }
+}
