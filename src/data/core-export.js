@@ -246,7 +246,7 @@ export function setupExport(treeCore) {
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const data = JSON.parse(e.target.result);
         console.log('Loaded JSON data:', data);
@@ -257,7 +257,15 @@ export function setupExport(treeCore) {
           return;
         }
 
-        // Process the loaded data
+        // Write media blobs + documents to IDB before updating in-memory state
+        if (data.media?.length) {
+          const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+          if (repo) {
+            await applyImport(repo, data);
+          }
+        }
+
+        // Update in-memory state and renderer
         this.processLoadedData(data);
         n.success('Load Complete', `Successfully loaded ${data.persons?.length || data.people?.length || 0} people`);
 

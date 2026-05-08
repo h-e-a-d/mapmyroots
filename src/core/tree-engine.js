@@ -1989,7 +1989,8 @@ export class TreeEngine {
           birth: person.birth || { date: null, place: '', note: '' },
           death: person.death || { date: null, place: '', note: '' },
           marriages: Array.isArray(person.marriages) ? person.marriages : [],
-          notes: person.notes || ''
+          notes: person.notes || '',
+          photo: person.photo || null
         };
         
         this.personData.set(personId, personData);
