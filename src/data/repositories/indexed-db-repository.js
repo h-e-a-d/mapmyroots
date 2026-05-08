@@ -536,6 +536,79 @@ export class IndexedDBRepository {
   }
 
   /**
+   * Save a document record.
+   * @param {Object} doc - Document data
+   * @returns {Promise<string>} Document ID
+   */
+  async saveDocument(doc) {
+    await this.#ensureInitialized();
+    const record = { createdAt: Date.now(), updatedAt: Date.now(), ...doc };
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_DOCUMENTS], 'readwrite');
+      const req = tx.objectStore(STORE_DOCUMENTS).put(record);
+      req.onsuccess = () => resolve(record.id);
+      req.onerror = () => reject(new Error('Failed to save document'));
+    });
+  }
+
+  /**
+   * Get all documents for a person.
+   * @param {string} personId
+   * @returns {Promise<Object[]>}
+   */
+  async getDocumentsForPerson(personId) {
+    await this.#ensureInitialized();
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_DOCUMENTS], 'readonly');
+      const req = tx.objectStore(STORE_DOCUMENTS).index('personId').getAll(personId);
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(new Error('Failed to query documents'));
+    });
+  }
+
+  /**
+   * Get all documents in the database.
+   * @returns {Promise<Object[]>}
+   */
+  async getAllDocuments() {
+    await this.#ensureInitialized();
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_DOCUMENTS], 'readonly');
+      const req = tx.objectStore(STORE_DOCUMENTS).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(new Error('Failed to load documents'));
+    });
+  }
+
+  /**
+   * Delete a document by id.
+   * @param {string} id
+   * @returns {Promise<void>}
+   */
+  async deleteDocument(id) {
+    await this.#ensureInitialized();
+    return new Promise((resolve, reject) => {
+      const tx = this.#db.transaction([STORE_DOCUMENTS], 'readwrite');
+      const req = tx.objectStore(STORE_DOCUMENTS).delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(new Error('Failed to delete document'));
+    });
+  }
+
+  /**
+   * Delete all documents for a person.
+   * Returns the list of deleted document ids.
+   * @param {string} personId
+   * @returns {Promise<string[]>}
+   */
+  async deleteDocumentsForPerson(personId) {
+    await this.#ensureInitialized();
+    const docs = await this.getDocumentsForPerson(personId);
+    await Promise.all(docs.map((d) => this.deleteDocument(d.id)));
+    return docs.map((d) => d.id);
+  }
+
+  /**
    * Ensure database is initialized
    * @private
    */
