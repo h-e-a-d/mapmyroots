@@ -2117,6 +2117,14 @@ export class TreeEngine {
         for (const p of this.personData.values()) {
           if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
         }
+        // Also include document media
+        if (repo) {
+          const allDocs = await repo.getAllDocuments().catch(() => []);
+          for (const d of allDocs) {
+            if (d.mediaId) referenced.add(d.mediaId);
+            if (d.thumbnailMediaId) referenced.add(d.thumbnailMediaId);
+          }
+        }
 
         this._prefetchMedia().catch((err) => console.warn('[tree-engine] prefetch failed:', err));
 

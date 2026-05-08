@@ -13,10 +13,12 @@ import { createMarriagesList } from '../components/marriages-list.js';
 import { isValidDateValue } from '../../utils/date-value.js';
 import { mountCropper, DEFAULT_TRANSFORM } from '../../features/photos/avatar-cropper.js';
 import { prepareImageUpload, shouldWarnAboutStorage } from '../../features/photos/photo-utils.js';
+import { mountDocumentList } from '../../features/photos/document-list.js';
 
 let isModalOpen = false;
 let currentEditingId = null;
 let cropperHandle = null;
+let documentListHandle = null;
 
 // Helper function to get translated text
 function t(key, fallback = '') {
@@ -244,6 +246,41 @@ function populateFormFields(node, personData) {
   if (photoMediaIdInput) photoMediaIdInput.value = photo?.mediaId || '';
   if (photoTransformInput) photoTransformInput.value = JSON.stringify(photo?.transform || DEFAULT_TRANSFORM);
   mountAvatarCropperForPerson(photo);
+
+  const docMount = document.getElementById('documentsListMount');
+  if (docMount) {
+    if (documentListHandle) documentListHandle.destroy();
+    const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
+    if (repo && personData?.id) {
+      documentListHandle = mountDocumentList({
+        container: docMount,
+        personId: personData.id,
+        repo,
+        t,
+        onOpen: (doc) => {
+          import('../../features/photos/document-viewer.js').then(({ openDocumentLightbox }) => {
+            repo.getDocumentsForPerson(doc.personId).then((docs) => {
+              openDocumentLightbox({
+                doc,
+                docs,
+                repo,
+                t,
+                onEdit: (d) => documentListHandle?._openEditorForDoc?.(d),
+                onDelete: async (d) => {
+                  if (d.mediaId) await repo.deleteMedia(d.mediaId).catch(() => {});
+                  if (d.thumbnailMediaId) await repo.deleteMedia(d.thumbnailMediaId).catch(() => {});
+                  await repo.deleteDocument(d.id);
+                  documentListHandle?.refresh();
+                },
+                onClose: () => {}
+              });
+            });
+          });
+        }
+      });
+      documentListHandle.refresh();
+    }
+  }
 }
 
 function mountEvent(kind, event, setHandle) {
@@ -520,6 +557,10 @@ function clearForm() {
   if (cropperHandle) { cropperHandle.destroy(); cropperHandle = null; }
   const cropperMount = document.getElementById('avatarCropperMount');
   if (cropperMount) { delete cropperMount._mountToken; cropperMount.innerHTML = ''; }
+
+  if (documentListHandle) { documentListHandle.destroy(); documentListHandle = null; }
+  const docMount = document.getElementById('documentsListMount');
+  if (docMount) docMount.innerHTML = '';
 }
 
 export function isModalCurrentlyOpen() {
@@ -613,6 +654,18 @@ function confirmDeletePerson() {
          .catch((err) => console.warn('[modal] deleteMedia failed:', err));
     treeCore.renderer?.clearMediaImage(removedPerson.photo.mediaId);
   }
+
+  const docRepo = window.treeCore?.cacheManager?.getIdbRepo?.();
+  if (docRepo) {
+    docRepo.getDocumentsForPerson(editingId).then(async (docs) => {
+      for (const d of docs) {
+        if (d.mediaId) await docRepo.deleteMedia(d.mediaId).catch(() => {});
+        if (d.thumbnailMediaId) await docRepo.deleteMedia(d.thumbnailMediaId).catch(() => {});
+      }
+      await docRepo.deleteDocumentsForPerson(editingId);
+    }).catch(() => {});
+  }
+
   treeCore.renderer.removeNode(editingId);
   treeCore.personData?.delete(editingId);
   
