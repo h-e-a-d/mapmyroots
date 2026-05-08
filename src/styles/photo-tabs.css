@@ -244,3 +244,37 @@
   font: inherit;
 }
 .document-metadata-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; }
+
+/* Document viewer lightbox */
+.document-viewer-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.85);
+  display: flex; flex-direction: column;
+}
+.document-viewer-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.75rem 1.25rem; color: #fff; background: rgba(0,0,0,0.4);
+}
+.document-viewer-title { font-weight: 600; }
+.document-viewer-close {
+  background: transparent; border: 0; color: #fff; font-size: 1.5rem; cursor: pointer;
+}
+.document-viewer-body {
+  flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.document-viewer-image {
+  max-width: 95%; max-height: 95%; object-fit: contain;
+}
+.document-viewer-pdf {
+  width: 95%; height: 95%; border: 0; background: #fff;
+}
+.document-viewer-footer {
+  display: flex; justify-content: space-between; padding: 0.75rem 1.25rem;
+  background: rgba(0,0,0,0.4);
+}
+.document-viewer-footer button {
+  background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+  padding: 0.4rem 0.9rem; border-radius: 4px; cursor: pointer; font: inherit;
+}
+.document-viewer-footer button:hover { background: rgba(255,255,255,0.2); }
+.document-viewer-year { color: #ccc; font-weight: 400; }
