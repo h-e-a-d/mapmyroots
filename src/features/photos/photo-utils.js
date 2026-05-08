@@ -1,35 +1,70 @@
-const MAX_BYTES = 500 * 1024; // 500 KB
-const OUTPUT_SIZE = 256;      // px
+const MAX_DIMENSION = 2048;
+export const MAX_INPUT_BYTES = 10 * 1024 * 1024; // 10 MB raw input cap
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 /**
- * Validate, resize, and compress a photo data URL.
- * @param {string} dataUrl - Input data URL (image/jpeg, image/png, image/webp)
- * @returns {Promise<string>} Resolved data URL (image/jpeg, 256x256, ≤500KB)
+ * Validate, decode, and resize an image File into a JPEG Blob.
+ *
+ * @param {File} file
+ * @param {object} [deps] — injection hooks for testing
+ * @returns {Promise<{ blob: Blob, width: number, height: number, mimeType: 'image/jpeg' }>}
  */
-export async function resizePhotoToDataUrl(dataUrl) {
-  if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
-    throw new Error('Input must be an image data URL');
+export async function prepareImageUpload(file, deps = {}) {
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    throw new Error(`Unsupported file type: ${file.type}`);
   }
-  const base64 = dataUrl.split(',')[1] ?? '';
-  if (base64.length * 0.75 > MAX_BYTES) {
-    throw new Error('Photo exceeds 500 KB limit');
+  if (file.size > MAX_INPUT_BYTES) {
+    throw new Error(`File too large (max ${MAX_INPUT_BYTES} bytes)`);
   }
+
+  const decode = deps._decode ?? defaultDecode;
+  const encode = deps._encode ?? defaultEncode;
+
+  const img = await decode(file);
+  const { width: outW, height: outH } = fitWithin(img.width, img.height, MAX_DIMENSION);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = outW;
+  canvas.height = outH;
+  const ctx = canvas.getContext('2d');
+  if (img.draw) img.draw(ctx, outW, outH);
+  else ctx.drawImage(img, 0, 0, outW, outH);
+
+  const blob = await encode(canvas);
+  return { blob, width: outW, height: outH, mimeType: 'image/jpeg' };
+}
+
+/**
+ * Compute (w, h) preserving aspect ratio so the longest edge ≤ max.
+ * @returns {{width: number, height: number}}
+ */
+function fitWithin(w, h, max) {
+  if (w <= max && h <= max) return { width: w, height: h };
+  const scale = max / Math.max(w, h);
+  return { width: Math.round(w * scale), height: Math.round(h * scale) };
+}
+
+async function defaultDecode(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    return await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Image decode failed'));
+      img.src = url;
+    });
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+function defaultEncode(canvas) {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = OUTPUT_SIZE;
-      canvas.height = OUTPUT_SIZE;
-      const ctx = canvas.getContext('2d');
-      // Cover-fit: scale so the smaller dimension fills the square
-      const scale = Math.max(OUTPUT_SIZE / img.width, OUTPUT_SIZE / img.height);
-      const drawW = img.width * scale;
-      const drawH = img.height * scale;
-      ctx.drawImage(img, (OUTPUT_SIZE - drawW) / 2, (OUTPUT_SIZE - drawH) / 2, drawW, drawH);
-      resolve(canvas.toDataURL('image/jpeg', 0.85));
-    };
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = dataUrl;
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error('Encode failed'))),
+      'image/jpeg',
+      0.9
+    );
   });
 }
 
