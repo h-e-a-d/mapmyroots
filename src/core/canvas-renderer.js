@@ -318,15 +318,22 @@ export class CanvasRenderer {
     const showPhotos = this.displayPreferences.showPhotos !== false;
     const exportImg = showPhotos ? this._getNodeImage(id, node) : null;
     if (exportImg && exportImg.complete && exportImg.naturalWidth > 0) {
+      const transform = node.photo?.transform ?? { x: 0.5, y: 0.5, scale: 1 };
+      const baseCover = Math.max((radius * 2) / exportImg.naturalWidth, (radius * 2) / exportImg.naturalHeight);
+      const s = baseCover * transform.scale;
+      const drawW = exportImg.naturalWidth * s;
+      const drawH = exportImg.naturalHeight * s;
+      const cx = node.x - drawW * transform.x;
+      const cy = node.y - drawH * transform.y;
       ctx.save();
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(exportImg, node.x - radius, node.y - radius, radius * 2, radius * 2);
+      ctx.drawImage(exportImg, cx, cy, drawW, drawH);
       ctx.restore();
     }
 
-    if (!node.photoBase64 || !showPhotos) {
+    if (!node.photo?.mediaId || !showPhotos) {
       this.drawNodeText(ctx, node, radius * 1.8);
     }
   }
@@ -1150,32 +1157,40 @@ export class CanvasRenderer {
     const showPhotos = this.displayPreferences.showPhotos !== false;
     const img = showPhotos ? this._getNodeImage(id, node) : null;
     if (img && img.complete && img.naturalWidth > 0) {
+      const transform = node.photo?.transform ?? { x: 0.5, y: 0.5, scale: 1 };
+      const baseCover = Math.max((radius * 2) / img.naturalWidth, (radius * 2) / img.naturalHeight);
+      const s = baseCover * transform.scale;
+      const drawW = img.naturalWidth * s;
+      const drawH = img.naturalHeight * s;
+      const cx = node.x - drawW * transform.x;
+      const cy = node.y - drawH * transform.y;
       ctx.save();
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(img, node.x - radius, node.y - radius, radius * 2, radius * 2);
+      ctx.drawImage(img, cx, cy, drawW, drawH);
       ctx.restore();
     }
 
-    if (!node.photoBase64 || !showPhotos) {
+    if (!node.photo?.mediaId || !showPhotos) {
       this.drawNodeText(ctx, node, radius * 1.8);
     }
   }
 
   _getNodeImage(id, node) {
-    if (!node.photoBase64) return null;
-    const cached = this._imageCache.get(id);
-    if (cached && cached.src === node.photoBase64) return cached;
-    const img = new Image();
-    img.src = node.photoBase64;
-    this._imageCache.set(id, img);
-    if (!img.complete) img.onload = () => { this.needsRedraw = true; };
-    return img;
+    const mediaId = node?.photo?.mediaId;
+    if (!mediaId) return null;
+    return this._imageCache.get(mediaId) || null;
   }
 
-  invalidateImageCache(id) {
-    this._imageCache.delete(id);
+  setMediaImage(mediaId, img) {
+    this._imageCache.set(mediaId, img);
+    this.needsRedraw = true;
+  }
+
+  clearMediaImage(mediaId) {
+    this._imageCache.delete(mediaId);
+    this.needsRedraw = true;
   }
 
   drawRectangleNode(ctx, id, node, isSelected, isHovered) {
