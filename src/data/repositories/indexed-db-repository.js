@@ -14,7 +14,7 @@
 import { ERROR_TYPES, ErrorHandler } from '../../utils/error-handling.js';
 
 const DB_NAME = 'FamilyTreeDB';
-const DB_VERSION = 4;            // v3→v4: documents store
+const DB_VERSION = 5;            // v5: ensure documents store exists (v4 may have missed it)
 const STORE_PERSONS = 'persons';
 const STORE_METADATA = 'metadata';
 const STORE_CONNECTIONS = 'connections';

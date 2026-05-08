@@ -13,8 +13,8 @@ describe('IndexedDBRepository documents store', () => {
 
   afterEach(() => { repo?.close(); });
 
-  it('creates documents store at v4', async () => {
-    repo = new IndexedDBRepository('TestDocsDB', 4);
+  it('creates documents store at v5', async () => {
+    repo = new IndexedDBRepository('TestDocsDB', 5);
     await repo.initialize();
     const stores = Array.from(repo._dbForTest().objectStoreNames);
     expect(stores).toContain('documents');
