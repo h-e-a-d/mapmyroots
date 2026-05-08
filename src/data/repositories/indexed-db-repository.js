@@ -454,13 +454,21 @@ export class IndexedDBRepository {
    * @returns {Promise<string>}
    */
   async saveMedia(media) {
+    if (!media?.id) throw new Error('saveMedia: id is required');
     await this.#ensureInitialized();
     const record = { createdAt: Date.now(), ...media };
     return new Promise((resolve, reject) => {
       const tx = this.#db.transaction([STORE_MEDIA], 'readwrite');
       const req = tx.objectStore(STORE_MEDIA).put(record);
       req.onsuccess = () => resolve(media.id);
-      req.onerror = () => reject(new Error('Failed to save media'));
+      req.onerror = () => {
+        const error = new Error('Failed to save media');
+        ErrorHandler.handleError(error, ERROR_TYPES.DATA_OPERATION_ERROR, {
+          operation: 'saveMedia',
+          mediaId: media.id
+        });
+        reject(error);
+      };
     });
   }
 
