@@ -1129,8 +1129,12 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         photoInput.value = '';
         const modal = document.getElementById('personModal');
         const editingId = modal?.dataset.editingId;
-        if (editingId && window.treeCore?.renderer?.invalidateImageCache) {
-          window.treeCore.renderer.invalidateImageCache(editingId);
+        if (editingId) {
+          const node = window.treeCore?.renderer?.nodes?.get(editingId);
+          const mediaId = node?.photo?.mediaId;
+          if (mediaId) {
+            window.treeCore.renderer.clearMediaImage(mediaId);
+          }
         }
       });
     })();
