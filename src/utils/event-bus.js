@@ -251,5 +251,8 @@ export const EVENTS = {
 
   // Error events
   ERROR_OCCURRED: 'error:occurred',
-  ERROR_RECOVERED: 'error:recovered'
+  ERROR_RECOVERED: 'error:recovered',
+
+  // Tree chart UI events
+  TREE_NODE_EDIT_REQUESTED: 'tree:node:edit:requested'
 };

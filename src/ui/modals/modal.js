@@ -981,7 +981,11 @@ document.addEventListener('DOMContentLoaded', () => {
     isModalOpen = false;
     devLog('Modal initialized as hidden');
   }
-  
+
+  // Open modal when SVG tree node is double-clicked
+  const bus = appContext.getEventBus();
+  bus.on(EVENTS.TREE_NODE_EDIT_REQUESTED, ({ personId }) => openModalForEdit(personId));
+
   // Enhanced cancel button event listener
   if (cancelBtn) {
     cancelBtn.addEventListener('click', (e) => {

@@ -146,7 +146,7 @@ export class TreeChartRenderer {
     }
 
     const genStr = n.generation === null ? 'unassigned' : `generation ${n.generation}`;
-    g.setAttribute('aria-label', `${fullName}, ${genStr}, click to highlight lineage`);
+    g.setAttribute('aria-label', `${fullName}, ${genStr}, click to highlight lineage, double-click to edit`);
   }
 
   _updateEdges(edges) {

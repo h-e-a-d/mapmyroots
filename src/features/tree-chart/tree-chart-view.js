@@ -165,6 +165,12 @@ export function initTreeChartView(containerEl) {
     }
   });
 
+  svg.addEventListener('dblclick', (ev) => {
+    const nodeEl = ev.target.closest('.tc-node');
+    if (!nodeEl) return;
+    bus.emit(EVENTS.TREE_NODE_EDIT_REQUESTED, { personId: nodeEl.dataset.personId });
+  });
+
   svg.addEventListener('keydown', (ev) => {
     if (ev.key === 'Escape' && state.highlightedId) {
       state.highlightedId = null;
