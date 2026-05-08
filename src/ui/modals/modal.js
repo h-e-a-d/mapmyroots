@@ -547,7 +547,8 @@ function confirmDeletePerson() {
   const removedPerson = treeCore.personData?.get(editingId);
   if (removedPerson?.photo?.mediaId) {
     const repo = treeCore.cacheManager?.getIdbRepo?.();
-    repo?.deleteMedia(removedPerson.photo.mediaId).catch(() => {});
+    repo?.deleteMedia(removedPerson.photo.mediaId)
+         .catch((err) => console.warn('[modal] deleteMedia failed:', err));
     treeCore.renderer?.clearMediaImage(removedPerson.photo.mediaId);
   }
   treeCore.renderer.removeNode(editingId);

@@ -588,24 +588,31 @@ export class TreeEngine {
   }
 
   async _prefetchMedia() {
-    const repo = this.cacheManager?.getIdbRepo?.();
-    if (!repo || !this.renderer) return;
-    const referenced = new Set();
-    for (const p of this.personData.values()) {
-      if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
-    }
-    for (const mediaId of referenced) {
-      const record = await repo.getMedia(mediaId).catch(() => null);
-      if (!record || !record.blob) continue;
-      const url = URL.createObjectURL(record.blob);
-      const img = new Image();
-      img.onload = () => {
-        this.renderer.setMediaImage(mediaId, img);
-        URL.revokeObjectURL(url);
-        this.renderer.render?.();
-      };
-      img.onerror = () => URL.revokeObjectURL(url);
-      img.src = url;
+    if (this._prefetchInFlight) return;
+    this._prefetchInFlight = true;
+    try {
+      const repo = this.cacheManager?.getIdbRepo?.();
+      if (!repo || !this.renderer) return;
+      const referenced = new Set();
+      for (const p of this.personData.values()) {
+        if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
+      }
+      for (const mediaId of referenced) {
+        const record = await repo.getMedia(mediaId).catch(() => null);
+        if (!record || !record.blob) continue;
+        const url = URL.createObjectURL(record.blob);
+        const img = new Image();
+        img.onload = () => {
+          if (this.renderer) this.renderer.setMediaImage(mediaId, img);
+          URL.revokeObjectURL(url);
+        };
+        img.onerror = () => URL.revokeObjectURL(url);
+        img.src = url;
+      }
+      // Single render after all images are initiated
+      this.renderer.render?.();
+    } finally {
+      this._prefetchInFlight = false;
     }
   }
 
@@ -2075,14 +2082,22 @@ export class TreeEngine {
       console.log(`Successfully loaded ${persons.length} people`);
 
       // Async — do not await; runs in background after render
-      setTimeout(() => {
+      setTimeout(async () => {
+        // Wait for IDB to be ready (max ~2s) before prefetch + GC
+        let repo = this.cacheManager?.getIdbRepo?.();
+        if (!repo) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          repo = this.cacheManager?.getIdbRepo?.();
+        }
+
+        const referenced = new Set();
+        for (const p of this.personData.values()) {
+          if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
+        }
+
         this._prefetchMedia().catch((err) => console.warn('[tree-engine] prefetch failed:', err));
-        const repo = this.cacheManager?.getIdbRepo?.();
+
         if (repo) {
-          const referenced = new Set();
-          for (const p of this.personData.values()) {
-            if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
-          }
           repo.garbageCollectMedia(referenced).catch((err) => {
             console.warn('[tree-engine] media GC failed:', err);
           });
