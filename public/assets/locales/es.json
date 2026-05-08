@@ -369,8 +369,8 @@
           "choose": "Elegir foto..."
         },
         "documents": {
-          "empty": "Aún no hay documentos. Añade escaneos, certificados, cartas y otras fotos aquí.",
-          "add": "+ Añadir documento",
+          "empty": "Aún no hay documentos.",
+          "add": "Añadir documento",
           "title": "Título",
           "type": "Tipo",
           "types": { "certificate": "Certificado", "photo": "Foto", "letter": "Carta", "other": "Otro" },

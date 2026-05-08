@@ -259,8 +259,8 @@
           "choose": "Foto wählen..."
         },
         "documents": {
-          "empty": "Noch keine Dokumente. Füge Scans, Urkunden, Briefe und andere Fotos hier hinzu.",
-          "add": "+ Dokument hinzufügen",
+          "empty": "Noch keine Dokumente.",
+          "add": "Dokument hinzufügen",
           "title": "Titel",
           "type": "Typ",
           "types": { "certificate": "Urkunde", "photo": "Foto", "letter": "Brief", "other": "Sonstiges" },

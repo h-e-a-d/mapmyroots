@@ -369,8 +369,8 @@
           "choose": "Choose photo..."
         },
         "documents": {
-          "empty": "No documents yet. Add scans, certificates, letters, and other photos here.",
-          "add": "+ Add document",
+          "empty": "No documents yet.",
+          "add": "Add document",
           "title": "Title",
           "type": "Type",
           "types": { "certificate": "Certificate", "photo": "Photo", "letter": "Letter", "other": "Other" },

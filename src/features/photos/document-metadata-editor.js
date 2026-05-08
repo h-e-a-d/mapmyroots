@@ -29,10 +29,12 @@ export function mountDocumentMetadataEditor(opts) {
   actions.className = 'document-metadata-actions';
   const cancel = document.createElement('button');
   cancel.type = 'button';
+  cancel.className = 'document-meta-cancel';
   SecurityUtils.setTextContent(cancel, t('builder.modals.person.documents.cancel', 'Cancel'));
   cancel.addEventListener('click', () => onCancel());
   const save = document.createElement('button');
   save.type = 'submit';
+  save.className = 'document-meta-save';
   SecurityUtils.setTextContent(save, t('builder.modals.person.documents.save', 'Save document'));
   actions.appendChild(cancel);
   actions.appendChild(save);

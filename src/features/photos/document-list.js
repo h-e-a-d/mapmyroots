@@ -43,7 +43,7 @@ export function mountDocumentList(opts) {
       empty.className = 'document-list-empty';
       SecurityUtils.setTextContent(empty, t('builder.modals.person.documents.empty', 'No documents yet.'));
       root.appendChild(empty);
-      root.appendChild(createAddButton());
+      root.appendChild(createAddButton(false, 'empty'));
       return;
     }
     const header = document.createElement('div');
@@ -130,12 +130,43 @@ export function mountDocumentList(opts) {
     return tile;
   }
 
-  function createAddButton(disabled = false) {
+  function createAddButton(disabled = false, variant = 'grid') {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'document-add';
+    btn.className = variant === 'empty' ? 'document-add document-add--empty' : 'document-add';
     btn.disabled = disabled;
-    SecurityUtils.setTextContent(btn, t('builder.modals.person.documents.add', '+ Add document'));
+    if (variant === 'empty') {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '1.5');
+      svg.setAttribute('stroke-linecap', 'round');
+      svg.setAttribute('stroke-linejoin', 'round');
+      svg.setAttribute('aria-hidden', 'true');
+      const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path1.setAttribute('d', 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z');
+      const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      path2.setAttribute('points', '14 2 14 8 20 8');
+      const path3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      path3.setAttribute('x1', '12'); path3.setAttribute('y1', '18');
+      path3.setAttribute('x2', '12'); path3.setAttribute('y2', '12');
+      const path4 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      path4.setAttribute('x1', '9'); path4.setAttribute('y1', '15');
+      path4.setAttribute('x2', '15'); path4.setAttribute('y2', '15');
+      svg.appendChild(path1); svg.appendChild(path2); svg.appendChild(path3); svg.appendChild(path4);
+      const label = document.createElement('span');
+      SecurityUtils.setTextContent(label, t('builder.modals.person.documents.add', 'Add document'));
+      const hint = document.createElement('span');
+      hint.className = 'document-add-hint';
+      SecurityUtils.setTextContent(hint, 'JPEG · PNG · PDF · max 5 MB');
+      btn.appendChild(svg); btn.appendChild(label); btn.appendChild(hint);
+    } else {
+      const plus = document.createElement('span');
+      plus.setAttribute('aria-hidden', 'true');
+      SecurityUtils.setTextContent(plus, '+');
+      btn.appendChild(plus);
+    }
     if (disabled) btn.title = t('builder.modals.person.documents.limit_reached', `Limit reached (${MAX_DOCS_PER_PERSON} per person)`);
     if (!disabled) {
       btn.addEventListener('click', () => {
