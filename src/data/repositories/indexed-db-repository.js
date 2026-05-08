@@ -14,10 +14,11 @@
 import { ERROR_TYPES, ErrorHandler } from '../../utils/error-handling.js';
 
 const DB_NAME = 'FamilyTreeDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;            // was 1
 const STORE_PERSONS = 'persons';
 const STORE_METADATA = 'metadata';
 const STORE_CONNECTIONS = 'connections';
+const STORE_MEDIA = 'media';
 
 export class IndexedDBRepository {
   #db;
@@ -88,6 +89,11 @@ export class IndexedDBRepository {
         // Create connections store (for hidden connections)
         if (!db.objectStoreNames.contains(STORE_CONNECTIONS)) {
           db.createObjectStore(STORE_CONNECTIONS, { keyPath: 'id' });
+        }
+
+        // Create media store (added in v2)
+        if (!db.objectStoreNames.contains(STORE_MEDIA)) {
+          db.createObjectStore(STORE_MEDIA, { keyPath: 'id' });
         }
       };
     });
@@ -461,6 +467,9 @@ export class IndexedDBRepository {
       this.#db = null;
     }
   }
+
+  /** @internal — for tests only */
+  _dbForTest() { return this.#db; }
 
   /**
    * Delete the database
