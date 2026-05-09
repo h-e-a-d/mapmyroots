@@ -15,12 +15,12 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
   });
 }
 
-// Enhanced module loader with retry mechanism
-const lazyLoadModule = async (modulePath) => {
-  return RetryManager.retryModuleLoad(async () => {
-    const module = await import(modulePath);
-    return module;
-  });
+// Enhanced module loader with retry mechanism.
+// Takes a thunk so the dynamic `import('./literal-path.js')` lives at the
+// call site — Vite/Astro can only rewrite import specifiers when they are
+// string literals in the source, not when passed in as a variable.
+const lazyLoadModule = async (loader) => {
+  return RetryManager.retryModuleLoad(loader);
 };
 
 // Initialize core functionality immediately
@@ -46,13 +46,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     treeCore.initialize();
 
     // Lazy load search functionality
-    const searchModule = await lazyLoadModule('./src/features/search/search.js');
+    const searchModule = await lazyLoadModule(() => import('./src/features/search/search.js'));
     if (searchModule) {
       console.log('Search module loaded');
     }
 
     // Lazy load export functionality
-    const exportModule = await lazyLoadModule('./src/features/export/exporter.js');
+    const exportModule = await lazyLoadModule(() => import('./src/features/export/exporter.js'));
     if (exportModule) {
       console.log('Export module loaded');
     }
@@ -116,23 +116,23 @@ document.addEventListener('keydown', (e) => {
     switch (e.key) {
       case 'G':
         e.preventDefault();
-        lazyLoadModule('./src/features/export/exporter.js').then(module => {
+        lazyLoadModule(() => import('./src/features/export/exporter.js')).then(module => {
           if (module && module.exportGEDCOM) module.exportGEDCOM();
         });
         break;
       case 'P':
         e.preventDefault();
-        lazyLoadModule('./src/features/export/exporter.js').then(module => {
+        lazyLoadModule(() => import('./src/features/export/exporter.js')).then(module => {
           if (module && module.exportPDFLayout) module.exportPDFLayout();
         });
         break;
     }
   }
-  
+
   // Search shortcut
   if (e.ctrlKey && e.key === '/') {
     e.preventDefault();
-    lazyLoadModule('./src/features/search/search.js').then(module => {
+    lazyLoadModule(() => import('./src/features/search/search.js')).then(module => {
       if (module && module.focusSearch) module.focusSearch();
     });
   }
@@ -147,18 +147,18 @@ class FamilyTreeAPI {
   async search(query) {
     try {
       const sanitizedQuery = SecurityUtils.sanitizeText(query);
-      const searchModule = await lazyLoadModule('./src/features/search/search.js');
+      const searchModule = await lazyLoadModule(() => import('./src/features/search/search.js'));
       return searchModule ? searchModule.searchFor(sanitizedQuery) : null;
     } catch (error) {
       console.error('Search failed:', error);
       return null;
     }
   }
-  
+
   async exportGEDCOM() {
     try {
       appContext.getEventBus().emit(EVENTS.DATA_EXPORT_STARTED, { format: 'gedcom' });
-      const exportModule = await lazyLoadModule('./src/features/export/exporter.js');
+      const exportModule = await lazyLoadModule(() => import('./src/features/export/exporter.js'));
       const result = exportModule ? await exportModule.exportGEDCOM() : null;
       if (result) {
         appContext.getEventBus().emit(EVENTS.DATA_EXPORT_COMPLETED, { format: 'gedcom' });
