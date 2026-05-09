@@ -75,6 +75,47 @@ describe('IndexedDBRepository media store', () => {
     expect(removed).toEqual([]);
   });
 
+  it('stores bytes as ArrayBuffer (not Blob) to avoid iOS Safari Blob/File errors', async () => {
+    repo = new IndexedDBRepository('TestDB', 2);
+    await repo.initialize();
+    await repo.saveMedia({ id: 'm_buf', blob: new Blob(['buffered'], { type: 'image/jpeg' }), mimeType: 'image/jpeg', byteLength: 8 });
+    // Read raw record (bypassing getMedia) to confirm what was stored
+    const raw = await new Promise((resolve, reject) => {
+      const tx = repo._dbForTest().transaction(['media'], 'readonly');
+      const req = tx.objectStore('media').get('m_buf');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    expect(raw.arrayBuffer).toBeInstanceOf(ArrayBuffer);
+    expect(raw.blob).toBeUndefined();
+    // getMedia should still hand callers a usable Blob
+    const got = await repo.getMedia('m_buf');
+    expect(got.blob).toBeInstanceOf(Blob);
+    expect(got.blob.type).toBe('image/jpeg');
+    expect(await got.blob.text()).toBe('buffered');
+  });
+
+  it('getMedia returns legacy Blob records unchanged (backward compat)', async () => {
+    repo = new IndexedDBRepository('TestDB', 2);
+    await repo.initialize();
+    // Write a legacy-shaped record directly (with blob, no arrayBuffer)
+    await new Promise((resolve, reject) => {
+      const tx = repo._dbForTest().transaction(['media'], 'readwrite');
+      tx.objectStore('media').put({
+        id: 'm_legacy',
+        blob: new Blob(['legacy'], { type: 'image/png' }),
+        mimeType: 'image/png',
+        byteLength: 6,
+        createdAt: Date.now()
+      });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    const got = await repo.getMedia('m_legacy');
+    expect(got.blob).toBeInstanceOf(Blob);
+    expect(await got.blob.text()).toBe('legacy');
+  });
+
   it('saveMedia surfaces the underlying error from the IDB layer', async () => {
     repo = new IndexedDBRepository('TestDB', 2);
     await repo.initialize();

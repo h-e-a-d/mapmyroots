@@ -463,7 +463,29 @@ export class IndexedDBRepository {
   async saveMedia(media) {
     if (!media?.id) throw new Error('saveMedia: id is required');
     await this.#ensureInitialized();
-    const record = { createdAt: Date.now(), ...media };
+    // Store bytes as ArrayBuffer rather than Blob. iOS Safari (notably in
+    // private/incognito mode) can throw "Error preparing Blob/File data to
+    // be stored in object store" when persisting Blobs via IndexedDB; raw
+    // buffers don't hit that path and round-trip reliably.
+    let arrayBuffer;
+    if (media.arrayBuffer instanceof ArrayBuffer) {
+      arrayBuffer = media.arrayBuffer;
+    } else if (media.blob) {
+      try {
+        arrayBuffer = await media.blob.arrayBuffer();
+      } catch (err) {
+        const error = new Error(`Failed to save media (blob-to-buffer): ${err?.name || ''} ${err?.message || err}`.trim(), { cause: err });
+        ErrorHandler.handleError(error, ERROR_TYPES.DATA_OPERATION_ERROR, {
+          operation: 'saveMedia',
+          mediaId: media.id
+        });
+        throw error;
+      }
+    } else {
+      throw new Error('saveMedia: blob or arrayBuffer is required');
+    }
+    const { blob: _ignored, arrayBuffer: _ignored2, ...rest } = media;
+    const record = { createdAt: Date.now(), ...rest, arrayBuffer };
     return new Promise((resolve, reject) => {
       let settled = false;
       const fail = (cause, label) => {
@@ -516,7 +538,20 @@ export class IndexedDBRepository {
     return new Promise((resolve, reject) => {
       const tx = this.#db.transaction([STORE_MEDIA], 'readonly');
       const req = tx.objectStore(STORE_MEDIA).get(id);
-      req.onsuccess = () => resolve(req.result || null);
+      req.onsuccess = () => {
+        const rec = req.result;
+        if (!rec) return resolve(null);
+        // New records store bytes as ArrayBuffer; reconstitute a Blob for callers.
+        // Legacy records still carry a Blob directly — pass through.
+        if (rec.arrayBuffer && !rec.blob) {
+          try {
+            rec.blob = new Blob([rec.arrayBuffer], { type: rec.mimeType || 'application/octet-stream' });
+          } catch (err) {
+            return reject(new Error(`getMedia: failed to build Blob: ${err?.message || err}`, { cause: err }));
+          }
+        }
+        resolve(rec);
+      };
       req.onerror = () => reject(new Error('Failed to get media'));
     });
   }
