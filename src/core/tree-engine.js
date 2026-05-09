@@ -588,7 +588,10 @@ export class TreeEngine {
   }
 
   async _prefetchMedia() {
-    if (this._prefetchInFlight) return;
+    if (this._prefetchInFlight) {
+      this._prefetchAgain = true;
+      return;
+    }
     this._prefetchInFlight = true;
     try {
       const repo = this.cacheManager?.getIdbRepo?.();
@@ -598,21 +601,38 @@ export class TreeEngine {
         if (p?.photo?.mediaId) referenced.add(p.photo.mediaId);
       }
       for (const mediaId of referenced) {
-        const record = await repo.getMedia(mediaId).catch(() => null);
-        if (!record || !record.blob) continue;
+        if (this.renderer._imageCache?.has(mediaId)) continue;
+        const record = await repo.getMedia(mediaId).catch((err) => {
+          console.warn('[tree-engine] getMedia failed for', mediaId, err);
+          return null;
+        });
+        if (!record) {
+          console.warn('[tree-engine] media missing in IDB:', mediaId);
+          continue;
+        }
+        if (!record.blob) {
+          console.warn('[tree-engine] media record has no blob:', mediaId);
+          continue;
+        }
         const url = URL.createObjectURL(record.blob);
         const img = new Image();
         img.onload = () => {
           if (this.renderer) this.renderer.setMediaImage(mediaId, img);
           URL.revokeObjectURL(url);
         };
-        img.onerror = () => URL.revokeObjectURL(url);
+        img.onerror = (e) => {
+          console.warn('[tree-engine] image decode failed for', mediaId, e);
+          URL.revokeObjectURL(url);
+        };
         img.src = url;
       }
-      // Single render after all images are initiated
-      this.renderer.render?.();
+      if (this.renderer) this.renderer.needsRedraw = true;
     } finally {
       this._prefetchInFlight = false;
+      if (this._prefetchAgain) {
+        this._prefetchAgain = false;
+        this._prefetchMedia().catch((err) => console.warn('[tree-engine] re-prefetch failed:', err));
+      }
     }
   }
 

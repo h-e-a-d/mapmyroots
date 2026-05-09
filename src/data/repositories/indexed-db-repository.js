@@ -465,17 +465,44 @@ export class IndexedDBRepository {
     await this.#ensureInitialized();
     const record = { createdAt: Date.now(), ...media };
     return new Promise((resolve, reject) => {
-      const tx = this.#db.transaction([STORE_MEDIA], 'readwrite');
-      const req = tx.objectStore(STORE_MEDIA).put(record);
-      req.onsuccess = () => resolve(media.id);
-      req.onerror = () => {
-        const error = new Error('Failed to save media');
+      let settled = false;
+      const fail = (cause, label) => {
+        if (settled) return;
+        settled = true;
+        const detail = cause?.name && cause?.message
+          ? `${cause.name}: ${cause.message}`
+          : (cause?.message || cause?.name || String(cause || 'unknown error'));
+        const error = new Error(`Failed to save media (${label}): ${detail}`, { cause });
         ErrorHandler.handleError(error, ERROR_TYPES.DATA_OPERATION_ERROR, {
           operation: 'saveMedia',
-          mediaId: media.id
+          mediaId: media.id,
+          mimeType: media.mimeType,
+          byteLength: media.byteLength
         });
         reject(error);
       };
+      let tx;
+      try {
+        tx = this.#db.transaction([STORE_MEDIA], 'readwrite');
+      } catch (err) {
+        fail(err, 'transaction');
+        return;
+      }
+      tx.onabort = () => fail(tx.error, 'tx-abort');
+      tx.onerror = () => fail(tx.error, 'tx-error');
+      let req;
+      try {
+        req = tx.objectStore(STORE_MEDIA).put(record);
+      } catch (err) {
+        fail(err, 'put-throw');
+        return;
+      }
+      req.onsuccess = () => {
+        if (settled) return;
+        settled = true;
+        resolve(media.id);
+      };
+      req.onerror = () => fail(req.error, 'req-error');
     });
   }
 

@@ -191,7 +191,16 @@ export function setupExport(treeCore) {
       // Bundle media blobs from IDB with in-memory persons so any unsaved
       // edits are exported alongside the photos.
       const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
-      const data = repo ? await buildExport(repo, persons) : state;
+      const data = repo
+        ? await buildExport(repo, persons, {
+            settings: state?.settings,
+            displayPreferences: state?.displayPreferences,
+            nodeStyle: state?.nodeStyle,
+            camera: state?.camera,
+            hiddenConnections: state?.hiddenConnections,
+            lineOnlyConnections: state?.lineOnlyConnections
+          })
+        : state;
 
       const dataStr = JSON.stringify(data, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -246,7 +255,8 @@ export function setupExport(treeCore) {
               await applyImport(repo, data);
             } catch (impErr) {
               console.error('[loadFromJSON] applyImport failed:', impErr);
-              n.error('Import Failed', impErr?.message || 'Could not write media to storage');
+              const detail = impErr?.cause?.message || impErr?.message || 'Could not write media to storage';
+              n.error('Import Failed', detail);
               return;
             }
           } else {
@@ -279,7 +289,7 @@ export function setupExport(treeCore) {
 
 const EXPORT_VERSION = '2.2.0';
 
-export async function buildExport(repo, persons = null) {
+export async function buildExport(repo, persons = null, extras = {}) {
   if (!persons) persons = await repo.getAllPersons();
   const docs = await repo.getAllDocuments();
   const allMediaIds = await listAllMediaIds(persons, docs);
@@ -296,7 +306,11 @@ export async function buildExport(repo, persons = null) {
       base64: await blobToBase64(rec.blob)
     });
   }
-  return { version: EXPORT_VERSION, cacheFormat: 'enhanced', persons, media, documents: docs };
+  const out = { version: EXPORT_VERSION, cacheFormat: 'enhanced', persons, media, documents: docs };
+  for (const key of ['settings', 'displayPreferences', 'nodeStyle', 'camera', 'hiddenConnections', 'lineOnlyConnections']) {
+    if (extras?.[key] !== undefined) out[key] = extras[key];
+  }
+  return out;
 }
 
 function listAllMediaIds(persons, docs) {

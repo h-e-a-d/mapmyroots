@@ -74,6 +74,32 @@ describe('export/import with media', () => {
     expect(docs[0].title).toBe('Cert');
   });
 
+  it('round-trips settings and display preferences', async () => {
+    await repo.savePerson({ id: 'p1', name: 'A' });
+    const exported = await buildExport(repo, null, {
+      settings: { nameColor: '#000000', dateColor: '#333333', fontFamily: 'Inter' },
+      displayPreferences: { showPhotos: false, showFatherName: true },
+      nodeStyle: 'circle',
+      camera: { x: 10, y: 20, scale: 1.5 },
+      hiddenConnections: ['a-b'],
+      lineOnlyConnections: ['c-d']
+    });
+    expect(exported.settings.nameColor).toBe('#000000');
+    expect(exported.settings.dateColor).toBe('#333333');
+    expect(exported.displayPreferences.showPhotos).toBe(false);
+    expect(exported.nodeStyle).toBe('circle');
+    expect(exported.camera.scale).toBe(1.5);
+    expect(exported.hiddenConnections).toEqual(['a-b']);
+    expect(exported.lineOnlyConnections).toEqual(['c-d']);
+  });
+
+  it('omits settings keys when not provided (backwards compatible)', async () => {
+    await repo.savePerson({ id: 'p1', name: 'A' });
+    const exported = await buildExport(repo);
+    expect(exported.settings).toBeUndefined();
+    expect(exported.displayPreferences).toBeUndefined();
+  });
+
   it('drops document with missing media on import (warns)', async () => {
     const exported = {
       version: '2.2.0',

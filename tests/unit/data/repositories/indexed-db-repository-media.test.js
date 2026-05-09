@@ -74,4 +74,41 @@ describe('IndexedDBRepository media store', () => {
     const removed = await repo.garbageCollectMedia(new Set(['m_x']));
     expect(removed).toEqual([]);
   });
+
+  it('saveMedia surfaces the underlying error from the IDB layer', async () => {
+    repo = new IndexedDBRepository('TestDB', 2);
+    await repo.initialize();
+    // Mock the db transaction to return a synthetic request that fires onerror
+    // with a DOMException-like error object (iOS-style failure mode).
+    const fakeTx = {
+      onabort: null,
+      onerror: null,
+      error: null,
+      objectStore() {
+        return {
+          put() {
+            const req = { onsuccess: null, onerror: null, error: null };
+            queueMicrotask(() => {
+              req.error = { name: 'QuotaExceededError', message: 'storage full' };
+              req.onerror?.({ target: req });
+            });
+            return req;
+          }
+        };
+      }
+    };
+    const origDb = repo._dbForTest();
+    origDb.transaction = () => fakeTx;
+    let caught;
+    try {
+      await repo.saveMedia({ id: 'm_fail', blob: new Blob(['x']), mimeType: 'image/jpeg', byteLength: 1 });
+    } catch (e) {
+      caught = e;
+    }
+    expect(caught).toBeDefined();
+    expect(caught.message).toContain('QuotaExceededError');
+    expect(caught.message).toContain('storage full');
+    expect(caught.cause).toBeDefined();
+    expect(caught.cause.name).toBe('QuotaExceededError');
+  });
 });

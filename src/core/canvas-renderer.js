@@ -317,7 +317,8 @@ export class CanvasRenderer {
 
     const showPhotos = this.displayPreferences.showPhotos !== false;
     const exportImg = showPhotos ? this._getNodeImage(id, node) : null;
-    if (exportImg && exportImg.complete && exportImg.naturalWidth > 0) {
+    const exportImgReady = !!(exportImg && exportImg.complete && exportImg.naturalWidth > 0);
+    if (exportImgReady) {
       const transform = node.photo?.transform ?? { x: 0.5, y: 0.5, scale: 1 };
       const baseCover = Math.max((radius * 2) / exportImg.naturalWidth, (radius * 2) / exportImg.naturalHeight);
       const s = baseCover * transform.scale;
@@ -333,7 +334,7 @@ export class CanvasRenderer {
       ctx.restore();
     }
 
-    if (!node.photo?.mediaId || !showPhotos) {
+    if (!exportImgReady) {
       this.drawNodeText(ctx, node, radius * 1.8);
     }
   }
@@ -1156,7 +1157,8 @@ export class CanvasRenderer {
     
     const showPhotos = this.displayPreferences.showPhotos !== false;
     const img = showPhotos ? this._getNodeImage(id, node) : null;
-    if (img && img.complete && img.naturalWidth > 0) {
+    const imgReady = !!(img && img.complete && img.naturalWidth > 0);
+    if (imgReady) {
       const transform = node.photo?.transform ?? { x: 0.5, y: 0.5, scale: 1 };
       const baseCover = Math.max((radius * 2) / img.naturalWidth, (radius * 2) / img.naturalHeight);
       const s = baseCover * transform.scale;
@@ -1172,7 +1174,9 @@ export class CanvasRenderer {
       ctx.restore();
     }
 
-    if (!node.photo?.mediaId || !showPhotos) {
+    // Draw text whenever the photo is hidden, missing, or still loading —
+    // otherwise the node renders as an empty circle while the image is async-decoded.
+    if (!imgReady) {
       this.drawNodeText(ctx, node, radius * 1.8);
     }
   }
