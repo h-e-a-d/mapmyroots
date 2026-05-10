@@ -281,8 +281,9 @@ class FamilyTreeSearch {
       if (node.maidenName || personData.maidenName) {
         details.push(`Maiden: ${node.maidenName || personData.maidenName}`);
       }
-      if (node.dob || personData.dob) {
-        details.push(`Born: ${node.dob || personData.dob}`);
+      if (personData.birth?.date) {
+        const birthYear = personData.birth.date.year;
+        if (birthYear) details.push(`Born: ${birthYear}`);
       }
       if (node.gender || personData.gender) {
         details.push(node.gender || personData.gender);

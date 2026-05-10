@@ -2,6 +2,7 @@
 // FIXED: PDF export issues resolved
 
 import { notifications } from '../../ui/components/notifications.js';
+import { formatLifespanShort } from '../../utils/date-value.js';
 
 export function exportTree(format) {
   const original = document.getElementById('svgArea');
@@ -440,7 +441,7 @@ export async function exportCanvasSVG() {
         // Account for vertical text spacing
         let textLines = 1; // name
         if (displayPrefs.showMaidenName && node.maidenName) textLines++;
-        if (displayPrefs.showDateOfBirth && node.dob) textLines++;
+        if (displayPrefs.showDateOfBirth && node.birth?.date?.year) textLines++;
         const textHeight = textLines * 15;
         minY = Math.min(minY, node.y - textHeight/2);
         maxY = Math.max(maxY, node.y + textHeight/2);
@@ -574,13 +575,16 @@ export async function exportCanvasSVG() {
       }
 
       // Add DOB
-      if (displayPrefs.showDateOfBirth && node.dob) {
-        const dobText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        dobText.setAttribute('x', translatedX);
-        dobText.setAttribute('y', textY + 5);
-        dobText.setAttribute('class', 'node-dob');
-        dobText.textContent = node.dob;
-        g.appendChild(dobText);
+      if (displayPrefs.showDateOfBirth && node.birth?.date?.year) {
+        const lifespan = formatLifespanShort(node.birth?.date, node.death?.date);
+        if (lifespan) {
+          const dobText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          dobText.setAttribute('x', translatedX);
+          dobText.setAttribute('y', textY + 5);
+          dobText.setAttribute('class', 'node-dob');
+          dobText.textContent = lifespan;
+          g.appendChild(dobText);
+        }
       }
 
       svg.appendChild(g);

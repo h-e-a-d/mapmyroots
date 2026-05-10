@@ -56,7 +56,7 @@ export class GenerationCalculator {
       let oldestYear = Infinity;
 
       for (const [id, data] of personData) {
-        const year = this.extractYear(data.dob);
+        const year = data.birth?.date?.year ?? null;
         if (year && year < oldestYear) {
           oldestYear = year;
           oldestId = id;
@@ -67,7 +67,7 @@ export class GenerationCalculator {
         rootNodes.push(oldestId);
         this.generationCache.set(oldestId, 0);
         const person = personData.get(oldestId);
-        console.log(`Using oldest person as root: ${oldestId} (${person.name}, ${person.dob}) - Generation 0`);
+        console.log(`Using oldest person as root: ${oldestId} (${person.name}, ${person.birth?.date?.year}) - Generation 0`);
       } else {
         // Last resort: pick the first person
         const firstId = Array.from(personData.keys())[0];

@@ -20,7 +20,7 @@ import { ERROR_TYPES, ErrorHandler } from '../../utils/error-handling.js';
  * @property {string} name - Person's name
  * @property {string} [surname] - Person's surname
  * @property {string} [fatherName] - Father's name
- * @property {string} [dob] - Date of birth
+ * @property {Object} [birth] - Birth event { date, place, note }
  * @property {string} [dod] - Date of death
  * @property {string} gender - Gender (male/female)
  * @property {string} [motherId] - Mother's ID
@@ -272,7 +272,7 @@ export class PersonRepository {
     const sanitized = { ...person };
 
     // Sanitize text fields
-    const textFields = ['name', 'surname', 'fatherName', 'dob', 'dod'];
+    const textFields = ['name', 'surname', 'fatherName', 'dod'];
     textFields.forEach(field => {
       if (sanitized[field]) {
         sanitized[field] = SecurityUtils.sanitizeText(sanitized[field]);

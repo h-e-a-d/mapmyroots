@@ -544,7 +544,6 @@ export class CanvasRenderer {
       fatherName: data.fatherName !== undefined ? data.fatherName : (existingNode?.fatherName || ''),
       surname: data.surname !== undefined ? data.surname : (existingNode?.surname || ''),
       maidenName: data.maidenName !== undefined ? data.maidenName : (existingNode?.maidenName || ''),
-      dob: data.dob !== undefined ? data.dob : (existingNode?.dob || ''),
       gender: data.gender !== undefined ? data.gender : (existingNode?.gender || ''),
       color: data.color !== undefined ? data.color : (existingNode?.color || this.settings.nodeColor),
       radius: data.radius !== undefined ? data.radius : (existingNode?.radius || this.settings.nodeRadius)

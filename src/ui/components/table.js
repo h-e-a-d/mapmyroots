@@ -2,6 +2,8 @@
 // Updated to work with Canvas-based tree implementation
 // Enhanced with maiden name support
 
+import { formatDateValue } from '../../utils/date-value.js';
+
 export function rebuildTableView(retryCount = 0) {
   const maxRetries = 10; // Maximum 5 seconds of retrying
   
@@ -66,7 +68,7 @@ export function rebuildTableView(retryCount = 0) {
       fatherName: node.fatherName || personData.fatherName || '',
       surname: node.surname || personData.surname || '',
       maidenName: node.maidenName || personData.maidenName || '', // Changed from birthName
-      dob: node.dob || personData.dob || '',
+      dob: formatDateValue(node.birth?.date || personData.birth?.date || null),
       gender: node.gender || personData.gender || '',
       motherId: personData.motherId || '',
       fatherId: personData.fatherId || '',

@@ -702,7 +702,6 @@ export class TreeEngine {
           fatherName: node.fatherName || personData.fatherName || '',
           surname: node.surname || personData.surname || '',
           maidenName: node.maidenName || personData.maidenName || '',
-          dob: node.dob || personData.dob || '',
           gender: node.gender || personData.gender || '',
           color: node.color || this.defaultColor,
           radius: node.radius || this.nodeRadius,
@@ -909,7 +908,6 @@ export class TreeEngine {
         marriages: normalisedMarriages,
         notes: formData.notes || '',
         spouseId: normalisedMarriages[0]?.spouseId || '',
-        dob: '',
         photo: formData.photo || null,
       };
 
@@ -1951,7 +1949,6 @@ export class TreeEngine {
       surname: p.surname || '',
       fatherName: p.fatherName || p.father_name || '',
       maidenName: p.maidenName || p.birth_name || '',
-      dob: p.dob || '',
       gender: p.gender || '',
       motherId: p.motherId || p.mother_id || '',
       fatherId: p.fatherId || p.father_id || '',
@@ -2001,7 +1998,6 @@ export class TreeEngine {
           fatherName: person.fatherName || '',
           surname: person.surname || '',
           maidenName: person.maidenName || '',
-          dob: person.dob || '',
           gender: person.gender || '',
           motherId: person.motherId || '',
           fatherId: person.fatherId || '',
@@ -2012,9 +2008,9 @@ export class TreeEngine {
           notes: person.notes || '',
           photo: person.photo || null
         };
-        
+
         this.personData.set(personId, personData);
-        
+
         // Create renderer node if renderer exists
         if (this.renderer) {
           const nodeData = {
@@ -2023,7 +2019,6 @@ export class TreeEngine {
             fatherName: person.fatherName || '',
             surname: person.surname || '',
             maidenName: person.maidenName || '',
-            dob: person.dob || '',
             gender: person.gender || '',
             x: person.x || 300,
             y: person.y || 300,
@@ -2181,7 +2176,6 @@ export class TreeEngine {
         fatherName: personData.fatherName || '',
         surname: personData.surname || '',
         maidenName: personData.maidenName || '',
-        dob: personData.dob || '',
         gender: personData.gender || '',
         motherId: personData.motherId || '',
         fatherId: personData.fatherId || '',

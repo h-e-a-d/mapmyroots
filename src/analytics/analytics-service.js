@@ -155,7 +155,7 @@ class AnalyticsService {
       person_id: personData.id,
       has_name: !!personData.name,
       has_surname: !!personData.surname,
-      has_dob: !!personData.dob,
+      has_birth_date: !!(personData.birth?.date),
       has_father_name: !!personData.fatherName,
       has_maiden_name: !!personData.maidenName,
       gender: personData.gender || 'not_specified',

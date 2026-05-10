@@ -76,7 +76,6 @@ export class IndexedDBRepository {
           personStore.createIndex('name', 'name', { unique: false });
           personStore.createIndex('surname', 'surname', { unique: false });
           personStore.createIndex('gender', 'gender', { unique: false });
-          personStore.createIndex('dob', 'dob', { unique: false });
           personStore.createIndex('motherId', 'motherId', { unique: false });
           personStore.createIndex('fatherId', 'fatherId', { unique: false });
           personStore.createIndex('spouseId', 'spouseId', { unique: false });
