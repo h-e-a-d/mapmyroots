@@ -841,7 +841,7 @@ export class TreeEngine {
    * Generate unique ID for new persons
    */
   generateId() {
-    return `person_${this.nextId++}`;
+    return `p${this.nextId++}`;
   }
 
   /**

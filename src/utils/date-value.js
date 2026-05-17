@@ -84,7 +84,8 @@ export function formatDateValue(value, locale = 'en') {
 }
 
 function yearOnly(value, loc) {
-  if (!value || value.error) return '';
+  if (!value || typeof value !== 'object' || value.error) return '';
+  if (typeof value.year !== 'number') return '';
   const prefix = value.estimated ? `${ESTIMATED_PREFIX[loc]} ` : '';
   return prefix + String(value.year);
 }

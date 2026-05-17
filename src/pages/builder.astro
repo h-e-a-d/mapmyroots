@@ -1094,11 +1094,8 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     });
   </script>
 
-  <!-- Module imports — migration awaited first so IDB is populated before app init -->
+  <!-- Module imports — migration runs inside tree.js's DCL handler (see tree.js) -->
   <script>
-    import { migrateLocalStorageToIndexedDb } from '../../src/data/migrations/localstorage-to-indexeddb.js';
-    await migrateLocalStorageToIndexedDb().catch((err) => console.error('[migration] failed:', err));
-
     import '../../src/features/i18n/i18n.js';
     import '../../src/features/i18n/language-switcher.js';
     import '../../src/ui/components/searchableSelect.js';

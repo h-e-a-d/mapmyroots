@@ -7,6 +7,7 @@ import { AccessibilityManager } from './src/features/accessibility/accessibility
 import { CONFIG } from './src/config/config.js';
 import analyticsService from './src/analytics/analytics-service.js';
 import AnalyticsIntegration from './src/analytics/analytics-integration.js';
+import { migrateLocalStorageToIndexedDb } from './src/data/migrations/localstorage-to-indexeddb.js';
 
 // Load debug helper in development
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -26,6 +27,11 @@ const lazyLoadModule = async (loader) => {
 // Initialize core functionality immediately
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    // Run IDB migration before any tree init so the cache reads see migrated data.
+    // Moved here from builder.astro's inline script — top-level await in that
+    // module caused DCL to fire before listeners registered in newer WebKit.
+    await migrateLocalStorageToIndexedDb().catch((err) => console.error('[migration] failed:', err));
+
     // Initialize analytics integration with event bus
     const eventBus = appContext.getEventBus();
     const analyticsIntegration = new AnalyticsIntegration(eventBus);
