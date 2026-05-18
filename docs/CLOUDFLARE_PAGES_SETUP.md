@@ -40,9 +40,7 @@ Enabled by default for every PR. The preview URL pattern is `<branch-hash>.<proj
 
 ## Web Analytics
 
-Cloudflare → Analytics & Logs → Web Analytics → Add a site → `mapmyroots.com`. The token is already inserted into `BaseLayout.astro` and `BuilderLayout.astro` (Phase 2 Task 4).
-
-**Important:** Replace `__YOUR_CF_BEACON_TOKEN__` in both layout files with your real 32-char token before merging to main.
+Cloudflare → Analytics & Logs → Web Analytics → Add a site → `mapmyroots.com`. The beacon token is wired into the layout files (Phase 2 Task 4) and is live on production. To rotate it, edit `BaseLayout.astro` and `BuilderLayout.astro` and replace the `data-cf-beacon` token value.
 
 ## Verifying the deploy
 

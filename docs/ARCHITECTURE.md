@@ -406,12 +406,24 @@ EVENTS.DATA_IMPORT_COMPLETED
 
 ```
 tests/
-├── setup.js                          # Test configuration
-├── unit/
-│   ├── person-repository.test.js    # Repository tests
-│   ├── command-manager.test.js      # Command pattern tests
-│   └── quad-tree.test.js            # Spatial indexing tests
-└── e2e/                              # Playwright E2E tests (future)
+├── setup.js                          # Vitest configuration
+└── unit/                             # Unit tests (Vitest + jsdom)
+    ├── person-repository.test.js     # Repository tests
+    ├── command-manager.test.js       # Command pattern tests
+    ├── quad-tree.test.js             # Spatial indexing tests
+    ├── date-value.test.js            # Date parsing
+    ├── marriage-sync.test.js
+    └── migration-v2.2.test.js
+
+testing/
+├── playwright.config.js              # E2E config
+├── fixtures/                         # Sample GEDCOM and JSON files
+└── tests/                            # Playwright specs
+    ├── avatar-cropper.spec.js
+    ├── documents.spec.js
+    ├── import-gedcom.spec.js
+    ├── mapmyroots-comprehensive.spec.js
+    └── tree-chart.spec.js
 ```
 
 ### Running Tests
@@ -436,107 +448,16 @@ npm run test:e2e
 - **UI components**: >60%
 - **Utilities**: >90%
 
-## Migration Guide
+## Migration history
 
-### Integrating New Architecture
+The architecture described above (event bus, repository pattern, command-based undo/redo, QuadTree spatial indexing, IndexedDB persistence) was rolled out incrementally through late 2024 and early 2025. The original god-object `TreeEngine` was decomposed into the layered structure documented in this file. The runtime entry point is `tree.js` at the repo root, imported by `src/pages/builder.astro` as a client-side module.
 
-The new architecture is designed to work alongside the existing `TreeEngine`. Here's how to integrate:
+If you're touching the core, follow the conventions in [`/CLAUDE.md`](../CLAUDE.md):
 
-#### Option 1: Gradual Migration (Recommended)
-
-1. **Start with new features**:
-   - Use new repositories for new functionality
-   - Gradually migrate existing features
-
-2. **Add event listeners**:
-   - Keep existing code working
-   - Add event listeners for new behavior
-
-3. **Replace direct calls**:
-   - Replace direct UI imports with EventBus
-   - Replace direct data access with Repository
-
-#### Option 2: Full Refactor
-
-Create a new `TreeCoordinator` that uses all new components:
-
-```javascript
-// src/core/tree-coordinator.js
-export class TreeCoordinator {
-  constructor(eventBus, personRepository, relationshipManager,
-              stateManager, commandManager, renderer) {
-    this.eventBus = eventBus;
-    this.personRepo = personRepository;
-    this.relationships = relationshipManager;
-    this.state = stateManager;
-    this.commands = commandManager;
-    this.renderer = renderer;
-  }
-
-  async addPerson(data) {
-    const command = new AddPersonCommand(this.personRepo, data);
-    const id = await this.commands.execute(command);
-
-    // Update rendering
-    this.renderer.addNode(this.personRepo.findById(id));
-
-    return id;
-  }
-
-  async updatePerson(id, data) {
-    const command = new UpdatePersonCommand(this.personRepo, id, data);
-    await this.commands.execute(command);
-
-    this.renderer.updateNode(this.personRepo.findById(id));
-  }
-
-  // ... other methods
-}
-```
-
-### Updating tree.js
-
-```javascript
-import { EventBus, appContext } from './src/utils/event-bus.js';
-import { PersonRepository } from './src/data/repositories/person-repository.js';
-import { RelationshipManager } from './src/core/relationship-manager.js';
-import { TreeStateManager } from './src/core/tree-state-manager.js';
-import { CommandManager } from './src/core/commands/command-manager.js';
-import { createUICoordinator } from './src/ui/ui-coordinator.js';
-import { createIndexedDBRepository } from './src/data/repositories/indexed-db-repository.js';
-
-async function initializeApp() {
-  const eventBus = new EventBus();
-
-  // Initialize repositories
-  const indexedDB = await createIndexedDBRepository();
-  const personRepo = new PersonRepository(eventBus);
-
-  // Initialize managers
-  const relationshipManager = new RelationshipManager(personRepo, eventBus);
-  const stateManager = new TreeStateManager(eventBus);
-  const commandManager = new CommandManager(eventBus);
-
-  // Initialize UI coordinator
-  const uiCoordinator = await createUICoordinator(eventBus);
-
-  // Initialize renderer (existing CanvasRenderer)
-  const renderer = new CanvasRenderer(canvas);
-
-  // Load data from IndexedDB
-  const persons = await indexedDB.getAllPersons();
-  await personRepo.loadFromData(persons);
-
-  // Generate connections
-  relationshipManager.regenerateConnections();
-
-  // Render
-  renderer.connections = relationshipManager.getConnections();
-  renderer.draw();
-}
-
-initializeApp();
-```
+- All inter-module communication via the EventBus (`src/utils/event-bus.js`).
+- All persistence via repositories — never `localStorage.setItem` from feature code.
+- All user actions that change state go through `CommandManager` so undo/redo works.
+- All DOM mutations from user data go through `SecurityUtils`.
 
 ## Performance Improvements
 
@@ -621,17 +542,16 @@ for (const point of visibleNodes) {
 
 ### Short-term
 
-1. Add E2E tests with Playwright
-2. Migrate existing TreeEngine to use new components
-3. Add more command types
-4. Implement connection caching
+1. Split `tree-engine.js` (currently ~2400 lines) by responsibility — persistence, rendering coordination, command dispatch, media prefetch.
+2. Add more command types so undo/redo covers settings changes and tree-chart edits.
+3. Implement connection caching to avoid full regeneration on every relationship change.
 
 ### Long-term
 
-1. TypeScript migration
-2. Cloud sync support
-3. Collaborative editing
-4. Advanced search with Lunr.js
+1. TypeScript migration.
+2. Cloud sync (see ROADMAP "Deferred — Cloud Foundation").
+3. Collaborative editing.
+4. Advanced search with Lunr.js or a server-side index.
 5. Export to more formats
 
 ## Troubleshooting

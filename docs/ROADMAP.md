@@ -48,9 +48,26 @@ cleanup   │
 
 ---
 
+## Current status (as of 2026-05)
+
+| Phase | Status |
+|---|---|
+| 0 — Pre-migration cleanup | **Done** |
+| 1 — Astro migration | **Done** |
+| 2 — Cloudflare Pages setup | **Done** |
+| 3 — SEO infrastructure | **Done** |
+| 4 — PWA & performance | **Done** |
+| 5 — Feature parity & improvements | **In progress** (5.2 / 5.3 / 5.4 / 5.5 done; 5.1 open) |
+| 6 — SEO content growth | **Ongoing** |
+| Deferred — Cloud foundation | Not scheduled |
+
+The phase-by-phase task lists below remain as historical record of what shipped and why. Per-phase plan files in `docs/superpowers/plans/` are the source of truth for the actual implementations.
+
+---
+
 ## Phase 0 — Pre-Migration Cleanup
 
-**Effort:** 0.5–1 day. **Branch:** `chore/pre-migration-cleanup`. **Independence:** framework-agnostic; can ship before Astro work starts.
+**Status:** Done. **Effort:** 0.5–1 day. **Branch:** `chore/pre-migration-cleanup`. **Independence:** framework-agnostic; can ship before Astro work starts.
 
 ### Scope
 Fix correctness issues, contradictions, and stale metadata that would otherwise carry into the new site. No build/framework changes here.
@@ -81,7 +98,7 @@ Fix correctness issues, contradictions, and stale metadata that would otherwise 
 
 ## Phase 1 — Astro Migration
 
-**Effort:** 3–5 days. **Branch:** `feat/astro-migration`. **Critical dependency:** Phase 0 should land first (cleaner starting point).
+**Status:** Done. **Effort:** 3–5 days. **Branch:** `feat/astro-migration`. **Critical dependency:** Phase 0 should land first (cleaner starting point).
 
 ### Scope
 Move the existing site into Astro without changing what it does. Marketing pages migrate to `.astro` files with shared layouts. The canvas builder app stays a single page that imports its existing JS unchanged. All current tests must still pass at the end.
@@ -163,7 +180,7 @@ tsconfig.json                      # new (loose; supports @ts-check on existing 
 
 ## Phase 2 — Cloudflare Pages Production Setup
 
-**Effort:** 1 day. **Branch:** `chore/cloudflare-pages-config`. **Dependency:** Phase 1 must be deployable.
+**Status:** Done. **Effort:** 1 day. **Branch:** `chore/cloudflare-pages-config`. **Dependency:** Phase 1 must be deployable.
 
 ### Scope
 Wire up Cloudflare Pages properly: real HTTP security headers, redirects, host canonicalization, drop GTM/GA4 in favor of Cloudflare Web Analytics, add CI/CD via GitHub Actions for preview deploys.
@@ -194,7 +211,7 @@ Wire up Cloudflare Pages properly: real HTTP security headers, redirects, host c
 
 ## Phase 3 — SEO Infrastructure
 
-**Effort:** 2–3 days. **Branch:** `feat/seo-infrastructure`. **Dependency:** Phase 1 (Astro routing) live.
+**Status:** Done. **Effort:** 2–3 days. **Branch:** `feat/seo-infrastructure`. **Dependency:** Phase 1 (Astro routing) live.
 
 ### Scope
 Make the SEO setup correct and complete: real i18n routes, auto-generated sitemap, real OG/Twitter/icon images, glossary as content collection with markdown sources, llms.txt for AI search.
@@ -230,7 +247,7 @@ Make the SEO setup correct and complete: real i18n routes, auto-generated sitema
 
 ## Phase 4 — PWA & Performance
 
-**Effort:** 1–2 days. **Branch:** `feat/pwa-and-perf`.
+**Status:** Done. **Effort:** 1–2 days. **Branch:** `feat/pwa-and-perf`.
 
 ### Scope
 Make the site a real installable PWA with offline support for the builder. Add print stylesheet. Lock in performance budgets.
@@ -270,7 +287,7 @@ Build/restore functionality that's claimed but missing, or genuinely valuable. E
 
 ### Task 5.1 — Contact form (Cloudflare Pages Function + Resend + Turnstile)
 
-**Effort:** 0.5 day.
+**Status:** Open. **Effort:** 0.5 day.
 
 - `functions/api/contact.ts` — Pages Function that validates Turnstile token, posts to Resend.
 - Add Turnstile widget to `contact.astro` (free, no consent banner).
@@ -280,7 +297,7 @@ Build/restore functionality that's claimed but missing, or genuinely valuable. E
 
 ### Task 5.2 — GEDCOM import
 
-**Effort:** 2–3 days. **High priority — #1 missing feature for genealogy users.**
+**Status:** Done. Shipped via `src/features/import/gedcom-importer.js` + `parse-gedcom` dep. **Effort:** 2–3 days. **High priority — #1 missing feature for genealogy users.**
 
 - Library: `parse-gedcom` (MIT, ~10KB) handles GEDCOM 5.5/5.5.1 parsing.
 - New module: `src/features/import/gedcom-importer.js` — converts GEDCOM AST to MapMyRoots person/relationship objects.
@@ -290,7 +307,7 @@ Build/restore functionality that's claimed but missing, or genuinely valuable. E
 
 ### Task 5.3 — Photos per person
 
-**Effort:** 1–2 days.
+**Status:** Done. Shipped via `src/features/photos/` + IndexedDB blob storage (see Task 5.4). **Effort:** 1–2 days.
 
 - Person modal gains a photo upload field (file → base64 in localStorage for now; R2 later when cloud arrives).
 - Canvas renderer draws photo as the node fill (round nodes already perfect for this).
@@ -299,7 +316,7 @@ Build/restore functionality that's claimed but missing, or genuinely valuable. E
 
 ### Task 5.4 — IndexedDB migration audit
 
-**Effort:** 0.5 day.
+**Status:** Done. IndexedDB is the active storage layer; localStorage migration shipped in `src/data/migrations/localstorage-to-indexeddb.js` (with `v2.2-rich-events.js` schema migration). **Effort:** 0.5 day.
 
 - `src/data/repositories/indexed-db-repository.js` exists but unclear if active path. Confirm in `core-cache.js` whether IndexedDB is the actual storage layer or whether localStorage is still primary.
 - If still localStorage: write migration that reads localStorage, writes to IndexedDB, deprecates the localStorage path. IndexedDB has no 5MB limit — required for photos (Task 5.3).
@@ -307,7 +324,7 @@ Build/restore functionality that's claimed but missing, or genuinely valuable. E
 
 ### Task 5.5 — Share-by-link (no accounts needed)
 
-**Effort:** 1 day. **Optional but high-value.**
+**Status:** Done. Shipped via `src/features/share/url-codec.js` + read-only `src/pages/view.astro`. **Effort:** 1 day. **Optional but high-value.**
 
 - Encode the entire tree JSON as a base64 query param: `https://mapmyroots.com/view?d=...`. Works for trees up to ~50KB.
 - For larger trees: Cloudflare R2 upload (anonymous, expires in 30 days), URL like `/view?id=<r2-key>`.
@@ -360,18 +377,18 @@ This phase will need its own roadmap document when it's time. For now: do not sc
 
 ---
 
-## Success Criteria (end of Phase 4)
+## Success Criteria (end of Phase 4) — **Met**
 
-- [ ] Site deploys to Cloudflare Pages on every `main` push; PR previews work.
-- [ ] securityheaders.com grade A+ on the production URL.
-- [ ] Lighthouse-CI green: Performance ≥ 95, A11y ≥ 95, SEO ≥ 95, Best Practices ≥ 95.
-- [ ] Google Rich Results Test passes for every page's structured data — no warnings, no fabricated content.
-- [ ] All four locales (`/`, `/de/`, `/es/`, `/ru/`) serve real prerendered HTML with correct hreflang.
-- [ ] Real OG/Twitter/icon images present; sharing previews correctly on Slack, Twitter, Discord, iMessage.
-- [ ] PWA installable on iOS/Android/desktop; offline mode works for the builder.
-- [ ] All existing tests (vitest + playwright) green.
-- [ ] No GTM/GA4 in network tab; Cloudflare Web Analytics tracking pageviews.
-- [ ] Contact form deferred to Phase 5; for now `contact.html` remains a static page with a `mailto:` link as fallback.
+- [x] Site deploys to Cloudflare Pages on every `main` push; PR previews work.
+- [x] securityheaders.com grade A+ on the production URL.
+- [x] Lighthouse-CI green: Performance ≥ 95, A11y ≥ 95, SEO ≥ 95, Best Practices ≥ 95.
+- [x] Google Rich Results Test passes for every page's structured data — no warnings, no fabricated content.
+- [x] All four locales (`/`, `/de/`, `/es/`, `/ru/`) serve real prerendered HTML with correct hreflang.
+- [x] Real OG/Twitter/icon images present; sharing previews correctly on Slack, Twitter, Discord, iMessage.
+- [x] PWA installable on iOS/Android/desktop; offline mode works for the builder.
+- [x] All existing tests (vitest + playwright) green.
+- [x] No GTM/GA4 in network tab; Cloudflare Web Analytics tracking pageviews.
+- [ ] Contact form deferred to Phase 5; for now `contact.astro` remains a static page with a `mailto:` link as fallback. (Phase 5.1 still open.)
 
 ---
 
