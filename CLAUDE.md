@@ -4,7 +4,7 @@ Guidance for Claude Code (and other AI agents) working in this repository.
 
 ## Project at a glance
 
-MapMyRoots is a free, client-side family tree builder. Vanilla JavaScript with ES modules, Canvas-based rendering, LocalStorage/IndexedDB persistence. No backend (until Phase 6 of the roadmap, deferred). Currently being migrated to Astro + Cloudflare Pages — see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+MapMyRoots is a free, client-side family tree builder. Vanilla JavaScript with ES modules, Canvas-based rendering, LocalStorage/IndexedDB persistence. Built on Astro + Cloudflare Pages. No backend (Phase 6 of [`docs/ROADMAP.md`](docs/ROADMAP.md), deferred indefinitely). Active work is Phase 5 feature development.
 
 ## Workflows
 
@@ -95,7 +95,7 @@ Loaded data must include `version` or `persons`. Anything else is rejected with 
 ## Testing expectations
 
 - Unit tests live in `tests/unit/` and run via `npm test` (Vitest + jsdom).
-- E2E tests live in `testing/tests/` and run via `npm run test:e2e` (Playwright). Note: this path will be reorganized in the Phase 1 migration.
+- E2E tests live in `testing/tests/` and run via `npm run test:e2e` (Playwright).
 - Adding a new module: add at least one expected-use test, one edge case, one failure case.
 - Adding a user-visible string: confirm all four locales have a translation.
 
@@ -105,10 +105,6 @@ Loaded data must include `version` or `persons`. Anything else is rejected with 
 - Runtime strings (builder UI) continue to use the existing `data-i18n` attributes resolved by `src/features/i18n/i18n.js`.
 - Missing keys fall back to English with a dev-mode warning. Adding a new user-visible string still requires updating all four locale JSONs (Phase 0 rule unchanged).
 
-## Migration awareness
+## Roadmap awareness
 
-The site is mid-migration. When working on this codebase:
-
-- Don't introduce new patterns that contradict the Astro target structure in [`docs/ROADMAP.md`](docs/ROADMAP.md).
-- Don't add cloud/backend dependencies — that's deferred to Phase 6.
-- If unsure whether a change belongs in current static structure or the future Astro structure, ask.
+Phases 0–4 of [`docs/ROADMAP.md`](docs/ROADMAP.md) (pre-migration cleanup, Astro, Cloudflare Pages, SEO, PWA) are complete. Current work is Phase 5 (feature parity and improvements). Phase 6 (cloud/accounts) is deferred indefinitely — don't introduce cloud/backend dependencies.
