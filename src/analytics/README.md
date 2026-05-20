@@ -383,7 +383,168 @@ Triggered when application error happens.
 
 ---
 
-### 12. Session (`category: 'session'`)
+### 12. Media — Photos (`category: 'media_upload'` / `'media_management'`)
+
+#### photo_uploaded
+Triggered when an avatar photo is successfully uploaded.
+
+**Parameters:**
+- `source`: `'picker'` | `'drop'`
+- `file_size_kb`: number (rounded)
+- `mime_type`: string
+- `width`: number
+- `height`: number
+- `was_replacement`: boolean (true if a photo was already set)
+
+#### photo_upload_failed
+Triggered when an avatar photo upload fails.
+
+**Parameters:**
+- `error_type`: `'decode_failed'` | `'invalid_type'` | `'too_large'` | `'storage_unavailable'` | `'unknown'`
+- `mime_type`: string
+- `file_size_kb`: number
+- `success`: false
+
+#### photo_removed
+Triggered when the user removes the avatar photo.
+
+#### photo_crop_adjusted
+Triggered when the user adjusts the cropper.
+
+**Parameters:**
+- `action`: `'zoom'` | `'reset'` (zoom emits at most once per 400ms)
+
+---
+
+### 13. Media — Documents (`category: 'media_upload'` / `'media_management'`)
+
+#### document_uploaded
+Triggered when a document (image or PDF) is successfully uploaded.
+
+**Parameters:**
+- `kind`: `'image'` | `'pdf'`
+- `source`: `'picker'` | `'drop'`
+- `file_size_kb`: number
+- `mime_type`: string
+- `doc_count_after`: number
+
+#### document_upload_failed
+**Parameters:**
+- `error_type`: `'pdf_invalid'` | `'pdf_too_large'` | `'limit_reached'` | `'image_decode'` | `'too_large'` | `'invalid_type'` | `'unknown'`
+- `kind`: `'image'` | `'pdf'` | null
+- `file_size_kb`: number
+- `mime_type`: string
+- `success`: false
+
+#### document_removed
+**Parameters:**
+- `kind`: `'image'` | `'pdf'`
+
+#### document_metadata_saved
+Triggered when the user saves a document's title/place/date metadata.
+
+**Parameters:**
+- `kind`: `'image'` | `'pdf'`
+- `has_title`: boolean
+- `has_place`: boolean
+- `has_event_date`: boolean
+
+#### document_viewer_opened
+Triggered when the document lightbox opens.
+
+**Parameters:**
+- `kind`: `'image'` | `'pdf'`
+- `doc_count`: number — total docs in the lightbox queue
+
+#### document_viewer_navigated
+Triggered when the user clicks prev/next or uses arrow keys in the lightbox.
+
+**Parameters:**
+- `direction`: `'prev'` | `'next'`
+
+---
+
+### 14. Storage (`category: 'storage'`)
+
+#### storage_warning_shown
+Triggered when the "Storage almost full" notification fires after an upload.
+
+**Parameters:**
+- `usage_mb`: number
+- `quota_mb`: number
+- `percent_used`: number
+
+---
+
+### 15. Share (`category: 'share'`)
+
+#### share_url_generated
+Triggered when a shareable URL is created successfully.
+
+**Parameters:**
+- `url_bytes`: number
+- `node_count`: number
+
+#### share_url_too_large
+Triggered when the encoded tree exceeds `MAX_URL_BYTES` and cannot be shared as a URL.
+
+**Parameters:**
+- `url_bytes`: number
+- `node_count`: number
+- `success`: false
+
+#### share_url_copied
+Triggered when the share URL is copied to the clipboard.
+
+---
+
+### 16. Marriages (`category: 'relationship_management'`)
+
+#### marriage_added
+Triggered when the user clicks "add another marriage" in the person modal. The initial seed row on modal open is intentionally **not** tracked.
+
+#### marriage_removed
+Triggered when the user removes a marriage row.
+
+---
+
+### 17. PWA Install (`category: 'pwa'`)
+
+#### pwa_install_prompt_shown
+Triggered when the install banner becomes visible.
+
+#### pwa_install_accepted
+Triggered when the user accepts the browser install prompt (or `appinstalled` fires).
+
+#### pwa_install_dismissed
+**Parameters:**
+- `method`: `'button'` (user clicked the dismiss button) | `'browser'` (user dismissed the native prompt)
+
+---
+
+### 18. View Changes (`category: 'view'`)
+
+#### view_changed
+Triggered when the main view switches (graphic / treeChart / table).
+
+**Parameters:**
+- `view`: `'graphic'` | `'treeChart'` | `'table'`
+- `trigger`: `'click'` | `'keyboard'`
+
+---
+
+### 19. UI Disclosure (`category: 'ui_interaction'`)
+
+#### ui_disclosure_toggled
+Triggered when a collapsible disclosure (notes, place, note reveal) is opened by the user. The initial auto-reveal when data is already present is **not** tracked.
+
+**Parameters:**
+- `disclosure_name`: e.g. `'person_notes'`, `'person_birth_place'`, `'person_death_note'`
+- `expanded`: boolean
+
+---
+
+### 20. Session (`category: 'session'`)
 
 #### session_started
 Triggered when user opens the application.

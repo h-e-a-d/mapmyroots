@@ -237,7 +237,8 @@ function populateFormFields(node, personData) {
   if (notesEl) notesEl.value = personData?.notes || '';
   setupInlineReveal({
     trigger: document.getElementById('personNotesReveal'),
-    target: document.getElementById('personNotesWrapper')
+    target: document.getElementById('personNotesWrapper'),
+    name: 'person_notes'
   });
 
   const photoMediaIdInput = document.getElementById('personPhotoMediaId');
@@ -296,14 +297,16 @@ function mountEvent(kind, event, setHandle) {
   if (placeInput) placeInput.value = event.place || '';
   setupInlineReveal({
     trigger: document.getElementById(`person${kind}PlaceReveal`),
-    target: document.getElementById(`person${kind}PlaceWrapper`)
+    target: document.getElementById(`person${kind}PlaceWrapper`),
+    name: `person_${kind.toLowerCase()}_place`
   });
 
   const noteInput = document.getElementById(`person${kind}Note`);
   if (noteInput) noteInput.value = event.note || '';
   setupInlineReveal({
     trigger: document.getElementById(`person${kind}NoteReveal`),
-    target: document.getElementById(`person${kind}NoteWrapper`)
+    target: document.getElementById(`person${kind}NoteWrapper`),
+    name: `person_${kind.toLowerCase()}_note`
   });
 }
 
@@ -533,7 +536,8 @@ function clearForm() {
   if (notesEl) notesEl.value = '';
   setupInlineReveal({
     trigger: document.getElementById('personNotesReveal'),
-    target: document.getElementById('personNotesWrapper')
+    target: document.getElementById('personNotesWrapper'),
+    name: 'person_notes'
   });
 
   const marriagesMount = document.getElementById('personMarriagesMount');
@@ -912,8 +916,10 @@ function setupAvatarUploadHandlers() {
   const zoomSlider = document.getElementById('avatarZoom');
   const resetBtn = document.getElementById('avatarReset');
 
-  async function processPhotoFile(file) {
+  async function processPhotoFile(file, source = 'picker') {
     if (!file) return;
+    const existingMediaIdInput = document.getElementById('personPhotoMediaId');
+    const wasReplacement = !!(existingMediaIdInput && existingMediaIdInput.value);
     try {
       const { blob, width, height, mimeType } = await prepareImageUpload(file);
       const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
@@ -926,22 +932,38 @@ function setupAvatarUploadHandlers() {
       if (mediaIdInput) mediaIdInput.value = id;
       if (transformInput) transformInput.value = JSON.stringify(photo.transform);
       await mountAvatarCropperForPerson(photo);
+      appContext.getEventBus().emit(EVENTS.MEDIA_PHOTO_UPLOADED, {
+        source,
+        fileSize: blob.size,
+        mimeType,
+        width,
+        height,
+        wasReplacement
+      });
       if (navigator.storage?.estimate) {
         const est = await navigator.storage.estimate();
-        if (shouldWarnAboutStorage({ usage: est.usage ?? 0, quota: est.quota ?? 0 })) {
+        const usage = est.usage ?? 0;
+        const quota = est.quota ?? 0;
+        if (shouldWarnAboutStorage({ usage, quota })) {
           const { notifications } = await import('../components/notifications.js');
           notifications.warning('Storage almost full', 'Consider exporting your tree.');
+          appContext.getEventBus().emit(EVENTS.STORAGE_WARNING_SHOWN, { usage, quota });
         }
       }
     } catch (err) {
       const { notifications } = await import('../components/notifications.js');
       notifications.error('Photo error', err.message);
       if (fileInput) fileInput.value = '';
+      appContext.getEventBus().emit(EVENTS.MEDIA_PHOTO_UPLOAD_FAILED, {
+        errorType: classifyPhotoError(err),
+        mimeType: file?.type || null,
+        fileSize: file?.size || null
+      });
     }
   }
 
   fileInput?.addEventListener('change', async () => {
-    await processPhotoFile(fileInput.files?.[0]);
+    await processPhotoFile(fileInput.files?.[0], 'picker');
   });
 
   const uploadLabel = document.querySelector('.photo-upload-label');
@@ -956,13 +978,14 @@ function setupAvatarUploadHandlers() {
       dragCount = 0;
       uploadLabel.classList.remove('dragover');
       const file = e.dataTransfer?.files?.[0];
-      if (file) await processPhotoFile(file);
+      if (file) await processPhotoFile(file, 'drop');
     });
   }
 
   removeBtn?.addEventListener('click', async () => {
     const mediaIdInput = document.getElementById('personPhotoMediaId');
     const id = mediaIdInput?.value;
+    const hadPhoto = !!id;
     if (id) {
       const repo = window.treeCore?.cacheManager?.getIdbRepo?.();
       await repo?.deleteMedia(id).catch((err) => console.warn('[modal] remove photo failed:', err));
@@ -973,14 +996,32 @@ function setupAvatarUploadHandlers() {
     if (transformInput) transformInput.value = JSON.stringify(DEFAULT_TRANSFORM);
     if (fileInput) fileInput.value = '';
     await mountAvatarCropperForPerson(null);
+    if (hadPhoto) {
+      appContext.getEventBus().emit(EVENTS.MEDIA_PHOTO_REMOVED, {});
+    }
   });
 
+  let zoomEmitTimer = null;
   zoomSlider?.addEventListener('input', () => {
     if (cropperHandle) cropperHandle.setZoom(Number(zoomSlider.value));
+    if (zoomEmitTimer) clearTimeout(zoomEmitTimer);
+    zoomEmitTimer = setTimeout(() => {
+      appContext.getEventBus().emit(EVENTS.MEDIA_PHOTO_CROP_ADJUSTED, { action: 'zoom' });
+    }, 400);
   });
   resetBtn?.addEventListener('click', () => {
     if (cropperHandle) cropperHandle.reset();
+    appContext.getEventBus().emit(EVENTS.MEDIA_PHOTO_CROP_ADJUSTED, { action: 'reset' });
   });
+}
+
+function classifyPhotoError(err) {
+  const msg = (err?.message || '').toLowerCase();
+  if (msg.includes('storage unavailable')) return 'storage_unavailable';
+  if (msg.includes('too large') || msg.includes('exceeds')) return 'too_large';
+  if (msg.includes('unsupported') || msg.includes('invalid type')) return 'invalid_type';
+  if (msg.includes('decode')) return 'decode_failed';
+  return 'unknown';
 }
 
 // ENHANCED: Initialize modal when DOM is ready

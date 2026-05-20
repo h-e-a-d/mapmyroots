@@ -254,5 +254,39 @@ export const EVENTS = {
   ERROR_RECOVERED: 'error:recovered',
 
   // Tree chart UI events
-  TREE_NODE_EDIT_REQUESTED: 'tree:node:edit:requested'
+  TREE_NODE_EDIT_REQUESTED: 'tree:node:edit:requested',
+
+  // Media — photos
+  MEDIA_PHOTO_UPLOADED: 'media:photo:uploaded',
+  MEDIA_PHOTO_UPLOAD_FAILED: 'media:photo:upload:failed',
+  MEDIA_PHOTO_REMOVED: 'media:photo:removed',
+  MEDIA_PHOTO_CROP_ADJUSTED: 'media:photo:crop:adjusted',
+
+  // Media — documents
+  MEDIA_DOCUMENT_UPLOADED: 'media:document:uploaded',
+  MEDIA_DOCUMENT_UPLOAD_FAILED: 'media:document:upload:failed',
+  MEDIA_DOCUMENT_REMOVED: 'media:document:removed',
+  MEDIA_DOCUMENT_METADATA_SAVED: 'media:document:metadata:saved',
+  MEDIA_DOCUMENT_VIEWER_OPENED: 'media:document:viewer:opened',
+  MEDIA_DOCUMENT_VIEWER_NAVIGATED: 'media:document:viewer:navigated',
+
+  // Storage
+  STORAGE_WARNING_SHOWN: 'storage:warning:shown',
+
+  // Share
+  SHARE_URL_GENERATED: 'share:url:generated',
+  SHARE_URL_TOO_LARGE: 'share:url:too_large',
+  SHARE_URL_COPIED: 'share:url:copied',
+
+  // Marriages
+  MARRIAGE_ADDED: 'marriage:added',
+  MARRIAGE_REMOVED: 'marriage:removed',
+
+  // PWA
+  PWA_INSTALL_PROMPT_SHOWN: 'pwa:install:prompt:shown',
+  PWA_INSTALL_ACCEPTED: 'pwa:install:accepted',
+  PWA_INSTALL_DISMISSED: 'pwa:install:dismissed',
+
+  // UI disclosure (reveal toggles)
+  UI_DISCLOSURE_TOGGLED: 'ui:disclosure:toggled'
 };

@@ -232,6 +232,98 @@ class AnalyticsIntegration {
       analyticsService.trackButtonClick(data.buttonName, data.context);
     });
 
+    // Media — photo events
+    this.listen('media:photo:uploaded', (data) => {
+      analyticsService.trackPhotoUploaded(data || {});
+    });
+
+    this.listen('media:photo:upload:failed', (data) => {
+      analyticsService.trackPhotoUploadFailed(data?.errorType, data || {});
+    });
+
+    this.listen('media:photo:removed', () => {
+      analyticsService.trackPhotoRemoved();
+    });
+
+    this.listen('media:photo:crop:adjusted', (data) => {
+      analyticsService.trackPhotoCropAdjusted(data?.action);
+    });
+
+    // Media — document events
+    this.listen('media:document:uploaded', (data) => {
+      analyticsService.trackDocumentUploaded(data || {});
+    });
+
+    this.listen('media:document:upload:failed', (data) => {
+      analyticsService.trackDocumentUploadFailed(data?.errorType, data || {});
+    });
+
+    this.listen('media:document:removed', (data) => {
+      analyticsService.trackDocumentRemoved(data?.kind);
+    });
+
+    this.listen('media:document:metadata:saved', (data) => {
+      analyticsService.trackDocumentMetadataSaved(data || {});
+    });
+
+    this.listen('media:document:viewer:opened', (data) => {
+      analyticsService.trackDocumentViewerOpened(data || {});
+    });
+
+    this.listen('media:document:viewer:navigated', (data) => {
+      analyticsService.trackDocumentViewerNavigated(data?.direction);
+    });
+
+    // Storage events
+    this.listen('storage:warning:shown', (data) => {
+      analyticsService.trackStorageWarning(data || {});
+    });
+
+    // Share events
+    this.listen('share:url:generated', (data) => {
+      analyticsService.trackShareUrlGenerated(data || {});
+    });
+
+    this.listen('share:url:too_large', (data) => {
+      analyticsService.trackShareUrlTooLarge(data || {});
+    });
+
+    this.listen('share:url:copied', () => {
+      analyticsService.trackShareUrlCopied();
+    });
+
+    // Marriage events
+    this.listen('marriage:added', () => {
+      analyticsService.trackMarriageAdded();
+    });
+
+    this.listen('marriage:removed', () => {
+      analyticsService.trackMarriageRemoved();
+    });
+
+    // PWA install events
+    this.listen('pwa:install:prompt:shown', () => {
+      analyticsService.trackPwaInstallPromptShown();
+    });
+
+    this.listen('pwa:install:accepted', () => {
+      analyticsService.trackPwaInstallAccepted();
+    });
+
+    this.listen('pwa:install:dismissed', (data) => {
+      analyticsService.trackPwaInstallDismissed(data?.method);
+    });
+
+    // View change events (covers both keyboard and click triggers)
+    this.listen('ui:view:changed', (data) => {
+      analyticsService.trackViewChanged(data?.view, data?.trigger);
+    });
+
+    // UI disclosure (reveal) toggles
+    this.listen('ui:disclosure:toggled', (data) => {
+      analyticsService.trackDisclosureToggled(data?.name, data?.expanded);
+    });
+
     // Track session started
     analyticsService.trackSessionStarted();
 

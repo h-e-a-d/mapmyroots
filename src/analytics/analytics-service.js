@@ -610,6 +610,279 @@ class AnalyticsService {
       ...context
     });
   }
+
+  // ============================================
+  // MEDIA — PHOTO EVENTS
+  // ============================================
+
+  /**
+   * Track avatar photo uploaded
+   * @param {{ source?: 'picker'|'drop', fileSize?: number, mimeType?: string, width?: number, height?: number, wasReplacement?: boolean }} meta
+   */
+  trackPhotoUploaded(meta = {}) {
+    this.sendEvent('photo_uploaded', {
+      category: 'media_upload',
+      source: meta.source || 'picker',
+      file_size_kb: meta.fileSize ? Math.round(meta.fileSize / 1024) : null,
+      mime_type: meta.mimeType || null,
+      width: meta.width || null,
+      height: meta.height || null,
+      was_replacement: !!meta.wasReplacement
+    });
+  }
+
+  /**
+   * Track avatar photo upload failure
+   * @param {string} errorType - e.g. 'decode_failed', 'invalid_type', 'too_large', 'storage_unavailable'
+   * @param {{ mimeType?: string, fileSize?: number }} meta
+   */
+  trackPhotoUploadFailed(errorType, meta = {}) {
+    this.sendEvent('photo_upload_failed', {
+      category: 'media_upload',
+      error_type: errorType || 'unknown',
+      mime_type: meta.mimeType || null,
+      file_size_kb: meta.fileSize ? Math.round(meta.fileSize / 1024) : null,
+      success: false
+    });
+  }
+
+  /**
+   * Track avatar photo removed
+   */
+  trackPhotoRemoved() {
+    this.sendEvent('photo_removed', {
+      category: 'media_management'
+    });
+  }
+
+  /**
+   * Track avatar crop adjustment
+   * @param {'zoom'|'reset'} action
+   */
+  trackPhotoCropAdjusted(action) {
+    this.sendEvent('photo_crop_adjusted', {
+      category: 'media_management',
+      action: action || 'unknown'
+    });
+  }
+
+  // ============================================
+  // MEDIA — DOCUMENT EVENTS
+  // ============================================
+
+  /**
+   * Track document uploaded
+   * @param {{ kind?: 'image'|'pdf', source?: 'picker'|'drop', fileSize?: number, mimeType?: string, docCountAfter?: number }} meta
+   */
+  trackDocumentUploaded(meta = {}) {
+    this.sendEvent('document_uploaded', {
+      category: 'media_upload',
+      kind: meta.kind || 'unknown',
+      source: meta.source || 'picker',
+      file_size_kb: meta.fileSize ? Math.round(meta.fileSize / 1024) : null,
+      mime_type: meta.mimeType || null,
+      doc_count_after: meta.docCountAfter != null ? meta.docCountAfter : null
+    });
+  }
+
+  /**
+   * Track document upload failure
+   * @param {string} errorType - e.g. 'pdf_invalid', 'limit_reached', 'image_decode', 'too_large'
+   * @param {{ kind?: 'image'|'pdf', fileSize?: number, mimeType?: string }} meta
+   */
+  trackDocumentUploadFailed(errorType, meta = {}) {
+    this.sendEvent('document_upload_failed', {
+      category: 'media_upload',
+      error_type: errorType || 'unknown',
+      kind: meta.kind || null,
+      file_size_kb: meta.fileSize ? Math.round(meta.fileSize / 1024) : null,
+      mime_type: meta.mimeType || null,
+      success: false
+    });
+  }
+
+  /**
+   * Track document removed
+   * @param {'image'|'pdf'|string} kind
+   */
+  trackDocumentRemoved(kind) {
+    this.sendEvent('document_removed', {
+      category: 'media_management',
+      kind: kind || 'unknown'
+    });
+  }
+
+  /**
+   * Track document metadata saved (title, place, event date)
+   * @param {{ kind?: 'image'|'pdf', hasEventDate?: boolean, hasPlace?: boolean, hasTitle?: boolean }} meta
+   */
+  trackDocumentMetadataSaved(meta = {}) {
+    this.sendEvent('document_metadata_saved', {
+      category: 'media_management',
+      kind: meta.kind || 'unknown',
+      has_event_date: !!meta.hasEventDate,
+      has_place: !!meta.hasPlace,
+      has_title: !!meta.hasTitle
+    });
+  }
+
+  /**
+   * Track document lightbox opened
+   * @param {{ kind?: 'image'|'pdf', docCount?: number }} meta
+   */
+  trackDocumentViewerOpened(meta = {}) {
+    this.sendEvent('document_viewer_opened', {
+      category: 'media_management',
+      kind: meta.kind || 'unknown',
+      doc_count: meta.docCount != null ? meta.docCount : null
+    });
+  }
+
+  /**
+   * Track document lightbox prev/next navigation
+   * @param {'prev'|'next'} direction
+   */
+  trackDocumentViewerNavigated(direction) {
+    this.sendEvent('document_viewer_navigated', {
+      category: 'media_management',
+      direction: direction || 'unknown'
+    });
+  }
+
+  // ============================================
+  // STORAGE EVENTS
+  // ============================================
+
+  /**
+   * Track storage warning shown to user
+   * @param {{ usage?: number, quota?: number }} meta - bytes
+   */
+  trackStorageWarning(meta = {}) {
+    const usage = meta.usage || 0;
+    const quota = meta.quota || 0;
+    this.sendEvent('storage_warning_shown', {
+      category: 'storage',
+      usage_mb: Math.round(usage / (1024 * 1024)),
+      quota_mb: Math.round(quota / (1024 * 1024)),
+      percent_used: quota > 0 ? Math.round((usage / quota) * 100) : null
+    });
+  }
+
+  // ============================================
+  // SHARE EVENTS
+  // ============================================
+
+  /**
+   * Track share URL generated successfully
+   * @param {{ urlBytes?: number, nodeCount?: number }} meta
+   */
+  trackShareUrlGenerated(meta = {}) {
+    this.sendEvent('share_url_generated', {
+      category: 'share',
+      url_bytes: meta.urlBytes || 0,
+      node_count: meta.nodeCount || 0
+    });
+  }
+
+  /**
+   * Track share URL exceeded size limit
+   * @param {{ urlBytes?: number, nodeCount?: number }} meta
+   */
+  trackShareUrlTooLarge(meta = {}) {
+    this.sendEvent('share_url_too_large', {
+      category: 'share',
+      url_bytes: meta.urlBytes || 0,
+      node_count: meta.nodeCount || 0,
+      success: false
+    });
+  }
+
+  /**
+   * Track share URL copied to clipboard
+   */
+  trackShareUrlCopied() {
+    this.sendEvent('share_url_copied', {
+      category: 'share'
+    });
+  }
+
+  // ============================================
+  // MARRIAGE EVENTS
+  // ============================================
+
+  /**
+   * Track marriage row added in person modal
+   */
+  trackMarriageAdded() {
+    this.sendEvent('marriage_added', {
+      category: 'relationship_management'
+    });
+  }
+
+  /**
+   * Track marriage row removed in person modal
+   */
+  trackMarriageRemoved() {
+    this.sendEvent('marriage_removed', {
+      category: 'relationship_management'
+    });
+  }
+
+  // ============================================
+  // PWA INSTALL EVENTS
+  // ============================================
+
+  trackPwaInstallPromptShown() {
+    this.sendEvent('pwa_install_prompt_shown', {
+      category: 'pwa'
+    });
+  }
+
+  trackPwaInstallAccepted() {
+    this.sendEvent('pwa_install_accepted', {
+      category: 'pwa'
+    });
+  }
+
+  /**
+   * @param {'button'|'browser'} method
+   */
+  trackPwaInstallDismissed(method) {
+    this.sendEvent('pwa_install_dismissed', {
+      category: 'pwa',
+      method: method || 'unknown'
+    });
+  }
+
+  // ============================================
+  // VIEW & DISCLOSURE EVENTS
+  // ============================================
+
+  /**
+   * Track main view changed (graphic / treeChart / table)
+   * @param {string} view
+   * @param {'click'|'keyboard'|'unknown'} trigger
+   */
+  trackViewChanged(view, trigger = 'click') {
+    this.sendEvent('view_changed', {
+      category: 'view',
+      view: view || 'unknown',
+      trigger: trigger || 'unknown'
+    });
+  }
+
+  /**
+   * Track collapsible disclosure (notes, place, etc.) toggled
+   * @param {string} disclosureName
+   * @param {boolean} expanded
+   */
+  trackDisclosureToggled(disclosureName, expanded) {
+    this.sendEvent('ui_disclosure_toggled', {
+      category: 'ui_interaction',
+      disclosure_name: disclosureName || 'unknown',
+      expanded: !!expanded
+    });
+  }
 }
 
 // Create singleton instance

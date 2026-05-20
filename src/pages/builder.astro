@@ -1115,6 +1115,7 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
   <script>
     import { rebuildTableView } from '@/ui/components/table.js';
     import { initTreeChartView } from '@/features/tree-chart/tree-chart-view.js';
+    import { appContext, EVENTS } from '@/utils/event-bus.js';
     import '@/features/tree-chart/styles/tree-chart.css';
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -1414,6 +1415,9 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
       }
 
       document.dispatchEvent(new CustomEvent('view:changed', { detail: { name } }));
+      try {
+        appContext.getEventBus().emit(EVENTS.UI_VIEW_CHANGED, { view: name, trigger: 'click' });
+      } catch {}
 
       if (name === 'table') setTimeout(() => rebuildTableView(), 100);
     }
@@ -1523,6 +1527,7 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
   <script>
     import { encodeTreeToParam } from '@/features/share/url-codec.js';
     import { buildShareUrl, MAX_URL_BYTES } from '@/features/share/share-utils.js';
+    import { appContext, EVENTS } from '@/utils/event-bus.js';
 
     const shareBtn = document.getElementById('shareBtn');
     const shareModal = document.getElementById('shareModal');
@@ -1545,6 +1550,7 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
         try {
           const encoded = await encodeTreeToParam(state);
           const url = buildShareUrl(window.location.origin, encoded);
+          const nodeCount = state?.persons?.length || 0;
 
           const urlInput = document.getElementById('shareUrlInput') as HTMLInputElement | null;
           const tooBig = document.getElementById('shareTooBig');
@@ -1554,6 +1560,9 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
             if (urlInput) urlInput.value = '';
             tooBig?.classList.remove('hidden');
             shareModal.classList.remove('hidden');
+            try {
+              appContext.getEventBus().emit(EVENTS.SHARE_URL_TOO_LARGE, { urlBytes: url.length, nodeCount });
+            } catch {}
             return;
           }
 
@@ -1561,6 +1570,9 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
           if (urlInput) urlInput.value = url;
           if (statusEl) statusEl.textContent = '';
           shareModal.classList.remove('hidden');
+          try {
+            appContext.getEventBus().emit(EVENTS.SHARE_URL_GENERATED, { urlBytes: url.length, nodeCount });
+          } catch {}
         } catch (err) {
           const { notifications } = await import('@/ui/components/notifications.js');
           notifications.error('Share failed', err.message);
@@ -1575,6 +1587,9 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
           await navigator.clipboard.writeText(urlInput.value);
           if (statusEl) statusEl.textContent = 'Copied!';
           setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 2000);
+          try {
+            appContext.getEventBus().emit(EVENTS.SHARE_URL_COPIED, {});
+          } catch {}
         } catch {
           urlInput.select();
           if (statusEl) statusEl.textContent = 'Press Ctrl+C to copy.';

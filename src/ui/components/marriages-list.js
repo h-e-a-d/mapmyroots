@@ -1,5 +1,14 @@
 import { createMarriageRow } from './marriage-row.js';
 import { makeMarriageId } from '../../utils/marriage-sync.js';
+import { appContext, EVENTS } from '../../utils/event-bus.js';
+
+function emitBus(eventName, payload) {
+  try {
+    appContext.getEventBus().emit(eventName, payload);
+  } catch {
+    // EventBus may not be available in some test contexts.
+  }
+}
 
 export function createMarriagesList({ container, marriages, getAllPersons, currentPersonId, confirmSpouseChange, t }) {
   container.innerHTML = '';
@@ -46,6 +55,7 @@ export function createMarriagesList({ container, marriages, getAllPersons, curre
           handles[idx].element.remove();
           handles.splice(idx, 1);
           refreshRemovable();
+          emitBus(EVENTS.MARRIAGE_REMOVED, {});
         }
       }
     });
@@ -69,6 +79,7 @@ export function createMarriagesList({ container, marriages, getAllPersons, curre
 
   addBtn.addEventListener('click', () => {
     addRow({ id: makeMarriageId(), spouseId: '', date: null, place: '', note: '' }, { previouslySaved: false });
+    emitBus(EVENTS.MARRIAGE_ADDED, {});
   });
 
   return {

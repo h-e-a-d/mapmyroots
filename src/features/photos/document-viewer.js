@@ -1,4 +1,13 @@
 import { SecurityUtils } from '../../utils/security-utils.js';
+import { appContext, EVENTS } from '../../utils/event-bus.js';
+
+function emitBus(eventName, payload) {
+  try {
+    appContext.getEventBus().emit(eventName, payload);
+  } catch {
+    // EventBus may not be available in some test contexts.
+  }
+}
 
 /**
  * @param {{
@@ -117,6 +126,7 @@ export function openDocumentLightbox(opts) {
     const nextIdx = (idx + delta + opts.docs.length) % opts.docs.length;
     doc = opts.docs[nextIdx];
     render();
+    emitBus(EVENTS.MEDIA_DOCUMENT_VIEWER_NAVIGATED, { direction: delta > 0 ? 'next' : 'prev' });
   }
 
   function close() {
@@ -136,4 +146,8 @@ export function openDocumentLightbox(opts) {
   document.addEventListener('keydown', onKey);
   render();
   overlay.focus();
+  emitBus(EVENTS.MEDIA_DOCUMENT_VIEWER_OPENED, {
+    kind: doc.kind || 'unknown',
+    docCount: Array.isArray(opts.docs) ? opts.docs.length : null
+  });
 }

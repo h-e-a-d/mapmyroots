@@ -2,6 +2,26 @@ import { MAX_DOCS_PER_PERSON, validatePdfUpload, enforceDocumentLimit, defaultDo
 import { prepareImageUpload } from './photo-utils.js';
 import { mountDocumentMetadataEditor } from './document-metadata-editor.js';
 import { SecurityUtils } from '../../utils/security-utils.js';
+import { appContext, EVENTS } from '../../utils/event-bus.js';
+
+function emitBus(eventName, payload) {
+  try {
+    appContext.getEventBus().emit(eventName, payload);
+  } catch {
+    // EventBus may not be available during early tests; safe to ignore.
+  }
+}
+
+function classifyDocumentError(err) {
+  const msg = (err?.message || '').toLowerCase();
+  if (msg.includes('limit')) return 'limit_reached';
+  if (msg.includes('pdf') && (msg.includes('large') || msg.includes('size'))) return 'pdf_too_large';
+  if (msg.includes('pdf')) return 'pdf_invalid';
+  if (msg.includes('too large') || msg.includes('exceeds')) return 'too_large';
+  if (msg.includes('unsupported') || msg.includes('invalid type')) return 'invalid_type';
+  if (msg.includes('decode')) return 'image_decode';
+  return 'unknown';
+}
 
 /**
  * @param {{ container: HTMLElement, personId: string, repo: any, t?: (key: string, fallback: string) => string, onOpen?: (doc: object) => void }} opts
@@ -196,17 +216,19 @@ export function mountDocumentList(opts) {
   async function removeDocument(id) {
     const doc = docs.find((d) => d.id === id);
     if (!doc) return;
+    const kind = doc.kind || 'unknown';
     await repo.deleteDocument(id);
     if (doc.mediaId) await repo.deleteMedia(doc.mediaId).catch(() => {});
     if (doc.thumbnailMediaId) await repo.deleteMedia(doc.thumbnailMediaId).catch(() => {});
     await refresh();
+    emitBus(EVENTS.MEDIA_DOCUMENT_REMOVED, { kind });
   }
 
-  async function handleUploadedFile(file) {
+  async function handleUploadedFile(file, source = 'picker') {
     if (!file) return;
+    const isPdf = file.type === 'application/pdf';
     try {
       enforceDocumentLimit(docs.length);
-      const isPdf = file.type === 'application/pdf';
       let blob, width, height, thumbBlob;
       if (isPdf) {
         validatePdfUpload(file);
@@ -225,6 +247,13 @@ export function mountDocumentList(opts) {
         await repo.saveMedia({ id: thumbnailMediaId, blob: thumbBlob, mimeType: 'image/jpeg', byteLength: thumbBlob.size });
       }
       const meta = defaultDocumentMetadata(file);
+      emitBus(EVENTS.MEDIA_DOCUMENT_UPLOADED, {
+        kind: isPdf ? 'pdf' : 'image',
+        source,
+        fileSize: blob.size,
+        mimeType: file.type || (isPdf ? 'application/pdf' : null),
+        docCountAfter: docs.length + 1
+      });
       openMetadataEditor({
         ...meta,
         kind: isPdf ? 'pdf' : 'image',
@@ -235,11 +264,17 @@ export function mountDocumentList(opts) {
       });
     } catch (err) {
       notifyError(err.message);
+      emitBus(EVENTS.MEDIA_DOCUMENT_UPLOAD_FAILED, {
+        errorType: classifyDocumentError(err),
+        kind: isPdf ? 'pdf' : 'image',
+        fileSize: file.size || null,
+        mimeType: file.type || null
+      });
     }
   }
 
   fileInput.addEventListener('change', async () => {
-    await handleUploadedFile(fileInput.files?.[0]);
+    await handleUploadedFile(fileInput.files?.[0], 'picker');
   });
 
   let dragCount = 0;
@@ -252,7 +287,7 @@ export function mountDocumentList(opts) {
     dragCount = 0;
     root.classList.remove('dragover');
     const file = e.dataTransfer?.files?.[0];
-    if (file) await handleUploadedFile(file);
+    if (file) await handleUploadedFile(file, 'drop');
   });
 
   function openMetadataEditor(doc) {
@@ -272,6 +307,12 @@ export function mountDocumentList(opts) {
         } else {
           await addDocument(updated);
         }
+        emitBus(EVENTS.MEDIA_DOCUMENT_METADATA_SAVED, {
+          kind: updated.kind || 'unknown',
+          hasTitle: !!(updated.title && String(updated.title).trim()),
+          hasPlace: !!(updated.place && String(updated.place).trim()),
+          hasEventDate: !!(updated.eventDate && (updated.eventDate.year || updated.eventDate.month || updated.eventDate.day))
+        });
       }
     });
   }

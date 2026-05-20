@@ -1,7 +1,9 @@
-export function setupInlineReveal({ trigger, target, focusOnReveal = true }) {
+import { appContext, EVENTS } from '../../utils/event-bus.js';
+
+export function setupInlineReveal({ trigger, target, focusOnReveal = true, name }) {
   if (!trigger || !target) return;
 
-  const reveal = () => {
+  const reveal = ({ userInitiated } = { userInitiated: false }) => {
     target.hidden = false;
     target.removeAttribute('aria-hidden');
     trigger.hidden = true;
@@ -10,6 +12,13 @@ export function setupInlineReveal({ trigger, target, focusOnReveal = true }) {
         ? target
         : target.querySelector('input, textarea, select, button');
       focusTarget?.focus();
+    }
+    if (userInitiated && name) {
+      try {
+        appContext.getEventBus().emit(EVENTS.UI_DISCLOSURE_TOGGLED, { name, expanded: true });
+      } catch {
+        // EventBus may not be ready during early-load tests; safe to swallow.
+      }
     }
   };
 
@@ -23,7 +32,7 @@ export function setupInlineReveal({ trigger, target, focusOnReveal = true }) {
 
   trigger.addEventListener('click', (e) => {
     e.preventDefault();
-    reveal();
+    reveal({ userInitiated: true });
   });
 }
 
