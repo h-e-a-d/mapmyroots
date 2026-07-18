@@ -28,6 +28,10 @@ const pages = {
   'glossary.png': {
     title: 'Genealogy Glossary',
     description: 'Essential terms for family history research'
+  },
+  'view.png': {
+    title: 'Shared Family Tree',
+    description: 'Someone shared their family tree with you — view it free on MapMyRoots'
   }
 };
 

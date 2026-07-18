@@ -25,7 +25,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/offline'),
+      filter: (page) => !page.includes('/offline') && !page.includes('/view'),
       changefreq: 'weekly',
       priority: 0.7,
       i18n: {

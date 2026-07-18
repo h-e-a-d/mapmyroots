@@ -13,9 +13,10 @@ export interface Props {
   locale?: Locale;
   hreflangs?: Locale[];
   jsonLd?: string[];
+  noindex?: boolean;
 }
 
-const { title, description, canonicalPath, locale = 'en', hreflangs, jsonLd = [] } = Astro.props;
+const { title, description, canonicalPath, locale = 'en', hreflangs, jsonLd = [], noindex = false } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -33,6 +34,7 @@ const { title, description, canonicalPath, locale = 'en', hreflangs, jsonLd = []
       locale={locale}
       hreflangs={hreflangs}
       jsonLd={jsonLd}
+      noindex={noindex}
     />
 
     <meta name="theme-color" content="#0f866c" />
