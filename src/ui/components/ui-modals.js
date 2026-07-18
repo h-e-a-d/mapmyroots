@@ -1029,25 +1029,13 @@ class ModalUXEnhancer {
 
   optimizeForMobile(modal) {
     document.body.classList.add('mobile-enhanced');
-    
+
     // Add mobile-specific styles
     modal.style.fontSize = '16px'; // Prevent zoom on iOS
-    
-    // Ensure proper viewport handling
-    const viewport = document.querySelector('meta[name="viewport"]');
-    if (viewport) {
-      viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
-    }
   }
 
   removeMobileOptimizations(modal) {
     document.body.classList.remove('mobile-enhanced');
-    
-    // Restore viewport
-    const viewport = document.querySelector('meta[name="viewport"]');
-    if (viewport) {
-      viewport.setAttribute('content', 'width=device-width, initial-scale=1');
-    }
   }
 
   addEntranceAnimation(modal) {
