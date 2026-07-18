@@ -1,6 +1,6 @@
 # MapMyRoots
 
-> MapMyRoots is a free, browser-based family tree builder. Trees are stored locally in the browser (no account, no server). Export to JSON, PNG, or PDF. The product is fully free with no premium tier or subscription.
+> MapMyRoots is a free, browser-based family tree builder. Trees are stored locally in the browser (IndexedDB) (no account, no server). Export to JSON, PNG, or PDF. The product is fully free with no premium tier or subscription.
 
 ## Documentation
 
@@ -31,13 +31,17 @@ The glossary at [/glossary](https://mapmyroots.com/glossary) defines essential g
 
 The site is available in English (default), German (`/de/`), Spanish (`/es/`), and Russian (`/ru/`). Hreflang annotations on every page link locale variants.
 
-## Out of scope (not yet documented)
+## Feature summary
 
-The following are mentioned in the FAQ but not currently supported. They are on the roadmap but not yet shipped:
-
-- GEDCOM import: planned for a future release (genealogy interchange format).
-- Cloud sync / accounts: explicitly not supported. Data lives on the user's device.
-- Photos per person: planned but not yet shipped.
+- GEDCOM import: supported. Use the Import button in the builder to load a `.ged` file
+  exported from Ancestry, MyHeritage, FamilySearch, or any genealogy software.
+- Photos and documents: supported. Each person can have photos and scanned documents
+  (including PDFs) attached, stored locally in the browser.
+- Share by link: supported. Trees can be shared as a self-contained URL; recipients view
+  them at `/view` without an account.
+- Export: JSON (backup), PNG/JPG (image), PDF (print).
+- Offline: the site is an installable PWA; the builder works without an internet connection.
+- Cloud sync / accounts: intentionally not offered. All data stays on the user's device.
 
 ## Optional
 
