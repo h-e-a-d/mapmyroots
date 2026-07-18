@@ -34,9 +34,11 @@
     "title": "Kostenloser Stammbaum-Generator und Genealogie-Software",
     "subtitle": "Erstellen Sie schöne, interaktive Stammbäume mit unserer intuitiven Drag-and-Drop-Oberfläche. Bauen Sie unbegrenzte Stammbäume, bewahren Sie Erinnerungen und entdecken Sie Ihr Familien-Erbe - völlig kostenlos für immer.",
     "trust": {
-      "families": "Familien vertrauen uns",
       "free": "Kostenlos für immer",
-      "rating": "Benutzerbewertung"
+      "account_value": "Ohne",
+      "account_label": "Konto nutzbar",
+      "offline_value": "Offline",
+      "offline_label": "Funktioniert ohne Internet"
     },
     "buttons": {
       "start_building": "Kostenlos starten",
@@ -157,7 +159,7 @@
   },
   "testimonials": {
     "title": "Was Familien über MapMyRoots sagen",
-    "subtitle": "Schließen Sie sich über 15.000 Familien an, die ihr Erbe mit unserer kostenlosen Stammbaum-Software bewahren",
+    "subtitle": "Familien, die ihr Erbe mit unserer kostenlosen Stammbaum-Software bewahren",
     "sarah": {
       "text": "\"Dieses Tool hat das Erstellen unseres Stammbaums viel einfacher gemacht, als ich erwartet hatte. Die Drag-and-Drop-Oberfläche ist intuitiv und die Ergebnisse sind wunderschön. Meine Großmutter war begeistert, vier Generationen so klar dargestellt zu sehen.\"",
       "name": "Sarah Martinez",
@@ -176,7 +178,7 @@
   },
   "cta": {
     "title": "Beginnen Sie heute mit dem Aufbau Ihres Stammbaums",
-    "description": "Schließen Sie sich über 15.000 Familien an, die bereits ihr Erbe entdeckt haben. Erstellen Sie Ihren ersten Stammbaum in wenigen Minuten, völlig kostenlos ohne Registrierung.",
+    "description": "Entdecken Sie das Erbe Ihrer Familie. Erstellen Sie Ihren ersten Stammbaum in wenigen Minuten, völlig kostenlos ohne Registrierung.",
     "features": {
       "credit_card": "✓ Keine Kreditkarte erforderlich",
       "download": "✓ Keine Software zum Herunterladen",
@@ -588,8 +590,8 @@
   "footer": {
     "description": "Kostenloser Stammbaum-Builder und Genealogie-Software. Bewahren Sie Ihre Familiengeschichte für immer.",
     "stats": {
-      "families": "15.000+ Familien bedient",
-      "rating": "4,8★ Durchschnittsbewertung"
+      "free": "100% kostenlos für immer",
+      "offline": "Funktioniert offline"
     },
     "product": {
       "title": "Produkt",

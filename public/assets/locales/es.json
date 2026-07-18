@@ -34,9 +34,11 @@
     "title": "Constructor Gratuito de Árboles Genealógicos y Software de Genealogía",
     "subtitle": "Crea hermosos árboles genealógicos interactivos con nuestra intuitiva interfaz de arrastrar y soltar. Construye árboles familiares ilimitados, preserva memorias y descubre tu patrimonio familiar - completamente gratis para siempre.",
     "trust": {
-      "families": "Familias Confían en Nosotros",
       "free": "Gratis Para Siempre",
-      "rating": "Calificación de Usuarios"
+      "account_value": "Sin",
+      "account_label": "cuenta ni registro",
+      "offline_value": "Offline",
+      "offline_label": "Funciona sin conexión"
     },
     "buttons": {
       "start_building": "Comenzar a Construir Gratis",
@@ -157,7 +159,7 @@
   },
   "testimonials": {
     "title": "Lo Que las Familias Dicen Sobre MapMyRoots",
-    "subtitle": "Únete a más de 15,000 familias preservando su patrimonio con nuestro software gratuito de árboles genealógicos",
+    "subtitle": "Familias preservando su patrimonio con nuestro software gratuito de árboles genealógicos",
     "sarah": {
       "text": "\"Esta herramienta hizo que crear nuestro árbol genealógico fuera mucho más fácil de lo que esperaba. La interfaz de arrastrar y soltar es intuitiva y los resultados son hermosos. Mi abuela estaba emocionada de ver cuatro generaciones mostradas tan claramente.\"",
       "name": "Sarah Martinez",
@@ -236,7 +238,7 @@
   },
   "cta": {
     "title": "Comienza a Construir Tu Árbol Genealógico Hoy",
-    "description": "Únete a más de 15,000 familias que ya han descubierto su patrimonio. Crea tu primer árbol genealógico en minutos, completamente gratis sin registro requerido.",
+    "description": "Descubre el patrimonio de tu familia. Crea tu primer árbol genealógico en minutos, completamente gratis sin registro requerido.",
     "features": {
       "credit_card": "✓ No se necesita tarjeta de crédito",
       "download": "✓ No hay software que descargar",
@@ -248,8 +250,8 @@
   "footer": {
     "description": "Constructor gratuito de árboles genealógicos y software de genealogía. Preserva tu historia familiar para siempre.",
     "stats": {
-      "families": "15,000+ familias atendidas",
-      "rating": "4.8★ calificación promedio"
+      "free": "100% gratis para siempre",
+      "offline": "Funciona sin conexión"
     },
     "product": {
       "title": "Producto",

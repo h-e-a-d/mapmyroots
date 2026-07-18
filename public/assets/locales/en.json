@@ -34,9 +34,11 @@
     "title": "Free Family Tree Builder & Genealogy Software",
     "subtitle": "Create beautiful, interactive family trees with our intuitive drag-and-drop interface. Build unlimited family trees, preserve memories, and discover your family heritage - completely free forever.",
     "trust": {
-      "families": "Families Trust Us",
       "free": "Free Forever",
-      "rating": "User Rating"
+      "account_value": "No",
+      "account_label": "Account Required",
+      "offline_value": "Offline",
+      "offline_label": "Works Without Internet"
     },
     "buttons": {
       "start_building": "Start Building Free",
@@ -157,7 +159,7 @@
   },
   "testimonials": {
     "title": "What Families Say About MapMyRoots",
-    "subtitle": "Join over 15,000 families preserving their heritage with our free family tree software",
+    "subtitle": "Families preserving their heritage with our free family tree software",
     "sarah": {
       "text": "\"This tool made creating our family tree so much easier than I expected. The drag-and-drop interface is intuitive and the results are beautiful. My grandmother was thrilled to see four generations displayed so clearly.\"",
       "name": "Sarah Martinez",
@@ -236,7 +238,7 @@
   },
   "cta": {
     "title": "Start Building Your Family Tree Today",
-    "description": "Join over 15,000 families who have already discovered their heritage. Create your first family tree in minutes, completely free with no registration required.",
+    "description": "Discover your family's heritage. Create your first family tree in minutes, completely free with no registration required.",
     "features": {
       "credit_card": "✓ No credit card needed",
       "download": "✓ No software to download",
@@ -248,8 +250,8 @@
   "footer": {
     "description": "Free family tree builder and genealogy software. Preserve your family history forever.",
     "stats": {
-      "families": "15,000+ families served",
-      "rating": "4.8★ average rating"
+      "free": "100% free forever",
+      "offline": "Works offline"
     },
     "product": {
       "title": "Product",
