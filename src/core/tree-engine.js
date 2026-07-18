@@ -54,10 +54,7 @@ export class TreeEngine {
     
     // State management
     this.selectedCircles = new Set();
-    this.undoStack = [];
-    this.redoStack = [];
-    this.maxUndoSize = 50;
-    
+
     // Connection state for modal
     this.connectionPersonA = null;
     this.connectionPersonB = null;
@@ -176,16 +173,16 @@ export class TreeEngine {
     // Don't call updateRendererSettings() here during initialization
     // It will be called after cached data is loaded to preserve settings
     
-    // Setup form submit handler
+    // Block native form submission; the actual save is dispatched by the modal
+    // via the 'savePersonFromModal' document event handled below.
     const personForm = document.getElementById('personForm');
     if (personForm) {
       personForm.addEventListener('submit', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        this.savePersonFromModal();
       });
     }
-    
+
     // Listen for save person event from modal
     document.addEventListener('savePersonFromModal', (e) => {
       console.log('Received savePersonFromModal event', e.detail);
@@ -204,28 +201,6 @@ export class TreeEngine {
     
     this.cacheManager = new CacheManager(this);
     this.cacheManager.setupCaching();
-  }
-
-  /**
-   * Load initial state from cache or create new tree (DEPRECATED - replaced by version at end of file)
-   */
-  async loadInitialStateOld() {
-    const loaded = await this.loadCachedState();
-    if (!loaded) {
-      console.log('No cached state found, starting with empty tree');
-    }
-    
-    // Initial state if nothing was loaded
-    if (!this.personData || this.personData.size === 0) {
-      this.pushUndoState();
-    }
-    
-    // Initialize enhanced features
-    setTimeout(() => {
-      this.initializeEnhancedCacheIndicator();
-      this.setupBringToFront();
-      console.log('Enhanced UI features initialized');
-    }, 1000);
   }
 
   // Event handlers
@@ -436,14 +411,6 @@ export class TreeEngine {
   }
 
 
-  savePersonFromModal() {
-    // Implementation will be moved from original file
-  }
-
-  handleSavePersonFromModal(detail) {
-    // Implementation will be moved from original file
-  }
-
   /**
    * Recalculate generation numbers for all persons
    */
@@ -575,11 +542,6 @@ export class TreeEngine {
     this.recalculateGenerations();
   }
 
-  autoSaveOld() {
-    // DEPRECATED: Auto-save functionality moved to end of file
-    this.autoSave();
-  }
-
   loadCachedState() {
     if (this.cacheManager) {
       return this.cacheManager.loadCachedState();
@@ -679,98 +641,6 @@ export class TreeEngine {
     if (lineRemovalModal) {
       lineRemovalModal.classList.remove('hidden');
     }
-  }
-
-  /**
-   * Get current state for caching with comprehensive relationship data (DEPRECATED - use other getCurrentState)
-   */
-  getCurrentStateOld() {
-    console.log('Saving current state with enhanced relationship data...');
-    
-    // Get all person data with relationship information
-    const personsWithRelationships = [];
-    if (this.renderer && this.renderer.nodes) {
-      for (const [id, node] of this.renderer.nodes) {
-        const personData = this.personData?.get(id) || {};
-        
-        // Ensure all relationship data is captured
-        const personState = {
-          id,
-          x: node.x,
-          y: node.y,
-          name: node.name || personData.name || '',
-          fatherName: node.fatherName || personData.fatherName || '',
-          surname: node.surname || personData.surname || '',
-          maidenName: node.maidenName || personData.maidenName || '',
-          gender: node.gender || personData.gender || '',
-          color: node.color || this.defaultColor,
-          radius: node.radius || this.nodeRadius,
-          
-          // CRITICAL: Ensure relationship data is saved
-          motherId: personData.motherId || '',
-          fatherId: personData.fatherId || '',
-          spouseId: personData.spouseId || ''
-        };
-        
-        personsWithRelationships.push(personState);
-      }
-    }
-    
-    const state = {
-      version: this.cacheVersion,
-      timestamp: Date.now(),
-      cacheFormat: 'enhanced',
-      settings: {
-        nodeRadius: this.nodeRadius,
-        defaultColor: this.defaultColor,
-        fontFamily: this.fontFamily,
-        fontSize: this.fontSize,
-        nameColor: this.nameColor,
-        dateColor: this.dateColor,
-        
-        // Node outline settings
-        showNodeOutline: this.renderer?.settings.showNodeOutline ?? true,
-        outlineColor: this.renderer?.settings.outlineColor ?? '#2c3e50',
-        outlineThickness: this.renderer?.settings.outlineThickness ?? 2,
-        
-        // Line style settings
-        familyLineStyle: this.renderer?.settings.familyLineStyle ?? 'solid',
-        familyLineThickness: this.renderer?.settings.familyLineThickness ?? 2,
-        familyLineColor: this.renderer?.settings.familyLineColor ?? '#7f8c8d',
-        
-        spouseLineStyle: this.renderer?.settings.spouseLineStyle ?? 'dashed',
-        spouseLineThickness: this.renderer?.settings.spouseLineThickness ?? 2,
-        spouseLineColor: this.renderer?.settings.spouseLineColor ?? '#e74c3c',
-        
-        lineOnlyStyle: this.renderer?.settings.lineOnlyStyle ?? 'dash-dot',
-        lineOnlyThickness: this.renderer?.settings.lineOnlyThickness ?? 2,
-        lineOnlyColor: this.renderer?.settings.lineOnlyColor ?? '#9b59b6'
-      },
-      displayPreferences: { ...this.displayPreferences },
-      nodeStyle: this.nodeStyle,
-      camera: this.renderer ? this.renderer.getCamera() : { x: 0, y: 0, scale: 1 },
-      
-      // Enhanced connection preservation
-      hiddenConnections: Array.from(this.hiddenConnections),
-      lineOnlyConnections: Array.from(this.lineOnlyConnections),
-      
-      // Save persons with embedded relationship data
-      persons: personsWithRelationships,
-      
-      // Also save personData separately as backup
-      personDataBackup: this.personData ? Array.from(this.personData.entries()) : [],
-      
-      // Save current connections for verification
-      currentConnections: this.renderer ? this.renderer.connections.map(conn => ({
-        from: conn.from,
-        to: conn.to,
-        type: conn.type
-      })) : [],
-      
-      nextId: this.nextId
-    };
-    
-    return state;
   }
 
   /**
