@@ -1792,7 +1792,9 @@ export class TreeEngine {
         console.log(`Set ${nodeId} z-index to ${maxZIndex}`);
       }
     }
-    
+
+    this.renderer.invalidateZOrder();
+
     // Trigger redraw
     this.renderer.needsRedraw = true;
     

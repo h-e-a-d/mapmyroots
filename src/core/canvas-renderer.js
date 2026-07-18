@@ -41,6 +41,8 @@ export class CanvasRenderer {
     this.needsRedraw = true;
     this.rafId = null;
     this._imageCache = new Map(); // personId -> HTMLImageElement
+    this._textLayoutCache = new Map(); // nodeId -> { sig, nameLines, maiden, lifespan }
+    this._sortedNodes = null;          // cached z-ordered [id, node] entries
 
     // Smooth zoom state
     this._zoomLogAccum = 0;
@@ -276,14 +278,8 @@ export class CanvasRenderer {
   // Draw only nodes (for export)
   drawNodesOnly(ctx) {
     // Sort nodes by z-index for proper rendering order
-    const sortedNodes = Array.from(this.nodes.entries()).sort((a, b) => {
-      const nodeA = a[1];
-      const nodeB = b[1];
-      const zIndexA = nodeA.zIndex || 0;
-      const zIndexB = nodeB.zIndex || 0;
-      return zIndexA - zIndexB;
-    });
-    
+    const sortedNodes = this._getSortedNodes();
+
     for (const [id, node] of sortedNodes) {
       if (this.settings.nodeStyle === 'rectangle') {
         this.drawRectangleNodeExport(ctx, id, node);
@@ -335,7 +331,7 @@ export class CanvasRenderer {
     }
 
     if (!exportImgReady) {
-      this.drawNodeText(ctx, node, radius * 1.8);
+      this.drawNodeText(ctx, id, node, radius * 1.8);
     }
   }
 
@@ -359,7 +355,7 @@ export class CanvasRenderer {
     }
     
     // Draw text
-    this.drawNodeText(ctx, node, width - 20);
+    this.drawNodeText(ctx, id, node, width - 20);
   }
 
   // Convert screen coordinates to world coordinates
@@ -550,6 +546,7 @@ export class CanvasRenderer {
     };
     
     this.nodes.set(id, nodeData);
+    this._sortedNodes = null;
     this.needsRedraw = true;
   }
 
@@ -581,12 +578,14 @@ export class CanvasRenderer {
   removeNode(id) {
     this.nodes.delete(id);
     this.selectedNodes.delete(id);
-    
+    this._textLayoutCache.delete(id);
+    this._sortedNodes = null;
+
     // Remove connections involving this node
-    this.connections = this.connections.filter(conn => 
+    this.connections = this.connections.filter(conn =>
       conn.from !== id && conn.to !== id
     );
-    
+
     this.needsRedraw = true;
   }
 
@@ -1113,14 +1112,8 @@ export class CanvasRenderer {
 
   drawNodes(ctx) {
     // Sort nodes by z-index for proper rendering order
-    const sortedNodes = Array.from(this.nodes.entries()).sort((a, b) => {
-      const nodeA = a[1];
-      const nodeB = b[1];
-      const zIndexA = nodeA.zIndex || 0;
-      const zIndexB = nodeB.zIndex || 0;
-      return zIndexA - zIndexB;
-    });
-    
+    const sortedNodes = this._getSortedNodes();
+
     for (const [id, node] of sortedNodes) {
       const isSelected = this.selectedNodes.has(id);
       const isHovered = this.hoveredNode && this.hoveredNode.id === id;
@@ -1189,7 +1182,7 @@ export class CanvasRenderer {
     // Draw text whenever the photo is hidden, missing, or still loading —
     // otherwise the node renders as an empty circle while the image is async-decoded.
     if (!imgReady) {
-      this.drawNodeText(ctx, node, radius * 1.8);
+      this.drawNodeText(ctx, id, node, radius * 1.8);
     }
   }
 
@@ -1239,65 +1232,72 @@ export class CanvasRenderer {
     }
     
     // Draw text
-    this.drawNodeText(ctx, node, width - 20);
+    this.drawNodeText(ctx, id, node, width - 20);
   }
 
-  drawNodeText(ctx, node, maxWidth) {
+  drawNodeText(ctx, id, node, maxWidth) {
+    const locale = this.getLocale();
+    const sig = [
+      node.name, node.fatherName, node.surname, node.maidenName,
+      node.birth?.date ? JSON.stringify(node.birth.date) : '',
+      node.death?.date ? JSON.stringify(node.death.date) : '',
+      this.settings.nameFontSize, this.settings.dobFontSize, this.settings.fontFamily,
+      this.displayPreferences.showMaidenName, this.displayPreferences.showFatherName,
+      this.displayPreferences.showDateOfBirth,
+      maxWidth, locale
+    ].join('|');
+
+    let layout = this._textLayoutCache.get(id);
+    if (!layout || layout.sig !== sig) {
+      ctx.font = `600 ${this.settings.nameFontSize}px ${this.settings.fontFamily}`;
+      const fullName = this.buildFullName(node);
+      const nameLines = fullName ? this.wrapText(ctx, fullName, maxWidth) : [];
+      const maiden = (this.displayPreferences.showMaidenName &&
+                      node.maidenName && node.maidenName !== node.surname)
+        ? `(${node.maidenName})` : '';
+      const lifespan = this.displayPreferences.showDateOfBirth
+        ? (formatLifespanShort(node.birth?.date, node.death?.date, locale) || '') : '';
+      layout = { sig, nameLines, maiden, lifespan };
+      this._textLayoutCache.set(id, layout);
+    }
+
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    
-    let y = node.y;
-    let lineHeight = 12;
-    
-    // Calculate total lines to center text vertically
-    let totalLines = 0;
-    const fullName = this.buildFullName(node);
-    if (fullName) {
-      const nameLines = this.wrapText(ctx, fullName, maxWidth);
-      totalLines += nameLines.length;
-    }
-    
-    // Count maiden name line if it should be shown
-    if (this.displayPreferences.showMaidenName && node.maidenName && node.maidenName !== node.surname) {
-      totalLines += 1;
-    }
-    
-    if (this.displayPreferences.showDateOfBirth) {
-      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
-      if (lifespan) totalLines += 1;
-    }
-    
-    y = node.y - (totalLines - 1) * lineHeight / 2;
-    
-    // Draw name
-    if (fullName) {
+    const lineHeight = 12;
+    const totalLines = layout.nameLines.length + (layout.maiden ? 1 : 0) + (layout.lifespan ? 1 : 0);
+    let y = node.y - (totalLines - 1) * lineHeight / 2;
+
+    if (layout.nameLines.length) {
       ctx.font = `600 ${this.settings.nameFontSize}px ${this.settings.fontFamily}`;
       ctx.fillStyle = this.settings.nameColor;
-      
-      const lines = this.wrapText(ctx, fullName, maxWidth);
-      
-      for (const line of lines) {
+      for (const line of layout.nameLines) {
         ctx.fillText(line, node.x, y);
         y += lineHeight;
       }
     }
-    
-    // Draw maiden name if different and show preference is enabled (FIXED)
-    if (this.displayPreferences.showMaidenName && node.maidenName && node.maidenName !== node.surname) {
+    if (layout.maiden) {
       ctx.font = `italic ${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
       ctx.fillStyle = this.settings.nameColor;
-      ctx.fillText(`(${node.maidenName})`, node.x, y);
+      ctx.fillText(layout.maiden, node.x, y);
       y += 10;
     }
-    
-    if (this.displayPreferences.showDateOfBirth) {
-      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
-      if (lifespan) {
-        ctx.font = `${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
-        ctx.fillStyle = this.settings.dobColor;
-        ctx.fillText(lifespan, node.x, y + 5);
-      }
+    if (layout.lifespan) {
+      ctx.font = `${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
+      ctx.fillStyle = this.settings.dobColor;
+      ctx.fillText(layout.lifespan, node.x, y + 5);
     }
+  }
+
+  _getSortedNodes() {
+    if (!this._sortedNodes) {
+      this._sortedNodes = Array.from(this.nodes.entries())
+        .sort((a, b) => (a[1].zIndex || 0) - (b[1].zIndex || 0));
+    }
+    return this._sortedNodes;
+  }
+
+  invalidateZOrder() {
+    this._sortedNodes = null;
   }
 
   wrapText(ctx, text, maxWidth) {
