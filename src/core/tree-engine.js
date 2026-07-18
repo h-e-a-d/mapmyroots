@@ -887,9 +887,9 @@ export class TreeEngine {
 
       // Trigger auto-save
       if (this.cacheManager) {
-        this.cacheManager.autoSave();
+        this.autoSave();
       }
-      
+
       console.log('✅ Person saved successfully:', personId);
       
       // Close the modal after successful save
@@ -1489,7 +1489,7 @@ export class TreeEngine {
 
     // Auto-save changes
     if (this.cacheManager) {
-      this.cacheManager.autoSave();
+      this.autoSave();
     }
 
     // Push undo state
@@ -1646,7 +1646,7 @@ export class TreeEngine {
 
     // Auto-save
     if (this.cacheManager) {
-      this.cacheManager.autoSave();
+      this.autoSave();
     }
   }
 
@@ -1798,7 +1798,7 @@ export class TreeEngine {
     
     // Auto-save the new ordering
     if (this.cacheManager) {
-      this.cacheManager.autoSave();
+      this.autoSave();
     }
     
     console.log('Nodes brought to front successfully');
@@ -2232,9 +2232,9 @@ export class TreeEngine {
    * Auto-save current state
    */
   autoSave() {
-    if (this.cacheManager) {
-      this.cacheManager.autoSave();
-    }
+    if (!this.cacheManager) return;
+    this.cacheManager.markDirty();
+    this.cacheManager.autoSave();
   }
 
   // Methods required for Shape Manager integration
