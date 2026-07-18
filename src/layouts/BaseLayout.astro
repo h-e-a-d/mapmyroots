@@ -77,10 +77,6 @@ const {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         background-color: #ffffff;
         color: #2c3e50;
-        visibility: hidden;
-      }
-      body.fonts-loaded {
-        visibility: visible;
       }
       .no-animations * {
         animation-duration: 0s !important;
@@ -106,12 +102,10 @@ const {
     <script is:inline>
       if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => {
-          document.body.classList.add('fonts-loaded');
           setTimeout(() => document.body.classList.remove('no-animations'), 100);
         });
       } else {
         window.addEventListener('load', () => {
-          document.body.classList.add('fonts-loaded');
           setTimeout(() => document.body.classList.remove('no-animations'), 100);
         });
       }
