@@ -79,4 +79,16 @@ describe('UndoRedoManager snapshot isolation', () => {
     tc.renderer.nodes.get('p1').marriages[0].spouseId = 'p9';
     expect(mgr.undoStack[0].nodes.get('p1').marriages[0].spouseId).toBe('p2');
   });
+
+  it('successful undo/redo is silent; empty stacks still notify', () => {
+    const notifications = { info: vi.fn() };
+    mgr = new UndoRedoManager(tc, notifications);
+    mgr.pushUndoState();
+    mgr.pushUndoState();
+    mgr.undo();
+    mgr.redo();
+    expect(notifications.info).not.toHaveBeenCalled();
+    mgr.redo(); // redo stack now empty
+    expect(notifications.info).toHaveBeenCalledWith('Redo', 'Nothing to redo');
+  });
 });

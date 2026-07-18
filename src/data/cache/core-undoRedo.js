@@ -19,7 +19,6 @@ export class UndoRedoManager {
     this.redoStack.push(current);
     const previous = this.undoStack[this.undoStack.length - 1];
     this.restoreState(previous);
-    this.notifications.info('Undo', 'Action undone');
     this.updateButtonStates();
   }
 
@@ -31,7 +30,6 @@ export class UndoRedoManager {
     const next = this.redoStack.pop();
     this.undoStack.push(next);
     this.restoreState(next);
-    this.notifications.info('Redo', 'Action redone');
     this.updateButtonStates();
   }
 
