@@ -229,7 +229,7 @@
     },
     "privacy": {
       "question": "¿Mis datos familiares son privados y seguros?",
-      "answer": "¡Absolutamente! Los datos de tu árbol genealógico se almacenan localmente en tu dispositivo usando LocalStorage del navegador. Nunca salen de tu dispositivo y nunca los vemos ni accedemos a ellos. Tienes completa privacidad y control sobre tu información familiar."
+      "answer": "¡Absolutamente! Los datos de tu árbol genealógico se almacenan localmente en tu dispositivo, en el almacenamiento de tu navegador (IndexedDB). Nunca salen de tu dispositivo y nunca los vemos ni accedemos a ellos. Tienes completa privacidad y control sobre tu información familiar."
     },
     "collaborate": {
       "question": "¿Pueden varias personas trabajar en el mismo árbol genealógico?",

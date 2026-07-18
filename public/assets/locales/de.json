@@ -580,7 +580,7 @@
     },
     "privacy": {
       "question": "Sind meine Familiendaten privat und sicher?",
-      "answer": "Absolut! Die Daten Ihres Stammbaums werden lokal auf Ihrem Gerät im LocalStorage des Browsers gespeichert. Sie verlassen niemals Ihr Gerät und wir sehen oder greifen niemals darauf zu. Sie haben vollständige Privatsphäre und Kontrolle über Ihre Familieninformationen."
+      "answer": "Absolut! Die Daten Ihres Stammbaums werden lokal auf Ihrem Gerät im Browser-Speicher (IndexedDB) gespeichert. Sie verlassen niemals Ihr Gerät und wir sehen oder greifen niemals darauf zu. Sie haben vollständige Privatsphäre und Kontrolle über Ihre Familieninformationen."
     },
     "collaborate": {
       "question": "Können mehrere Personen am selben Stammbaum arbeiten?",

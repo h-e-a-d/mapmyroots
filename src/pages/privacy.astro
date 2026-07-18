@@ -16,7 +16,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
       <div class="legal-content">
         <div class="highlight-box">
-          <p><strong data-i18n="privacy.tldr.title">TL;DR - Privacy First:</strong> <span data-i18n="privacy.tldr.content">Your family tree data never leaves your device. It's stored locally in your browser using LocalStorage. We don't have access to your data, and we can't see it. You're in complete control.</span></p>
+          <p><strong data-i18n="privacy.tldr.title">TL;DR - Privacy First:</strong> <span data-i18n="privacy.tldr.content">Your family tree data never leaves your device. It's stored locally in your browser's storage (IndexedDB). We don't have access to your data, and we can't see it. You're in complete control.</span></p>
         </div>
 
         <h2 data-i18n="privacy.introduction.title">1. Introduction</h2>
@@ -25,7 +25,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <h2 data-i18n="privacy.data_collection.title">2. Data Collection and Storage</h2>
 
         <h3 data-i18n="privacy.data_collection.family_tree.title">2.1 Family Tree Data</h3>
-        <p data-i18n="privacy.data_collection.family_tree.content">All family tree data you create (names, dates, relationships, photos, notes) is stored <strong>locally on your device</strong> using browser LocalStorage technology. This data:</p>
+        <p data-i18n="privacy.data_collection.family_tree.content">All family tree data you create (names, dates, relationships, photos, notes) is stored <strong>locally on your device</strong> in your browser's storage (IndexedDB). This data:</p>
         <ul>
           <li data-i18n="privacy.data_collection.family_tree.local">Never leaves your device or browser</li>
           <li data-i18n="privacy.data_collection.family_tree.no_upload">Is not uploaded to our servers</li>
@@ -95,7 +95,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <h2 data-i18n="privacy.data_retention.title">9. Data Retention</h2>
         <p data-i18n="privacy.data_retention.content">Your family tree data remains on your device until you:</p>
         <ul>
-          <li data-i18n="privacy.data_retention.clear_browser">Clear your browser's LocalStorage</li>
+          <li data-i18n="privacy.data_retention.clear_browser">Clear your browser's site storage</li>
           <li data-i18n="privacy.data_retention.clear_app">Use the "Clear All Data" feature in the application</li>
           <li data-i18n="privacy.data_retention.uninstall">Uninstall your browser</li>
         </ul>

@@ -229,7 +229,7 @@
     },
     "privacy": {
       "question": "Is my family data private and secure?",
-      "answer": "Absolutely! Your family tree data is stored locally on your device using browser LocalStorage. It never leaves your device and we never see or access it. You have complete privacy and control over your family information."
+      "answer": "Absolutely! Your family tree data is stored locally on your device in your browser's storage (IndexedDB). It never leaves your device and we never see or access it. You have complete privacy and control over your family information."
     },
     "collaborate": {
       "question": "Can multiple people work on the same family tree?",

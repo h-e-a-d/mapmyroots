@@ -33,7 +33,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <p data-i18n="terms.description.free">The Service is provided completely free of charge with no premium features or subscriptions.</p>
 
         <h2 data-i18n="terms.account.title">3. No Account Required</h2>
-        <p data-i18n="terms.account.content">MapMyRoots does not require users to create an account. All family tree data is stored locally on your device using browser LocalStorage. You are responsible for backing up your data by exporting it regularly.</p>
+        <p data-i18n="terms.account.content">MapMyRoots does not require users to create an account. All family tree data is stored locally on your device in your browser's storage (IndexedDB). You are responsible for backing up your data by exporting it regularly.</p>
 
         <h2 data-i18n="terms.acceptable_use.title">4. Acceptable Use</h2>
 
@@ -106,7 +106,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <h2 data-i18n="terms.data_loss.title">8. Data Loss</h2>
         <p data-i18n="terms.data_loss.content">Since your family tree data is stored locally on your device, we cannot recover lost data. Data may be lost if you:</p>
         <ul>
-          <li data-i18n="terms.data_loss.clear">Clear your browser's cache or LocalStorage</li>
+          <li data-i18n="terms.data_loss.clear">Clear your browser's cache or site storage</li>
           <li data-i18n="terms.data_loss.uninstall">Uninstall your browser</li>
           <li data-i18n="terms.data_loss.device">Experience device failure or corruption</li>
           <li data-i18n="terms.data_loss.reset">Reset your device to factory settings</li>
