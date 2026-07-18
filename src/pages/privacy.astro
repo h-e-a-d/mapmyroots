@@ -35,22 +35,21 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         </ul>
 
         <h3 data-i18n="privacy.data_collection.analytics.title">2.2 Analytics Data</h3>
-        <p data-i18n="privacy.data_collection.analytics.content">We use Google Tag Manager and Google Analytics to collect anonymous usage statistics to help us improve the Service. This includes:</p>
+        <p>We use Cloudflare Web Analytics, a privacy-first, cookieless analytics service, to collect anonymous, aggregate usage statistics that help us improve the Service. This includes:</p>
         <ul>
-          <li data-i18n="privacy.data_collection.analytics.pages">Pages visited</li>
-          <li data-i18n="privacy.data_collection.analytics.features">Features used</li>
-          <li data-i18n="privacy.data_collection.analytics.time">Time spent on site</li>
-          <li data-i18n="privacy.data_collection.analytics.device">Device type and browser</li>
-          <li data-i18n="privacy.data_collection.analytics.location">General location (country/city level)</li>
+          <li>Pages visited</li>
+          <li>Referring website</li>
+          <li>Device type and browser</li>
+          <li>Country-level location</li>
         </ul>
-        <p data-i18n="privacy.data_collection.analytics.note"><strong>Important:</strong> Analytics data does not include any personal information from your family tree.</p>
+        <p><strong>Important:</strong> Cloudflare Web Analytics does not use cookies and does not fingerprint devices. Analytics data never includes any personal information from your family tree.</p>
 
         <h3 data-i18n="privacy.data_collection.cookies.title">2.3 Cookies</h3>
         <p data-i18n="privacy.data_collection.cookies.content">We use the following types of cookies:</p>
         <ul>
           <li><strong data-i18n="privacy.data_collection.cookies.essential.title">Essential Cookies:</strong> <span data-i18n="privacy.data_collection.cookies.essential.content">Required for the Service to function (e.g., saving your language preference)</span></li>
-          <li><strong data-i18n="privacy.data_collection.cookies.analytics_title">Analytics Cookies:</strong> <span data-i18n="privacy.data_collection.cookies.analytics_content">Google Analytics cookies to understand how you use the Service</span></li>
         </ul>
+        <p>We do not use analytics cookies. Our analytics provider (Cloudflare Web Analytics) is entirely cookieless.</p>
 
         <h2 data-i18n="privacy.no_account.title">3. No Account Required</h2>
         <p data-i18n="privacy.no_account.content">MapMyRoots does not require you to create an account or provide any personal information such as:</p>
@@ -74,7 +73,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <h2 data-i18n="privacy.third_party.title">5. Third-Party Services</h2>
         <p data-i18n="privacy.third_party.content">We use the following third-party services:</p>
         <ul>
-          <li><strong data-i18n="privacy.third_party.google.title">Google Analytics:</strong> <span data-i18n="privacy.third_party.google.content">For anonymous usage statistics. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a></span></li>
+          <li><strong data-i18n="privacy.third_party.google.title">Cloudflare Web Analytics:</strong> <span data-i18n="privacy.third_party.google.content">For anonymous, cookieless usage statistics. See <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Cloudflare's Privacy Policy</a></span></li>
           <li><strong data-i18n="privacy.third_party.fonts.title">Self-hosted Fonts:</strong> <span data-i18n="privacy.third_party.fonts.content">We self-host all fonts — no external font requests are made.</span></li>
         </ul>
 
@@ -91,7 +90,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <p data-i18n="privacy.children.content">MapMyRoots does not knowingly collect any personal information from users. Since we don't collect personal data, users of all ages can use the Service. However, we recommend parental supervision for users under 13.</p>
 
         <h2 data-i18n="privacy.international.title">8. International Users</h2>
-        <p data-i18n="privacy.international.content">MapMyRoots is available worldwide. Since your data is stored locally on your device, it never crosses international borders through our Service. Analytics data processed by Google may be transferred internationally in accordance with Google's privacy policies.</p>
+        <p data-i18n="privacy.international.content">MapMyRoots is available worldwide. Since your data is stored locally on your device, it never crosses international borders through our Service. Aggregate, anonymous analytics data processed by Cloudflare may be transferred internationally in accordance with Cloudflare's privacy policy.</p>
 
         <h2 data-i18n="privacy.data_retention.title">9. Data Retention</h2>
         <p data-i18n="privacy.data_retention.content">Your family tree data remains on your device until you:</p>
