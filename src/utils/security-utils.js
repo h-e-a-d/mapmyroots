@@ -2,9 +2,14 @@
 // Security utilities for safe DOM manipulation and input sanitization
 // Enhanced with DOMPurify integration for comprehensive XSS protection
 
+import DOMPurify from 'dompurify';
+
 export class SecurityUtils {
-  // Get DOMPurify instance (loaded globally via CDN)
+  // Get DOMPurify instance (bundled; falls back to a global if present)
   static getDOMPurify() {
+    if (DOMPurify && typeof DOMPurify.sanitize === 'function') {
+      return DOMPurify;
+    }
     if (typeof window !== 'undefined' && window.DOMPurify) {
       return window.DOMPurify;
     }

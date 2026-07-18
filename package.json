@@ -38,7 +38,6 @@
     "@vitest/ui": "^3.2.4",
     "astro": "^5.18.1",
     "cssnano": "^7.1.1",
-    "dompurify": "^3.3.0",
     "fake-indexeddb": "^6.2.5",
     "happy-dom": "^20.0.2",
     "jsdom": "^27.0.0",
@@ -50,6 +49,7 @@
   "dependencies": {
     "astro-og-canvas": "^0.11.1",
     "canvaskit-wasm": "^0.41.1",
+    "dompurify": "^3.3.0",
     "fflate": "^0.8.2",
     "parse-gedcom": "^2.0.1",
     "pdfjs-dist": "^4.10.38"
