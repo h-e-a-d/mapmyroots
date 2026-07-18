@@ -39,7 +39,7 @@ export class UndoRedoManager {
     const tc = this.treeCore;
     const state = {
       nodes: new Map(),
-      personData: new Map(tc.personData || []),
+      personData: structuredClone(tc.personData),
       camera: tc.renderer ? tc.renderer.getCamera() : { x: 0, y: 0, scale: 1 },
       hiddenConnections: new Set(tc.hiddenConnections),
       lineOnlyConnections: new Set(tc.lineOnlyConnections),
@@ -52,21 +52,21 @@ export class UndoRedoManager {
         fontSize: tc.fontSize,
         nameColor: tc.nameColor,
         dateColor: tc.dateColor,
-        
+
         // Node outline settings
         showNodeOutline: tc.renderer?.settings.showNodeOutline ?? true,
         outlineColor: tc.renderer?.settings.outlineColor ?? '#2c3e50',
         outlineThickness: tc.renderer?.settings.outlineThickness ?? 2,
-        
+
         // Line style settings
         familyLineStyle: tc.renderer?.settings.familyLineStyle ?? 'solid',
         familyLineThickness: tc.renderer?.settings.familyLineThickness ?? 2,
         familyLineColor: tc.renderer?.settings.familyLineColor ?? '#7f8c8d',
-        
+
         spouseLineStyle: tc.renderer?.settings.spouseLineStyle ?? 'dashed',
         spouseLineThickness: tc.renderer?.settings.spouseLineThickness ?? 2,
         spouseLineColor: tc.renderer?.settings.spouseLineColor ?? '#e74c3c',
-        
+
         lineOnlyStyle: tc.renderer?.settings.lineOnlyStyle ?? 'dash-dot',
         lineOnlyThickness: tc.renderer?.settings.lineOnlyThickness ?? 2,
         lineOnlyColor: tc.renderer?.settings.lineOnlyColor ?? '#9b59b6'
@@ -74,7 +74,7 @@ export class UndoRedoManager {
     };
     if (tc.renderer) {
       for (const [id, node] of tc.renderer.nodes) {
-        state.nodes.set(id, { ...node });
+        state.nodes.set(id, structuredClone(node));
       }
     }
     this.undoStack.push(state);
@@ -93,9 +93,9 @@ export class UndoRedoManager {
     const tc = this.treeCore;
     tc.renderer.nodes.clear();
     for (const [id, node] of state.nodes) {
-      tc.renderer.setNode(id, { ...node });
+      tc.renderer.setNode(id, structuredClone(node));
     }
-    tc.personData = new Map(state.personData);
+    tc.personData = structuredClone(state.personData);
     tc.hiddenConnections = new Set(state.hiddenConnections || []);
     tc.lineOnlyConnections = new Set(state.lineOnlyConnections || []);
     if (state.displayPreferences) {
