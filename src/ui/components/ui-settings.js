@@ -494,7 +494,7 @@ export function setupSettings(treeCore) {
       
       // Auto-save the new data
       if (treeCore.cacheManager) {
-        treeCore.cacheManager.autoSave();
+        treeCore.autoSave();
       }
       
       // Update undo/redo state
