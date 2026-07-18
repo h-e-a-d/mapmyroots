@@ -1349,17 +1349,17 @@ export class CanvasRenderer {
 }
 
 function devLog(...args) {
-  if (window.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.log(...args);
   }
 }
 function devWarn(...args) {
-  if (window.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.warn(...args);
   }
 }
 function devError(...args) {
-  if (window.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.error(...args);
   }
 }
