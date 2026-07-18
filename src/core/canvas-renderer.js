@@ -373,6 +373,22 @@ export class CanvasRenderer {
     return { x, y };
   }
 
+  // World-space rect currently visible through the camera.
+  getVisibleWorldRect(width, height) {
+    const s = this.camera.scale;
+    return {
+      left: -this.camera.x / s,
+      top: -this.camera.y / s,
+      right: (width - this.camera.x) / s,
+      bottom: (height - this.camera.y) / s
+    };
+  }
+
+  static rectVisible(minX, minY, maxX, maxY, view) {
+    return maxX >= view.left && minX <= view.right &&
+           maxY >= view.top && minY <= view.bottom;
+  }
+
   // Find node at position (supports both circle and rectangle)
   getNodeAt(screenX, screenY) {
     const worldPos = this.screenToWorld(screenX, screenY);
@@ -975,12 +991,15 @@ export class CanvasRenderer {
     
     // Draw grid
     this.drawGrid(ctx, width, height);
-    
+
+    // World-space rect currently on screen; used to skip off-screen work below.
+    const view = this.getVisibleWorldRect(width, height);
+
     // Draw connections
-    this.drawConnections(ctx);
-    
+    this.drawConnections(ctx, view);
+
     // Draw nodes
-    this.drawNodes(ctx);
+    this.drawNodes(ctx, view);
     
     // Restore state
     ctx.restore();
@@ -1033,13 +1052,19 @@ export class CanvasRenderer {
     ctx.stroke();
   }
 
-  drawConnections(ctx) {
+  drawConnections(ctx, view = null) {
     const locale = this.getLocale();
     for (const conn of this.connections) {
       const fromNode = this.nodes.get(conn.from);
       const toNode = this.nodes.get(conn.to);
 
       if (!fromNode || !toNode) continue;
+
+      if (view && !CanvasRenderer.rectVisible(
+        Math.min(fromNode.x, toNode.x), Math.min(fromNode.y, toNode.y),
+        Math.max(fromNode.x, toNode.x), Math.max(fromNode.y, toNode.y),
+        view
+      )) continue;
 
       if (conn.type === 'spouse') {
         ctx.strokeStyle = this.settings.spouseLineColor;
@@ -1110,14 +1135,22 @@ export class CanvasRenderer {
     }
   }
 
-  drawNodes(ctx) {
+  drawNodes(ctx, view = null) {
     // Sort nodes by z-index for proper rendering order
     const sortedNodes = this._getSortedNodes();
 
     for (const [id, node] of sortedNodes) {
+      // Conservative pad: rectangles are width-capped at 200 in getNodeWidth.
+      const pad = this.settings.nodeStyle === 'rectangle'
+        ? 120
+        : (node.radius || this.settings.nodeRadius) + 10;
+      if (view && !CanvasRenderer.rectVisible(
+        node.x - pad, node.y - pad, node.x + pad, node.y + pad, view
+      )) continue;
+
       const isSelected = this.selectedNodes.has(id);
       const isHovered = this.hoveredNode && this.hoveredNode.id === id;
-      
+
       if (this.settings.nodeStyle === 'rectangle') {
         this.drawRectangleNode(ctx, id, node, isSelected, isHovered);
       } else {
