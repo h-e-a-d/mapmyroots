@@ -54,6 +54,8 @@ global.HTMLCanvasElement.prototype.getContext = () => ({
   scale: vi.fn(),
   rotate: vi.fn(),
   setTransform: vi.fn(),
+  setLineDash: vi.fn(),
+  getLineDash: vi.fn(() => []),
   drawImage: vi.fn()
 });
 } // end HTMLCanvasElement guard

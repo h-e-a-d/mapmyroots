@@ -988,38 +988,50 @@ export class CanvasRenderer {
   }
 
   drawGrid(ctx, width, height) {
-    const gridSize = this.settings.gridSize;
     const scale = this.camera.scale;
+    // Below this zoom the grid is sub-pixel noise; line count grows with 1/scale².
+    if (scale < 0.3) return;
+
+    const gridSize = this.settings.gridSize;
     const offsetX = -this.camera.x / scale;
     const offsetY = -this.camera.y / scale;
-    
     const startX = Math.floor(offsetX / gridSize) * gridSize;
     const startY = Math.floor(offsetY / gridSize) * gridSize;
     const endX = offsetX + width / scale;
     const endY = offsetY + height / scale;
-    
-    ctx.strokeStyle = this.settings.gridColor;
+    const majorEvery = gridSize * 4;
+
     ctx.lineWidth = 1 / scale;
-    
-    // Vertical lines
+
+    // Minor lines — one batched path
+    ctx.beginPath();
     for (let x = startX; x <= endX; x += gridSize) {
-      const isMajor = x % (gridSize * 4) === 0;
-      ctx.strokeStyle = isMajor ? this.settings.gridMajorColor : this.settings.gridColor;
-      ctx.beginPath();
+      if (x % majorEvery === 0) continue;
       ctx.moveTo(x, startY);
       ctx.lineTo(x, endY);
-      ctx.stroke();
     }
-    
-    // Horizontal lines
     for (let y = startY; y <= endY; y += gridSize) {
-      const isMajor = y % (gridSize * 4) === 0;
-      ctx.strokeStyle = isMajor ? this.settings.gridMajorColor : this.settings.gridColor;
-      ctx.beginPath();
+      if (y % majorEvery === 0) continue;
       ctx.moveTo(startX, y);
       ctx.lineTo(endX, y);
-      ctx.stroke();
     }
+    ctx.strokeStyle = this.settings.gridColor;
+    ctx.stroke();
+
+    // Major lines — one batched path
+    ctx.beginPath();
+    for (let x = startX; x <= endX; x += gridSize) {
+      if (x % majorEvery !== 0) continue;
+      ctx.moveTo(x, startY);
+      ctx.lineTo(x, endY);
+    }
+    for (let y = startY; y <= endY; y += gridSize) {
+      if (y % majorEvery !== 0) continue;
+      ctx.moveTo(startX, y);
+      ctx.lineTo(endX, y);
+    }
+    ctx.strokeStyle = this.settings.gridMajorColor;
+    ctx.stroke();
   }
 
   drawConnections(ctx) {
