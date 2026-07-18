@@ -1059,12 +1059,13 @@ export class CanvasRenderer {
           const cy = (fromNode.y + toNode.y) / 2;
           ctx.save();
           ctx.setLineDash([]);
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(cx - 22, cy - 8, 44, 16);
-          ctx.fillStyle = '#555';
           ctx.font = '11px sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
+          const halfWidth = ctx.measureText(label).width / 2 + 4;
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(cx - halfWidth, cy - 8, halfWidth * 2, 16);
+          ctx.fillStyle = '#555';
           ctx.fillText(label, cx, cy);
           ctx.restore();
         }
