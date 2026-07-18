@@ -9,5 +9,5 @@ https://www.mapmyroots.com/* https://mapmyroots.com/:splat 301!
 /terms.html /terms 301
 /builder.html /builder 301
 
-# Legacy assets/glossary path stays (no migration in this phase)
-# /assets/glossary/glossary.html — unchanged, served as-is
+# Legacy standalone glossary → content-collection glossary
+/assets/glossary/glossary.html /glossary 301
