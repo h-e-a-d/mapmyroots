@@ -635,6 +635,10 @@
       "intro": "Comparte un enlace de solo lectura de tu árbol genealógico. Las fotos no se incluyen en el enlace.",
       "copy": "Copiar enlace",
       "too_big": "El árbol es demasiado grande para compartir como URL. Considera eliminar fotos o reducir el número de personas."
+    },
+    "empty_state": {
+      "title": "Comienza tu árbol genealógico",
+      "hint": "Pulsa el botón + para añadir a tu primera persona o importa un archivo GEDCOM."
     }
   },
   "glossary": {

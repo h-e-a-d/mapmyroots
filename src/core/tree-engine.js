@@ -16,6 +16,7 @@ import { setupModals } from '../ui/components/ui-modals.js';
 import { setupExport } from '../data/core-export.js';
 import { appContext } from '../utils/event-bus.js';
 import { GenerationCalculator } from '../utils/generation-calculator.js';
+import { syncEmptyState } from '../ui/components/empty-state.js';
 
 /**
  * Core family tree engine responsible for managing the tree state,
@@ -123,10 +124,12 @@ export class TreeEngine {
     
     // Load cached state
     await this.loadInitialState();
-    
+
+    syncEmptyState(this.personData.size);
+
     // Make globally accessible for debugging
     window.treeCore = this;
-    
+
     console.log('TreeEngine initialization complete');
   }
 
@@ -540,6 +543,8 @@ export class TreeEngine {
 
     // Recalculate generations after connections change
     this.recalculateGenerations();
+
+    syncEmptyState(this.personData.size);
   }
 
   loadCachedState() {
