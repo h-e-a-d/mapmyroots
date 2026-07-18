@@ -118,7 +118,7 @@ document.addEventListener('keydown', (e) => {
   }, 100);
   
   // Export shortcuts
-  if (e.ctrlKey && e.shiftKey) {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
     switch (e.key) {
       case 'G':
         e.preventDefault();
@@ -136,7 +136,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   // Search shortcut
-  if (e.ctrlKey && e.key === '/') {
+  if ((e.ctrlKey || e.metaKey) && e.key === '/') {
     e.preventDefault();
     lazyLoadModule(() => import('./src/features/search/search.js')).then(module => {
       if (module && module.focusSearch) module.focusSearch();
