@@ -52,3 +52,6 @@ testing/test-results.json
 
 # MCP local config (contains secrets)
 .mcp.json
+
+# Subagent-driven-development scratch (progress ledger, task briefs/reports)
+.superpowers/
