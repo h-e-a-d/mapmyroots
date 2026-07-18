@@ -46,11 +46,19 @@ export default defineConfig({
       injectRegister: 'inline',
       manifest: false,
       workbox: {
-        globPatterns: ['**/*.{html,js,css,woff2,svg,png,jpg,json}'],
+        globPatterns: ['**/*.{html,css,woff2,svg,png,jpg,json}'],
         globIgnores: ['**/og/**', '**/screenshots/**'],
         navigateFallback: '/offline',
         navigateFallbackDenylist: [/^\/builder/, /^\/api\//],
         runtimeCaching: [
+          {
+            urlPattern: /\/_astro\/.+\.m?js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'astro-js',
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 365 }
+            }
+          },
           {
             urlPattern: /^https:\/\/static\.cloudflareinsights\.com\/.*/,
             handler: 'NetworkOnly'
