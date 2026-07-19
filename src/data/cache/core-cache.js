@@ -21,6 +21,7 @@ export class CacheManager {
     this.autoSaveTimer = null;
     this.cacheVersion = '2.6';
     this.lastSaveTime = null;
+    this.dirty = false;
 
     // Primary write path: IndexedDB
     this.#idb = new IndexedDBRepository();
@@ -46,9 +47,11 @@ export class CacheManager {
 
   setupCaching() {
     this.startAutoSave();
-    window.addEventListener('beforeunload', () => this.saveToCache());
+    window.addEventListener('beforeunload', () => {
+      if (this.dirty) this.saveToCache();
+    });
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) this.saveToCache();
+      if (document.hidden && this.dirty) this.saveToCache();
     });
     // Optionally: this.treeCore.addCacheManagementUI();
   }
@@ -58,7 +61,13 @@ export class CacheManager {
     this.autoSaveTimer = setInterval(() => this.autoSave(), this.autoSaveInterval);
   }
 
+  /** Mark the tree as having unsaved changes; the next autosave will persist. */
+  markDirty() {
+    this.dirty = true;
+  }
+
   autoSave() {
+    if (!this.dirty) return;
     try {
       this.saveToCache();
       this.lastSaveTime = new Date();
@@ -111,6 +120,7 @@ export class CacheManager {
         });
       }
 
+      this.dirty = false;
       return true;
     } catch (error) {
       console.error('Failed to save to cache:', error);

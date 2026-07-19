@@ -89,6 +89,11 @@ export default defineConfig({
   vite: {
     build: {
       sourcemap: true
+    },
+    esbuild: {
+      // Mark info-level logging as pure so minification drops it from prod bundles.
+      // console.warn / console.error are intentionally kept.
+      pure: ['console.log', 'console.debug', 'console.info']
     }
   }
 });

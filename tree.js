@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize tree core
     const treeCore = new TreeCoreCanvas();
-    treeCore.initialize();
+    await treeCore.initialize();
 
     // Lazy load search functionality
     const searchModule = await lazyLoadModule(() => import('./src/features/search/search.js'));
@@ -63,50 +63,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('Export module loaded');
     }
 
-    // Initialize connection monitoring with reduced frequency
-    initializeConnectionMonitoring();
-
   } catch (error) {
     console.error('Failed to initialize tree application:', error);
   }
 });
-
-// Optimized connection monitoring with reduced overhead
-function initializeConnectionMonitoring() {
-  let lastCheck = 0;
-  const checkInterval = 10000; // Check every 10 seconds instead of 5
-  
-  setInterval(() => {
-    const now = Date.now();
-    if (now - lastCheck < checkInterval) return;
-    lastCheck = now;
-    
-    if (window.treeCore && window.treeCore.renderer) {
-      const nodeCount = window.treeCore.renderer.nodes.size;
-      const connectionCount = window.treeCore.renderer.connections.length;
-      
-      if (!window._connectionMonitor) {
-        window._connectionMonitor = { nodeCount, connectionCount };
-      } else {
-        const prev = window._connectionMonitor;
-        
-        // Only warn if significant connection loss detected
-        if (prev.nodeCount === nodeCount && prev.connectionCount > 5 && connectionCount === 0) {
-          console.warn('Connection loss detected');
-          if (window.notifications) {
-            window.notifications.warning(
-              'Connection Loss',
-              'Family tree connections disappeared unexpectedly.',
-              { duration: 4000 }
-            );
-          }
-        }
-        
-        window._connectionMonitor = { nodeCount, connectionCount };
-      }
-    }
-  }, checkInterval);
-}
 
 // Keyboard shortcuts with debouncing
 let keyPressTimeout;
@@ -118,7 +78,7 @@ document.addEventListener('keydown', (e) => {
   }, 100);
   
   // Export shortcuts
-  if (e.ctrlKey && e.shiftKey) {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
     switch (e.key) {
       case 'G':
         e.preventDefault();
@@ -136,7 +96,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   // Search shortcut
-  if (e.ctrlKey && e.key === '/') {
+  if ((e.ctrlKey || e.metaKey) && e.key === '/') {
     e.preventDefault();
     lazyLoadModule(() => import('./src/features/search/search.js')).then(module => {
       if (module && module.focusSearch) module.focusSearch();

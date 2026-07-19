@@ -525,6 +525,10 @@
       "intro": "Teilen Sie einen schreibgeschützten Link zu Ihrem Stammbaum. Fotos sind nicht im Link enthalten.",
       "copy": "Link kopieren",
       "too_big": "Der Stammbaum ist zu groß, um als URL geteilt zu werden. Entfernen Sie Fotos oder reduzieren Sie die Anzahl der Personen."
+    },
+    "empty_state": {
+      "title": "Beginnen Sie Ihren Stammbaum",
+      "hint": "Tippen Sie auf +, um die erste Person hinzuzufügen, oder importieren Sie eine GEDCOM-Datei."
     }
   },
   "faq": {

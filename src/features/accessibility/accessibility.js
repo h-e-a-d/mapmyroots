@@ -4,6 +4,16 @@
 import { CONFIG, KEYBOARD_SHORTCUTS } from '../../config/config.js';
 import { EVENTS } from '../../utils/event-bus.js';
 
+// Cmd on macOS is the platform's primary modifier; treat it as "ctrl" for shortcut matching.
+export function comboFromEvent(event) {
+  return {
+    key: event.key,
+    ctrl: event.ctrlKey || event.metaKey,
+    shift: event.shiftKey,
+    alt: event.altKey
+  };
+}
+
 export class AccessibilityManager {
   constructor(eventBus, treeCore) {
     this.eventBus = eventBus;
@@ -70,7 +80,7 @@ export class AccessibilityManager {
       );
 
       // Don't interfere with form navigation unless it's a special combo
-      if (isInFormField && !event.ctrlKey && !event.altKey) return;
+      if (isInFormField && !event.ctrlKey && !event.metaKey && !event.altKey) return;
 
       this.handleKeyboardShortcut(event);
     });
@@ -93,12 +103,7 @@ export class AccessibilityManager {
   }
 
   handleKeyboardShortcut(event) {
-    const combo = {
-      key: event.key,
-      ctrl: event.ctrlKey,
-      shift: event.shiftKey,
-      alt: event.altKey
-    };
+    const combo = comboFromEvent(event);
 
     // Find matching shortcut
     for (const [action, shortcut] of Object.entries(KEYBOARD_SHORTCUTS)) {

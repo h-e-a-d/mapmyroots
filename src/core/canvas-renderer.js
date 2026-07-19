@@ -41,6 +41,8 @@ export class CanvasRenderer {
     this.needsRedraw = true;
     this.rafId = null;
     this._imageCache = new Map(); // personId -> HTMLImageElement
+    this._textLayoutCache = new Map(); // nodeId -> { sig, nameLines, maiden, lifespan }
+    this._sortedNodes = null;          // cached z-ordered [id, node] entries
 
     // Smooth zoom state
     this._zoomLogAccum = 0;
@@ -276,14 +278,8 @@ export class CanvasRenderer {
   // Draw only nodes (for export)
   drawNodesOnly(ctx) {
     // Sort nodes by z-index for proper rendering order
-    const sortedNodes = Array.from(this.nodes.entries()).sort((a, b) => {
-      const nodeA = a[1];
-      const nodeB = b[1];
-      const zIndexA = nodeA.zIndex || 0;
-      const zIndexB = nodeB.zIndex || 0;
-      return zIndexA - zIndexB;
-    });
-    
+    const sortedNodes = this._getSortedNodes();
+
     for (const [id, node] of sortedNodes) {
       if (this.settings.nodeStyle === 'rectangle') {
         this.drawRectangleNodeExport(ctx, id, node);
@@ -335,7 +331,7 @@ export class CanvasRenderer {
     }
 
     if (!exportImgReady) {
-      this.drawNodeText(ctx, node, radius * 1.8);
+      this.drawNodeText(ctx, id, node, radius * 1.8);
     }
   }
 
@@ -359,7 +355,7 @@ export class CanvasRenderer {
     }
     
     // Draw text
-    this.drawNodeText(ctx, node, width - 20);
+    this.drawNodeText(ctx, id, node, width - 20);
   }
 
   // Convert screen coordinates to world coordinates
@@ -375,6 +371,22 @@ export class CanvasRenderer {
     const x = worldX * this.camera.scale + this.camera.x;
     const y = worldY * this.camera.scale + this.camera.y;
     return { x, y };
+  }
+
+  // World-space rect currently visible through the camera.
+  getVisibleWorldRect(width, height) {
+    const s = this.camera.scale;
+    return {
+      left: -this.camera.x / s,
+      top: -this.camera.y / s,
+      right: (width - this.camera.x) / s,
+      bottom: (height - this.camera.y) / s
+    };
+  }
+
+  static rectVisible(minX, minY, maxX, maxY, view) {
+    return maxX >= view.left && minX <= view.right &&
+           maxY >= view.top && minY <= view.bottom;
   }
 
   // Find node at position (supports both circle and rectangle)
@@ -550,6 +562,7 @@ export class CanvasRenderer {
     };
     
     this.nodes.set(id, nodeData);
+    this._sortedNodes = null;
     this.needsRedraw = true;
   }
 
@@ -581,12 +594,14 @@ export class CanvasRenderer {
   removeNode(id) {
     this.nodes.delete(id);
     this.selectedNodes.delete(id);
-    
+    this._textLayoutCache.delete(id);
+    this._sortedNodes = null;
+
     // Remove connections involving this node
-    this.connections = this.connections.filter(conn => 
+    this.connections = this.connections.filter(conn =>
       conn.from !== id && conn.to !== id
     );
-    
+
     this.needsRedraw = true;
   }
 
@@ -976,59 +991,80 @@ export class CanvasRenderer {
     
     // Draw grid
     this.drawGrid(ctx, width, height);
-    
+
+    // World-space rect currently on screen; used to skip off-screen work below.
+    const view = this.getVisibleWorldRect(width, height);
+
     // Draw connections
-    this.drawConnections(ctx);
-    
+    this.drawConnections(ctx, view);
+
     // Draw nodes
-    this.drawNodes(ctx);
+    this.drawNodes(ctx, view);
     
     // Restore state
     ctx.restore();
   }
 
   drawGrid(ctx, width, height) {
-    const gridSize = this.settings.gridSize;
     const scale = this.camera.scale;
+    // Below this zoom the grid is sub-pixel noise; line count grows with 1/scale².
+    if (scale < 0.3) return;
+
+    const gridSize = this.settings.gridSize;
     const offsetX = -this.camera.x / scale;
     const offsetY = -this.camera.y / scale;
-    
     const startX = Math.floor(offsetX / gridSize) * gridSize;
     const startY = Math.floor(offsetY / gridSize) * gridSize;
     const endX = offsetX + width / scale;
     const endY = offsetY + height / scale;
-    
-    ctx.strokeStyle = this.settings.gridColor;
+    const majorEvery = gridSize * 4;
+
     ctx.lineWidth = 1 / scale;
-    
-    // Vertical lines
+
+    // Minor lines — one batched path
+    ctx.beginPath();
     for (let x = startX; x <= endX; x += gridSize) {
-      const isMajor = x % (gridSize * 4) === 0;
-      ctx.strokeStyle = isMajor ? this.settings.gridMajorColor : this.settings.gridColor;
-      ctx.beginPath();
+      if (x % majorEvery === 0) continue;
       ctx.moveTo(x, startY);
       ctx.lineTo(x, endY);
-      ctx.stroke();
     }
-    
-    // Horizontal lines
     for (let y = startY; y <= endY; y += gridSize) {
-      const isMajor = y % (gridSize * 4) === 0;
-      ctx.strokeStyle = isMajor ? this.settings.gridMajorColor : this.settings.gridColor;
-      ctx.beginPath();
+      if (y % majorEvery === 0) continue;
       ctx.moveTo(startX, y);
       ctx.lineTo(endX, y);
-      ctx.stroke();
     }
+    ctx.strokeStyle = this.settings.gridColor;
+    ctx.stroke();
+
+    // Major lines — one batched path
+    ctx.beginPath();
+    for (let x = startX; x <= endX; x += gridSize) {
+      if (x % majorEvery !== 0) continue;
+      ctx.moveTo(x, startY);
+      ctx.lineTo(x, endY);
+    }
+    for (let y = startY; y <= endY; y += gridSize) {
+      if (y % majorEvery !== 0) continue;
+      ctx.moveTo(startX, y);
+      ctx.lineTo(endX, y);
+    }
+    ctx.strokeStyle = this.settings.gridMajorColor;
+    ctx.stroke();
   }
 
-  drawConnections(ctx) {
+  drawConnections(ctx, view = null) {
     const locale = this.getLocale();
     for (const conn of this.connections) {
       const fromNode = this.nodes.get(conn.from);
       const toNode = this.nodes.get(conn.to);
 
       if (!fromNode || !toNode) continue;
+
+      if (view && !CanvasRenderer.rectVisible(
+        Math.min(fromNode.x, toNode.x), Math.min(fromNode.y, toNode.y),
+        Math.max(fromNode.x, toNode.x), Math.max(fromNode.y, toNode.y),
+        view
+      )) continue;
 
       if (conn.type === 'spouse') {
         ctx.strokeStyle = this.settings.spouseLineColor;
@@ -1059,12 +1095,13 @@ export class CanvasRenderer {
           const cy = (fromNode.y + toNode.y) / 2;
           ctx.save();
           ctx.setLineDash([]);
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(cx - 22, cy - 8, 44, 16);
-          ctx.fillStyle = '#555';
           ctx.font = '11px sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
+          const halfWidth = ctx.measureText(label).width / 2 + 4;
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(cx - halfWidth, cy - 8, halfWidth * 2, 16);
+          ctx.fillStyle = '#555';
           ctx.fillText(label, cx, cy);
           ctx.restore();
         }
@@ -1098,20 +1135,22 @@ export class CanvasRenderer {
     }
   }
 
-  drawNodes(ctx) {
+  drawNodes(ctx, view = null) {
     // Sort nodes by z-index for proper rendering order
-    const sortedNodes = Array.from(this.nodes.entries()).sort((a, b) => {
-      const nodeA = a[1];
-      const nodeB = b[1];
-      const zIndexA = nodeA.zIndex || 0;
-      const zIndexB = nodeB.zIndex || 0;
-      return zIndexA - zIndexB;
-    });
-    
+    const sortedNodes = this._getSortedNodes();
+
     for (const [id, node] of sortedNodes) {
+      // Conservative pad: rectangles are width-capped at 200 in getNodeWidth.
+      const pad = this.settings.nodeStyle === 'rectangle'
+        ? 120
+        : (node.radius || this.settings.nodeRadius) + 10;
+      if (view && !CanvasRenderer.rectVisible(
+        node.x - pad, node.y - pad, node.x + pad, node.y + pad, view
+      )) continue;
+
       const isSelected = this.selectedNodes.has(id);
       const isHovered = this.hoveredNode && this.hoveredNode.id === id;
-      
+
       if (this.settings.nodeStyle === 'rectangle') {
         this.drawRectangleNode(ctx, id, node, isSelected, isHovered);
       } else {
@@ -1176,7 +1215,7 @@ export class CanvasRenderer {
     // Draw text whenever the photo is hidden, missing, or still loading —
     // otherwise the node renders as an empty circle while the image is async-decoded.
     if (!imgReady) {
-      this.drawNodeText(ctx, node, radius * 1.8);
+      this.drawNodeText(ctx, id, node, radius * 1.8);
     }
   }
 
@@ -1226,65 +1265,72 @@ export class CanvasRenderer {
     }
     
     // Draw text
-    this.drawNodeText(ctx, node, width - 20);
+    this.drawNodeText(ctx, id, node, width - 20);
   }
 
-  drawNodeText(ctx, node, maxWidth) {
+  drawNodeText(ctx, id, node, maxWidth) {
+    const locale = this.getLocale();
+    const sig = [
+      node.name, node.fatherName, node.surname, node.maidenName,
+      node.birth?.date ? JSON.stringify(node.birth.date) : '',
+      node.death?.date ? JSON.stringify(node.death.date) : '',
+      this.settings.nameFontSize, this.settings.dobFontSize, this.settings.fontFamily,
+      this.displayPreferences.showMaidenName, this.displayPreferences.showFatherName,
+      this.displayPreferences.showDateOfBirth,
+      maxWidth, locale
+    ].join('|');
+
+    let layout = this._textLayoutCache.get(id);
+    if (!layout || layout.sig !== sig) {
+      ctx.font = `600 ${this.settings.nameFontSize}px ${this.settings.fontFamily}`;
+      const fullName = this.buildFullName(node);
+      const nameLines = fullName ? this.wrapText(ctx, fullName, maxWidth) : [];
+      const maiden = (this.displayPreferences.showMaidenName &&
+                      node.maidenName && node.maidenName !== node.surname)
+        ? `(${node.maidenName})` : '';
+      const lifespan = this.displayPreferences.showDateOfBirth
+        ? (formatLifespanShort(node.birth?.date, node.death?.date, locale) || '') : '';
+      layout = { sig, nameLines, maiden, lifespan };
+      this._textLayoutCache.set(id, layout);
+    }
+
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    
-    let y = node.y;
-    let lineHeight = 12;
-    
-    // Calculate total lines to center text vertically
-    let totalLines = 0;
-    const fullName = this.buildFullName(node);
-    if (fullName) {
-      const nameLines = this.wrapText(ctx, fullName, maxWidth);
-      totalLines += nameLines.length;
-    }
-    
-    // Count maiden name line if it should be shown
-    if (this.displayPreferences.showMaidenName && node.maidenName && node.maidenName !== node.surname) {
-      totalLines += 1;
-    }
-    
-    if (this.displayPreferences.showDateOfBirth) {
-      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
-      if (lifespan) totalLines += 1;
-    }
-    
-    y = node.y - (totalLines - 1) * lineHeight / 2;
-    
-    // Draw name
-    if (fullName) {
+    const lineHeight = 12;
+    const totalLines = layout.nameLines.length + (layout.maiden ? 1 : 0) + (layout.lifespan ? 1 : 0);
+    let y = node.y - (totalLines - 1) * lineHeight / 2;
+
+    if (layout.nameLines.length) {
       ctx.font = `600 ${this.settings.nameFontSize}px ${this.settings.fontFamily}`;
       ctx.fillStyle = this.settings.nameColor;
-      
-      const lines = this.wrapText(ctx, fullName, maxWidth);
-      
-      for (const line of lines) {
+      for (const line of layout.nameLines) {
         ctx.fillText(line, node.x, y);
         y += lineHeight;
       }
     }
-    
-    // Draw maiden name if different and show preference is enabled (FIXED)
-    if (this.displayPreferences.showMaidenName && node.maidenName && node.maidenName !== node.surname) {
+    if (layout.maiden) {
       ctx.font = `italic ${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
       ctx.fillStyle = this.settings.nameColor;
-      ctx.fillText(`(${node.maidenName})`, node.x, y);
+      ctx.fillText(layout.maiden, node.x, y);
       y += 10;
     }
-    
-    if (this.displayPreferences.showDateOfBirth) {
-      const lifespan = formatLifespanShort(node.birth?.date, node.death?.date, this.getLocale());
-      if (lifespan) {
-        ctx.font = `${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
-        ctx.fillStyle = this.settings.dobColor;
-        ctx.fillText(lifespan, node.x, y + 5);
-      }
+    if (layout.lifespan) {
+      ctx.font = `${this.settings.dobFontSize}px ${this.settings.fontFamily}`;
+      ctx.fillStyle = this.settings.dobColor;
+      ctx.fillText(layout.lifespan, node.x, y + 5);
     }
+  }
+
+  _getSortedNodes() {
+    if (!this._sortedNodes) {
+      this._sortedNodes = Array.from(this.nodes.entries())
+        .sort((a, b) => (a[1].zIndex || 0) - (b[1].zIndex || 0));
+    }
+    return this._sortedNodes;
+  }
+
+  invalidateZOrder() {
+    this._sortedNodes = null;
   }
 
   wrapText(ctx, text, maxWidth) {
@@ -1349,17 +1395,17 @@ export class CanvasRenderer {
 }
 
 function devLog(...args) {
-  if (window.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.log(...args);
   }
 }
 function devWarn(...args) {
-  if (window.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.warn(...args);
   }
 }
 function devError(...args) {
-  if (window.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.error(...args);
   }
 }
