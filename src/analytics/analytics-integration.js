@@ -6,6 +6,10 @@
 
 import analyticsService from './analytics-service.js';
 
+// Event buses that already have an initialized integration. A second
+// integration on the same bus would forward every event to analytics twice.
+const boundBuses = new WeakSet();
+
 class AnalyticsIntegration {
   constructor(eventBus) {
     this.eventBus = eventBus;
@@ -20,6 +24,10 @@ class AnalyticsIntegration {
   init() {
     if (this.isInitialized) {
       console.warn('[AnalyticsIntegration] Already initialized');
+      return;
+    }
+    if (this.eventBus && boundBuses.has(this.eventBus)) {
+      console.warn('[AnalyticsIntegration] Another integration is already bound to this event bus');
       return;
     }
 
@@ -334,6 +342,7 @@ class AnalyticsIntegration {
     });
 
     this.isInitialized = true;
+    if (this.eventBus) boundBuses.add(this.eventBus);
     console.log('[AnalyticsIntegration] Analytics integration initialized successfully');
   }
 
@@ -363,6 +372,7 @@ class AnalyticsIntegration {
     });
 
     this.listeners = [];
+    if (this.isInitialized) boundBuses.delete(this.eventBus);
     this.isInitialized = false;
     console.log('[AnalyticsIntegration] Analytics integration destroyed');
   }

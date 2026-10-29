@@ -34,8 +34,8 @@ const base = locale === 'en' ? '' : `/${locale}`;
       <ul>
         <li><a href={localizedPath(locale, '/about')}>{t(locale, 'footer.company.about')}</a></li>
         <li><a href={localizedPath(locale, '/contact')}>{t(locale, 'footer.company.contact')}</a></li>
-        <li><a href="/privacy">{t(locale, 'footer.legal.privacy')}</a></li>
-        <li><a href="/terms">{t(locale, 'footer.legal.terms')}</a></li>
+        <li><a href={localizedPath(locale, '/privacy')}>{t(locale, 'footer.legal.privacy')}</a></li>
+        <li><a href={localizedPath(locale, '/terms')}>{t(locale, 'footer.legal.terms')}</a></li>
       </ul>
     </div>
 

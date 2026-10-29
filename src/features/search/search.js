@@ -25,15 +25,6 @@ class FamilyTreeSearch {
     this.searchClose = document.getElementById('searchClose');
     this.suggestions = document.getElementById('searchSuggestions');
     
-    // Debug: Log what elements were found
-    console.log('=== SEARCH INIT DEBUG ===');
-    console.log('searchContainer:', !!this.searchContainer);
-    console.log('searchField:', !!this.searchField);
-    console.log('searchBtn:', !!this.searchBtn);
-    console.log('searchClose:', !!this.searchClose);
-    console.log('suggestions:', !!this.suggestions);
-    console.log('=== END SEARCH INIT DEBUG ===');
-    
     if (!this.searchContainer || !this.searchField || !this.searchBtn) {
       devError('Search elements not found');
       return;
@@ -263,8 +254,10 @@ class FamilyTreeSearch {
   showSuggestions() {
     if (!this.suggestions || this.currentSuggestions.length === 0) return;
     
-    // Build suggestions HTML
-    const suggestionsHTML = this.currentSuggestions.map((match, index) => {
+    // Built as DOM nodes (not an HTML string) so names from imported trees
+    // can never inject markup.
+    const fragment = document.createDocumentFragment();
+    this.currentSuggestions.forEach((match, index) => {
       const { id, node, personData } = match;
       
       // Build display name
@@ -291,16 +284,27 @@ class FamilyTreeSearch {
       
       const detailsText = details.join(' • ');
       
-      return `
-        <div class="search-suggestion ${index === this.selectedIndex ? 'selected' : ''}" 
-             data-person-id="${id}" data-index="${index}">
-          <div class="suggestion-name">${this.highlightMatch(displayName)}</div>
-          ${detailsText ? `<div class="suggestion-details">${detailsText}</div>` : ''}
-        </div>
-      `;
-    }).join('');
+      const suggestion = document.createElement('div');
+      suggestion.className = 'search-suggestion';
+      if (index === this.selectedIndex) suggestion.classList.add('selected');
+      suggestion.dataset.personId = id;
+      suggestion.dataset.index = index;
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'suggestion-name';
+      nameEl.appendChild(this.highlightMatch(displayName));
+      suggestion.appendChild(nameEl);
+
+      if (detailsText) {
+        const detailsEl = document.createElement('div');
+        detailsEl.className = 'suggestion-details';
+        detailsEl.textContent = detailsText;
+        suggestion.appendChild(detailsEl);
+      }
+      fragment.appendChild(suggestion);
+    });
     
-    this.suggestions.innerHTML = suggestionsHTML;
+    this.suggestions.replaceChildren(fragment);
     this.suggestions.classList.add('visible');
   }
 
@@ -311,12 +315,34 @@ class FamilyTreeSearch {
     }
   }
 
+  // Returns a fragment with each case-insensitive occurrence of the query
+  // wrapped in <strong>. The query is matched literally, not as a regex.
   highlightMatch(text) {
-    const query = this.searchField.value.trim();
-    if (!query) return text;
-    
-    const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<strong>$1</strong>');
+    const fragment = document.createDocumentFragment();
+    const query = this.searchField.value.trim().toLowerCase();
+    if (!query) {
+      fragment.appendChild(document.createTextNode(text));
+      return fragment;
+    }
+
+    const lower = text.toLowerCase();
+    // Some characters (e.g. Turkish İ) change length when lowercased, which
+    // would misalign the offsets; show the name unhighlighted instead.
+    if (lower.length !== text.length) {
+      fragment.appendChild(document.createTextNode(text));
+      return fragment;
+    }
+    let pos = 0;
+    let hit;
+    while ((hit = lower.indexOf(query, pos)) !== -1) {
+      if (hit > pos) fragment.appendChild(document.createTextNode(text.slice(pos, hit)));
+      const strong = document.createElement('strong');
+      strong.textContent = text.slice(hit, hit + query.length);
+      fragment.appendChild(strong);
+      pos = hit + query.length;
+    }
+    if (pos < text.length) fragment.appendChild(document.createTextNode(text.slice(pos)));
+    return fragment;
   }
 
   handleKeyDown(e) {
@@ -616,29 +642,6 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
-
-// Enhanced global utility functions
-window.familyTreeSearchUtils = {
-  // Search for a person and center on them
-  findAndCenter: (query) => {
-    familyTreeSearch.searchFor(query);
-  },
-  
-  // Center on a specific person by ID
-  centerOnPerson: (personId) => {
-    return familyTreeSearch.selectPersonById(personId);
-  },
-  
-  // Focus the search field
-  focusSearch: () => {
-    familyTreeSearch.focusSearch();
-  },
-  
-  // Get current search suggestions
-  getCurrentSuggestions: () => {
-    return familyTreeSearch.currentSuggestions;
-  }
-};
 
 function devLog(...args) {
   if (import.meta.env.DEV) {

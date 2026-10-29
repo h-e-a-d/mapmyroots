@@ -388,13 +388,6 @@ class I18n {
       }
     });
 
-    // Update elements with data-i18n-html attribute (for HTML content)
-    document.querySelectorAll('[data-i18n-html]').forEach(element => {
-      const key = element.getAttribute('data-i18n-html');
-      const translation = this.t(key);
-      element.innerHTML = translation;
-    });
-
     // Update title and meta description
     const titleKey = document.documentElement.getAttribute('data-i18n-title');
     if (titleKey) {

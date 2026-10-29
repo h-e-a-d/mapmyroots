@@ -1,590 +1,140 @@
-# Architecture Documentation
+# Architecture
+
+How MapMyRoots is put together today. For conventions, see [`/CLAUDE.md`](../CLAUDE.md). For what's planned, see [`ROADMAP.md`](ROADMAP.md).
+
+> An earlier version of this document described a target design (CommandManager, QuadTree, RelationshipManager, TreeStateManager, UICoordinator). Those modules were never built, or were deleted as unused (7f2d14d). This version describes only code that exists.
 
 ## Overview
 
-This document describes the refactored architecture of the Family Tree application, addressing critical issues identified in the architectural review:
-
-1. **God Object Pattern** - TreeEngine decomposed into focused components
-2. **No Test Coverage** - Comprehensive test suite added
-3. **Tight Coupling** - Event-driven architecture implemented
-4. **Scalability Issues** - IndexedDB and QuadTree spatial indexing added
-
-## Architecture Principles
-
-### SOLID Principles Applied
-
-- **Single Responsibility**: Each class has one clear responsibility
-- **Open/Closed**: Extensible through commands and events
-- **Liskov Substitution**: Repository abstractions
-- **Interface Segregation**: Focused interfaces
-- **Dependency Inversion**: Dependencies injected via constructor
-
-### Design Patterns Implemented
-
-1. **Repository Pattern** - Data access abstraction
-2. **Command Pattern** - Memory-efficient undo/redo
-3. **Observer Pattern** - Event-driven communication
-4. **Service Locator** - Dependency injection
-5. **Strategy Pattern** - Already present in shape management
-
-## New Architecture
-
-### Layer Diagram
+- **Static site.** Astro 5 pre-renders every page at build time and Cloudflare Pages serves them. There is no backend.
+- **Client-side builder.** `/builder` runs as a vanilla-JS app on an HTML canvas. All tree data lives in the visitor's browser (IndexedDB, with a localStorage fallback).
+- **Four locales.** en (default, unprefixed), de, es, ru (`/de/...` and so on) for the homepage, About, Contact, Privacy and Terms. The builder translates itself at runtime.
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   Presentation Layer                 │
-│              (HTML, CSS, UI Components)             │
-└──────────────────────┬──────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────┐
-│                  UI Coordinator                      │
-│           Event-driven UI orchestration             │
-└──────────────────────┬──────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────┐
-│                   Application Layer                  │
-│  - CommandManager (undo/redo)                       │
-│  - TreeStateManager (selection, camera, drag)       │
-└──────────────────────┬──────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────┐
-│                   Domain Layer                       │
-│  - PersonRepository (data access)                   │
-│  - RelationshipManager (connections)                │
-└──────────────────────┬──────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────┐
-│                Infrastructure Layer                  │
-│  - IndexedDB (persistence)                          │
-│  - QuadTree (spatial indexing)                      │
-│  - EventBus (communication)                         │
-└─────────────────────────────────────────────────────┘
+Astro pages (build time)          Builder (runtime, /builder)
+─────────────────────────         ────────────────────────────────────────
+src/pages/*.astro                 src/pages/builder.astro  (markup only)
+  └─ layouts/BaseLayout.astro       ├─ src/ui/builder/builder-page.ts  (page wiring)
+       ├─ components/SEO.astro       ├─ src/ui/builder/builder-share.ts (share dialog)
+       ├─ components/Header.astro    └─ tree.js  (app bootstrap)
+       ├─ components/Footer.astro          └─ src/core/tree-engine.js  (TreeCoreCanvas)
+       └─ GoogleTagManager.astro                ├─ core/canvas-renderer.js
+                                                ├─ data/cache/core-cache.js ── IndexedDB
+                                                ├─ data/cache/core-undoRedo.js
+                                                ├─ ui/components/*, ui/modals/modal.js
+                                                └─ features/* (export, import, search, …)
 ```
 
-## Core Components
+## Static pages
 
-### 1. PersonRepository
+- Every page renders through `BaseLayout.astro`, which emits SEO tags (canonical, hreflang, OG image from `src/pages/og/[slug].ts`), the GTM snippet, the header and the footer.
+- Localized routes are thin wrappers. For example, `src/pages/de/about.astro` renders `<About locale="de" />`.
+- Page text comes from `t(locale, 'pages.<page>.*')` (`src/i18n/index.ts`) at build time, so each locale's HTML is fully translated. Strings containing inline markup (`<strong>`, links) are rendered with `set:html`. They come only from our own locale files.
+- On static pages, the language switcher navigates to the localized URL. It doesn't translate in place.
+- The glossary is an Astro content collection (`src/content/glossary`).
+- **CSS:** `BaseLayout` loads `global.css` (builder styles, also loaded here) and `site.css` (header, nav, mobile menu, buttons). The homepage adds `homepage.css`; About, Contact, Privacy and Terms add `content-pages.css`. Glossary and Offline use scoped `<style>` blocks, as do `Header.astro` (language dropdown) and `Footer.astro`.
 
-**Location**: `src/data/repositories/person-repository.js`
+## Builder runtime
 
-**Responsibility**: Centralized data access for person entities
+### Bootstrap
 
-**Key Features**:
-- CRUD operations with validation
-- Relationship queries
-- Event emission for data changes
-- Data sanitization
+1. `builder.astro` imports the runtime modules (`i18n.js`, `language-switcher.js`, `modal.js`, `tree.js`, …), then `builder-page.ts` and `builder-share.ts`.
+2. On `DOMContentLoaded`, `tree.js`:
+   - migrates any legacy localStorage tree into IndexedDB
+   - initializes `AnalyticsIntegration` (the only one; a second integration on the same bus is refused)
+   - creates and initializes `TreeCoreCanvas`
+3. `builder-page.ts` initializes i18n, drag-and-drop import, the sidebar, view switching (graphic, table, tree chart), settings and GEDCOM import.
 
-**Usage**:
-```javascript
-import { PersonRepository } from './src/data/repositories/person-repository.js';
+### TreeCoreCanvas (`src/core/tree-engine.js`)
 
-const repository = new PersonRepository(eventBus, cacheManager);
+The central controller. It is still the largest file (~2,300 lines) and is exposed as `window.treeCore` because many UI modules reach it that way. It owns:
 
-// Create
-const id = await repository.save({
-  name: 'John Doe',
-  gender: 'male',
-  x: 100,
-  y: 200
-});
+- **Person data:** a `Map` of person records (names, gender, parents, spouse, marriages, rich birth and death events, notes, photo and document references)
+- **Rendering:** a `CanvasRenderer` instance (nodes, connections, camera, selection)
+- **Persistence:** a `CacheManager` instance
+- **Undo/redo:** an `UndoRedoManager` instance
+- **UI wiring:** `setupButtons`, `setupSettings`, `setupModals`, `setupExport`
 
-// Read
-const person = repository.findById(id);
-const children = repository.findByRelationship(id, 'children');
+Splitting it by responsibility is the top item under [known debt](#known-debt).
 
-// Update
-await repository.save({ ...person, name: 'Johnny Doe' });
+### Rendering (`src/core/canvas-renderer.js`)
 
-// Delete
-await repository.delete(id);
-```
+The render loop draws the grid, connections and nodes onto one canvas. Performance work (PR #1):
 
-**Benefits**:
-- Single source of truth for person data
-- Consistent validation and sanitization
-- Easy to add features like cloud sync
-- Testable in isolation
+- **Culling:** `getVisibleWorldRect()` computes the viewport in world coordinates, and nodes or connections outside it are skipped
+- **Text-layout cache:** each node's measured text and the z-order sort are cached between frames
+- **Grid:** strokes are batched, and the grid is skipped below 0.3× zoom
 
-### 2. RelationshipManager
+Hit-testing is a linear scan, which is fast enough at realistic tree sizes. A QuadTree was tried and removed.
 
-**Location**: `src/core/relationship-manager.js`
+Node shapes for templates live in `src/shapes/` (a strategy per shape, extending `base-shape.js`). The tree-chart view (`src/features/tree-chart/`) is a separate SVG layout of the same data.
 
-**Responsibility**: Manages relationships and connections between persons
+### Persistence (`src/data/cache/core-cache.js`)
 
-**Key Features**:
-- Create/remove parent relationships
-- Create/remove spouse relationships
-- Validate relationships (prevent circular, incest)
-- Generate connection data for rendering
-- Hide/show connections
+- `CacheManager` writes the full tree state through `IndexedDBRepository` (`src/data/repositories/indexed-db-repository.js`). It falls back to localStorage if IndexedDB is unavailable.
+- Autosave runs every 30 s, on `visibilitychange` and before unload, but only when the tree is **dirty**. Serialization is skipped otherwise.
+- Photos and documents are stored as blobs in separate IndexedDB stores and referenced by `mediaId`.
+- Schema migrations live in `src/data/migrations/`. Loaded JSON must carry `version` or `persons` (see "Data format" in `CLAUDE.md`).
 
-**Usage**:
-```javascript
-import { RelationshipManager } from './src/core/relationship-manager.js';
+`src/data/repositories/person-repository.js` is a tested repository abstraction that the runtime does not use yet.
 
-const manager = new RelationshipManager(personRepository, eventBus);
+### Undo/redo (`src/data/cache/core-undoRedo.js`)
 
-// Create relationships
-await manager.createParentRelationship(childId, parentId, 'mother');
-await manager.createSpouseRelationship(person1Id, person2Id);
+Snapshot-based: each state change pushes a full tree snapshot, up to 50. Undo restores the previous snapshot. This is simple and correct, at the cost of memory on very large trees.
 
-// Remove relationships
-await manager.removeParentRelationship(childId, 'father');
+### Event bus (`src/utils/event-bus.js`)
 
-// Get connections for rendering
-const connections = manager.getConnections();
-manager.regenerateConnections(); // Call after position updates
-```
+- `appContext.getEventBus()` returns the shared `EventBus`. Event names are in the `EVENTS` constant.
+- New cross-module communication should use the bus rather than `window.*` globals.
+- `appContext` also has a small service registry (`getService('treeCore')`).
 
-**Benefits**:
-- Centralized relationship validation
-- Prevents invalid relationships
-- Efficient connection management
-- Easy to extend with new relationship types
+Main consumers today:
 
-### 3. TreeStateManager
+- `AnalyticsIntegration`, which forwards bus events to GTM's `dataLayer`
+- the tree-chart view
+- the share dialog
+- media features
 
-**Location**: `src/core/tree-state-manager.js`
+### Features (`src/features/`)
 
-**Responsibility**: Manages UI state (selection, camera, drag, modes)
+| Folder | What it does |
+|---|---|
+| `export/` | `exporter.js` (PNG, JPEG, SVG, PDF via bundled jsPDF in `pdf-loader.js`); `gedcom-exporter.js` (GEDCOM 5.5.1); `download.js` |
+| `import/` | GEDCOM import (`parse-gedcom`) |
+| `photos/` | Avatar cropper, document attachments, PDF preview (`pdfjs-dist`) |
+| `search/` | Search box and suggestions |
+| `share/` | Compressed "share by link" URLs (`fflate`), opened read-only at `/view` |
+| `i18n/` | Runtime translator (`data-i18n*` attributes) and language switcher |
+| `accessibility/` | Keyboard shortcuts, focus management, screen-reader announcements |
+| `tree-chart/` | Alternative SVG tree-chart view |
 
-**Key Features**:
-- Selection management
-- Camera/viewport state (pan, zoom)
-- Drag operation tracking
-- Interaction mode management
-- State export/import
+## Security
 
-**Usage**:
-```javascript
-import { TreeStateManager } from './src/core/tree-state-manager.js';
+- **CSP** (`public/_headers`): there is exactly one policy, on `/*`. Cloudflare merges every matching rule, and browsers enforce each CSP header separately, so a path-specific policy can only tighten it. `tests/unit/csp-headers.test.js` enforces this. Scripts are allowed from `'self'`, Cloudflare Insights and GTM. No third-party CDNs are allowed; dependencies are bundled.
+- **DOM:** never put user data into `innerHTML`. Build nodes and use `textContent`, or `SecurityUtils` (`src/utils/security-utils.js`, DOMPurify-backed). `tests/unit/innerhtml-guard.test.js` fails on new dynamic `innerHTML` writes.
 
-const stateManager = new TreeStateManager(eventBus);
+## Analytics
 
-// Selection
-stateManager.selectNode(nodeId, multiSelect);
-const selected = stateManager.getSelectedNodes();
-
-// Camera
-stateManager.setCameraPosition(x, y);
-stateManager.setScale(scale, centerX, centerY);
-
-// Drag
-stateManager.startNodeDrag(nodeId, startX, startY);
-const delta = stateManager.updateDrag(currentX, currentY);
-stateManager.endDrag();
-
-// Mode
-stateManager.setMode('connect'); // 'select', 'connect', 'pan'
-```
-
-**Benefits**:
-- Centralized state management
-- Event emission for state changes
-- State persistence support
-- Clear separation from rendering logic
-
-### 4. UICoordinator
-
-**Location**: `src/ui/ui-coordinator.js`
-
-**Responsibility**: Coordinates UI updates via events
-
-**Key Features**:
-- Listens to core events
-- Updates UI components
-- Manages notifications and modals
-- Decouples core logic from UI
-
-**Usage**:
-```javascript
-import { createUICoordinator } from './src/ui/ui-coordinator.js';
-
-const coordinator = await createUICoordinator(eventBus);
-
-// UI operations via coordinator
-coordinator.showNotification('success', 'Person added');
-coordinator.openAddPersonModal();
-coordinator.closeModal();
-coordinator.rebuildTable();
-```
-
-**Benefits**:
-- Core logic no longer imports UI modules
-- Event-driven UI updates
-- Easy to add new UI features
-- Testable core logic without UI
-
-### 5. IndexedDBRepository
-
-**Location**: `src/data/repositories/indexed-db-repository.js`
-
-**Responsibility**: Scalable persistence using IndexedDB
-
-**Key Features**:
-- No size limits (vs LocalStorage 5MB)
-- Async operations (non-blocking)
-- Indexed queries
-- Migration from LocalStorage
-- Batch operations
-
-**Usage**:
-```javascript
-import { createIndexedDBRepository } from './src/data/repositories/indexed-db-repository.js';
-
-const db = await createIndexedDBRepository();
-
-// Save/retrieve
-await db.savePerson(person);
-const person = await db.getPerson(id);
-const all = await db.getAllPersons();
-
-// Indexed queries
-const males = await db.findByIndex('gender', 'male');
-const results = await db.searchByName('John');
-
-// Batch operations
-await db.savePersonsBatch(persons);
-
-// Migration
-await db.migrateFromLocalStorage('familyTreeCanvas_state');
-```
-
-**Benefits**:
-- Supports 1000+ person trees
-- Non-blocking operations
-- Fast indexed queries
-- Transactional integrity
-
-### 6. QuadTree Spatial Indexing
-
-**Location**: `src/core/spatial/quad-tree.js`
-
-**Responsibility**: Efficient spatial queries for large trees
-
-**Key Features**:
-- O(log n) spatial queries vs O(n) linear
-- Viewport culling
-- Nearest neighbor search
-- Circle range queries
-
-**Usage**:
-```javascript
-import { createQuadTreeFromNodes } from './src/core/spatial/quad-tree.js';
-
-const quadTree = createQuadTreeFromNodes(nodes);
-
-// Viewport culling - only render visible nodes
-const visibleNodes = quadTree.query({
-  x: viewportCenterX,
-  y: viewportCenterY,
-  width: viewportWidth,
-  height: viewportHeight
-});
-
-// Click detection
-const nearest = quadTree.findNearest(mouseX, mouseY, 50);
-
-// Collision detection
-const nearby = quadTree.queryCircle(x, y, radius);
-```
-
-**Benefits**:
-- 100x faster queries for large trees
-- Enables smooth rendering with 1000+ nodes
-- Memory efficient
-- Automatic spatial partitioning
-
-### 7. Command Pattern (Undo/Redo)
-
-**Location**: `src/core/commands/command-manager.js`
-
-**Responsibility**: Memory-efficient undo/redo operations
-
-**Key Features**:
-- Memory efficient: O(1) per command vs O(n) full state
-- Command composition
-- Stack size management
-- Event emission for UI updates
-
-**Available Commands**:
-- `AddPersonCommand`
-- `UpdatePersonCommand`
-- `DeletePersonCommand`
-- `MovePersonCommand`
-- `AddRelationshipCommand`
-- `RemoveRelationshipCommand`
-- `CompositeCommand`
-
-**Usage**:
-```javascript
-import { CommandManager, AddPersonCommand } from './src/core/commands/command-manager.js';
-
-const commandManager = new CommandManager(eventBus);
-
-// Execute command
-const command = new AddPersonCommand(personRepository, personData);
-await commandManager.execute(command);
-
-// Undo/Redo
-await commandManager.undo();
-await commandManager.redo();
-
-// Check availability
-if (commandManager.canUndo()) {
-  await commandManager.undo();
-}
-```
-
-**Memory Comparison**:
-- **Old approach**: 50 states × 500 people × 500 bytes = **12.5 MB**
-- **Command approach**: 50 commands × 100 bytes = **5 KB**
-- **Improvement**: **2500x less memory**
-
-## Event-Driven Architecture
-
-### EventBus
-
-All communication between modules uses the EventBus to eliminate tight coupling.
-
-**Event Flow Example**:
-```
-User clicks "Add Person"
-    ↓
-UICoordinator.openAddPersonModal()
-    ↓
-User submits form
-    ↓
-CommandManager.execute(AddPersonCommand)
-    ↓
-PersonRepository.save()
-    ↓
-EventBus.emit(EVENTS.TREE_PERSON_ADDED)
-    ↓
-UICoordinator listens → shows notification
-    ↓
-UICoordinator listens → rebuilds table
-    ↓
-CanvasRenderer listens → redraws canvas
-```
-
-### Available Events
-
-```javascript
-import { EVENTS } from './src/utils/event-bus.js';
-
-// Tree events
-EVENTS.TREE_PERSON_ADDED
-EVENTS.TREE_PERSON_UPDATED
-EVENTS.TREE_PERSON_DELETED
-EVENTS.TREE_RELATIONSHIP_ADDED
-EVENTS.TREE_RELATIONSHIP_REMOVED
-EVENTS.TREE_LOADED
-EVENTS.TREE_SAVED
-
-// Canvas events
-EVENTS.CANVAS_NODE_SELECTED
-EVENTS.CANVAS_ZOOM_CHANGED
-EVENTS.CANVAS_PAN_CHANGED
-
-// UI events
-EVENTS.UI_MODAL_OPENED
-EVENTS.UI_MODAL_CLOSED
-EVENTS.UI_SETTINGS_UPDATED
-
-// Data events
-EVENTS.DATA_VALIDATION_ERROR
-EVENTS.DATA_EXPORT_COMPLETED
-EVENTS.DATA_IMPORT_COMPLETED
-```
+GTM container `GTM-MNZ4MJB7` loads GA4 on every page (`GoogleTagManager.astro`). Cloudflare Web Analytics runs alongside it and is cookieless. Builder events flow EventBus → `AnalyticsIntegration` → `analyticsService` → `dataLayer.push`. Events never include tree content. For the event taxonomy, see [`src/analytics/README.md`](../src/analytics/README.md).
 
 ## Testing
 
-### Test Structure
+| Kind | Location | Command |
+|---|---|---|
+| Unit (Vitest + jsdom) | `tests/unit/` | `npm test` |
+| E2E (Playwright) | `testing/tests/` | `npm run test:e2e` (needs `npm run build` + `npx astro preview`) |
+| Types | — | `npm run check` |
+| Lighthouse | `.github/workflows/lighthouse.yml` | CI only |
 
-```
-tests/
-├── setup.js                          # Vitest configuration
-└── unit/                             # Unit tests (Vitest + jsdom)
-    ├── person-repository.test.js     # Repository tests
-    ├── command-manager.test.js       # Command pattern tests
-    ├── quad-tree.test.js             # Spatial indexing tests
-    ├── date-value.test.js            # Date parsing
-    ├── marriage-sync.test.js
-    └── migration-v2.2.test.js
+Guard tests that protect cross-cutting rules:
 
-testing/
-├── playwright.config.js              # E2E config
-├── fixtures/                         # Sample GEDCOM and JSON files
-└── tests/                            # Playwright specs
-    ├── avatar-cropper.spec.js
-    ├── documents.spec.js
-    ├── import-gedcom.spec.js
-    ├── mapmyroots-comprehensive.spec.js
-    └── tree-chart.spec.js
-```
+- `i18n-keys.test.js`: every `data-i18n*` and `t(locale, '…')` key exists, and all four locales have identical key sets
+- `innerhtml-guard.test.js`: no new dynamic `innerHTML`
+- `csp-headers.test.js`: a single CSP with no third-party CDNs
 
-### Running Tests
+## Known debt
 
-```bash
-# Run all tests
-npm test
-
-# Run with UI
-npm run test:ui
-
-# Run with coverage
-npm run test:coverage
-
-# Run E2E tests
-npm run test:e2e
-```
-
-### Test Coverage Goals
-
-- **Core logic**: >80%
-- **UI components**: >60%
-- **Utilities**: >90%
-
-## Migration history
-
-The architecture described above (event bus, repository pattern, command-based undo/redo, QuadTree spatial indexing, IndexedDB persistence) was rolled out incrementally through late 2024 and early 2025. The original god-object `TreeEngine` was decomposed into the layered structure documented in this file. The runtime entry point is `tree.js` at the repo root, imported by `src/pages/builder.astro` as a client-side module.
-
-If you're touching the core, follow the conventions in [`/CLAUDE.md`](../CLAUDE.md):
-
-- All inter-module communication via the EventBus (`src/utils/event-bus.js`).
-- All persistence via repositories — never `localStorage.setItem` from feature code.
-- All user actions that change state go through `CommandManager` so undo/redo works.
-- All DOM mutations from user data go through `SecurityUtils`.
-
-## Performance Improvements
-
-### Before vs After
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| **Max tree size** | 500 people | 5000+ people | 10x |
-| **Undo/Redo memory** | 12.5 MB | 5 KB | 2500x |
-| **Viewport query** | O(n) = 500ms | O(log n) = 5ms | 100x |
-| **Storage limit** | 5 MB | Unlimited | ∞ |
-| **Test coverage** | 0% | 80%+ | ∞ |
-
-### Optimizations Implemented
-
-1. **QuadTree spatial indexing** - Fast viewport culling
-2. **Command pattern** - Memory-efficient undo/redo
-3. **IndexedDB** - Unlimited storage, async operations
-4. **Event-driven** - Decoupled, cacheable
-5. **Lazy loading** - UI modules loaded on demand
-
-## Best Practices
-
-### 1. Always Use Repository
-
-**Bad**:
-```javascript
-this.personData.set(id, person);
-```
-
-**Good**:
-```javascript
-await this.personRepository.save(person);
-```
-
-### 2. Use Commands for User Actions
-
-**Bad**:
-```javascript
-await personRepository.delete(id);
-```
-
-**Good**:
-```javascript
-const command = new DeletePersonCommand(personRepository, id);
-await commandManager.execute(command);
-```
-
-### 3. Communicate via Events
-
-**Bad**:
-```javascript
-import { closeModal } from '../ui/modals/modal.js';
-closeModal();
-```
-
-**Good**:
-```javascript
-eventBus.emit(EVENTS.UI_MODAL_CLOSED);
-```
-
-### 4. Use QuadTree for Spatial Queries
-
-**Bad**:
-```javascript
-for (const node of allNodes) {
-  if (isInViewport(node)) {
-    render(node);
-  }
-}
-```
-
-**Good**:
-```javascript
-const visibleNodes = quadTree.query(viewport);
-for (const point of visibleNodes) {
-  render(point.data);
-}
-```
-
-## Future Enhancements
-
-### Short-term
-
-1. Split `tree-engine.js` (currently ~2400 lines) by responsibility — persistence, rendering coordination, command dispatch, media prefetch.
-2. Add more command types so undo/redo covers settings changes and tree-chart edits.
-3. Implement connection caching to avoid full regeneration on every relationship change.
-
-### Long-term
-
-1. TypeScript migration.
-2. Cloud sync (see ROADMAP "Deferred — Cloud Foundation").
-3. Collaborative editing.
-4. Advanced search with Lunr.js or a server-side index.
-5. Export to more formats
-
-## Troubleshooting
-
-### Issue: "Service not found"
-
-**Solution**: Ensure service is registered:
-```javascript
-appContext.services.register('personRepo', personRepository);
-```
-
-### Issue: QuadTree returns no results
-
-**Solution**: Check bounds contain all nodes:
-```javascript
-const quadTree = createQuadTreeFromNodes(nodes); // Auto-calculates bounds
-```
-
-### Issue: IndexedDB not available
-
-**Solution**: Fall back to LocalStorage:
-```javascript
-if (IndexedDBRepository.isAvailable()) {
-  db = await createIndexedDBRepository();
-} else {
-  db = new LocalStorageRepository();
-}
-```
-
-## References
-
-- [Repository Pattern](https://martinfowler.com/eaaCatalog/repository.html)
-- [Command Pattern](https://refactoring.guru/design-patterns/command)
-- [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
-- [QuadTree](https://en.wikipedia.org/wiki/Quadtree)
-- [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
+1. **`tree-engine.js` (~2,300 lines) and `modal.js` (~1,500)** mix data, persistence, UI wiring and modal logic. Split them by responsibility, but only behind stronger e2e coverage of add, edit and delete person flows.
+2. **`window.*` globals** (`treeCore`, `notifications`, `modalUtils`, …) are still how many UI modules talk to the core. Migrate them to EventBus or service lookups as files are touched.
+3. **Hardcoded English UI strings** remain in some builder code paths, e.g. share-dialog notifications and export notifications.
+4. **Snapshot undo** holds up to 50 full copies of the tree. If very large trees become common, switch to diffs.

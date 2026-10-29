@@ -127,3 +127,25 @@ describe('AnalyticsIntegration — new media/share/marriage/PWA/view wiring', ()
     expect(spies.disclosure).toHaveBeenCalledWith('person_notes', true);
   });
 });
+
+describe('AnalyticsIntegration — one integration per event bus', () => {
+  it('does not forward events twice when a second integration binds the same bus', () => {
+    const bus = new EventBus();
+    const spy = vi.spyOn(analyticsService, 'trackMarriageAdded').mockImplementation(() => {});
+    vi.spyOn(analyticsService, 'trackSessionStarted').mockImplementation(() => {});
+    const first = new AnalyticsIntegration(bus);
+    const second = new AnalyticsIntegration(bus);
+    first.init();
+    second.init();
+
+    bus.emit('marriage:added', { personId: 'a', spouseId: 'b' });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(second.isInitialized).toBe(false);
+
+    first.destroy();
+    second.init();
+    expect(second.isInitialized).toBe(true);
+    second.destroy();
+    vi.restoreAllMocks();
+  });
+});

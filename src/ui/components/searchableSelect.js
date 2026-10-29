@@ -29,18 +29,29 @@ export function updateSearchableSelects(existingModalData = {}) {
       .filter(p => filterGender === null || p.gender === filterGender)
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    let options = '<div class="select-option" data-id="">None</div>';
-    options += filtered.map(p => {
-      const isSelected = p.id === selectedId ? 'selected' : '';
+    // Built as DOM nodes (not an HTML string) so names from imported trees
+    // can never inject markup.
+    const fragment = document.createDocumentFragment();
+    const addOption = (id, label, isSelected) => {
+      const option = document.createElement('div');
+      option.className = 'select-option';
+      option.dataset.id = id;
+      if (isSelected) option.setAttribute('selected', '');
+      option.textContent = label;
+      fragment.appendChild(option);
+    };
+
+    addOption('', 'None', false);
+    filtered.forEach(p => {
       let displayName = p.name;
       if (p.fatherName) displayName += ` ${p.fatherName}`;
       if (p.surname) displayName += ` ${p.surname}`;
       if (p.maidenName && p.maidenName !== p.surname && p.maidenName.trim() !== '') {
         displayName += ` (${p.maidenName})`;
       }
-      return `<div class="select-option" data-id="${p.id}" ${isSelected}>${displayName.trim()}</div>`;
-    }).join('');
-    return options;
+      addOption(p.id, displayName.trim(), p.id === selectedId);
+    });
+    return fragment;
   }
 
   // For each of the three selects: mother (female), father (male), spouse (any)
@@ -117,7 +128,7 @@ export function updateSearchableSelects(existingModalData = {}) {
     // Options list
     const optionsList = document.createElement('div');
     optionsList.className = 'select-options-list';
-    optionsList.innerHTML = buildOptions(filterGender, existingId);
+    optionsList.appendChild(buildOptions(filterGender, existingId));
     optionsWrapper.appendChild(optionsList);
 
     // No-results message

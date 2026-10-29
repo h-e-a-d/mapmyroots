@@ -1,6 +1,35 @@
 # Changelog
 
-Historical record of significant changes. Going forward, prefer Git history + release notes over this file.
+Summary of significant changes, newest first. Git history has the details.
+
+## October 2026: Static-page styling
+
+- About, Contact, Privacy, Terms, Glossary and Offline rendered without header, navigation or content styles, because that CSS lived only in the homepage stylesheet. Shared chrome moved to `site.css` (loaded by `BaseLayout`), and the content pages got `content-pages.css`. The homepage's computed styles are unchanged.
+- The mobile menu opened with zero height on every page, including the homepage: the header's `backdrop-filter` makes it the containing block for the fixed-position menu. The menu is now sized explicitly.
+- The hidden skip link peeked 2px into the top of the homepage. Fixed.
+
+## October 2026: Site audit
+
+- **PDF export fixed in production.** `/builder` was sent two CSP headers, and the stricter one blocked the CDN that jsPDF loaded from. jsPDF is now a bundled, pinned npm dependency, and `_headers` has a single policy.
+- **Static pages translated.** About, Contact, Privacy and Terms showed raw translation keys. They now render at build time in en/de/es/ru, and privacy and terms gained `/de`, `/es` and `/ru` routes.
+- **Security.** Search suggestions and relationship selects no longer render person names as HTML (stored XSS via imported trees). `SecurityUtils.setTextContent` no longer shows literal entities.
+- **Analytics.** Builder events were sent to GA4 twice (duplicate `AnalyticsIntegration`). Fixed, with a guard against re-binding.
+- **Shortcuts.** Ctrl/Cmd+/ (focus search) and Ctrl/Cmd+Shift+P (PDF export) work again.
+- **Cleanup.** Split `exporter.js` (GEDCOM moved to its own module). Moved builder inline scripts to `src/ui/builder/`. Removed legacy social-image tooling and unused dependencies. Added guard tests for i18n keys, `innerHTML` and CSP. Rewrote `ARCHITECTURE.md` to match the code.
+- GTM container `GTM-MNZ4MJB7` restored on all pages, so GA4 receives data again.
+
+## July 2026: Builder hardening and performance (PR #1)
+
+- Render-loop culling, cached text layout, batched grid drawing, and autosave only when the tree is dirty
+- First-run empty state; undo/redo no longer shows a toast every time; Cmd is the primary shortcut modifier on macOS
+- Deep-cloned undo snapshots (fixed shared-reference corruption)
+- Removed unused CommandManager, QuadTree and the connection-loss polling monitor
+- SEO and privacy accuracy: `/view` noindexed, structured-data claims corrected, DOMPurify bundled instead of loaded from a CDN
+
+## May 2026: Phase 5 features and Astro migration
+
+- Migration to Astro + Cloudflare Pages, SEO infrastructure and PWA (Phases 1–4 in `ROADMAP.md`)
+- Photos (avatar cropper), document attachments with PDF preview, rich person fields (dated, placed events, marriages), tree-chart view, share-by-link and GEDCOM import
 
 ## January 2025 — Critical Fixes
 

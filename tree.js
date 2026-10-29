@@ -1,13 +1,13 @@
 // tree.js - Enhanced with improved architecture, security, and error handling
 
 import { appContext, EVENTS } from './src/utils/event-bus.js';
-import { SecurityUtils } from './src/utils/security-utils.js';
 import { RetryManager, GlobalErrorHandler } from './src/utils/error-handling.js';
 import { AccessibilityManager } from './src/features/accessibility/accessibility.js';
 import { CONFIG } from './src/config/config.js';
 import analyticsService from './src/analytics/analytics-service.js';
 import AnalyticsIntegration from './src/analytics/analytics-integration.js';
 import { migrateLocalStorageToIndexedDb } from './src/data/migrations/localstorage-to-indexeddb.js';
+import { familyTreeSearch } from './src/features/search/search.js';
 
 // Load debug helper in development
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -41,27 +41,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.analyticsService = analyticsService;
     window.analyticsIntegration = analyticsIntegration;
 
-    console.log('✅ Analytics tracking initialized');
-    console.log('💡 Debug: Run analyticsDebug.runAll() in console');
-
     // Load core tree functionality
     const { TreeCoreCanvas } = await import('./src/core/tree-engine.js');
 
     // Initialize tree core
     const treeCore = new TreeCoreCanvas();
     await treeCore.initialize();
-
-    // Lazy load search functionality
-    const searchModule = await lazyLoadModule(() => import('./src/features/search/search.js'));
-    if (searchModule) {
-      console.log('Search module loaded');
-    }
-
-    // Lazy load export functionality
-    const exportModule = await lazyLoadModule(() => import('./src/features/export/exporter.js'));
-    if (exportModule) {
-      console.log('Export module loaded');
-    }
 
   } catch (error) {
     console.error('Failed to initialize tree application:', error);
@@ -89,7 +74,7 @@ document.addEventListener('keydown', (e) => {
       case 'P':
         e.preventDefault();
         lazyLoadModule(() => import('./src/features/export/exporter.js')).then(module => {
-          if (module && module.exportPDFLayout) module.exportPDFLayout();
+          if (module && module.exportCanvasPDF) module.exportCanvasPDF();
         });
         break;
     }
@@ -98,9 +83,7 @@ document.addEventListener('keydown', (e) => {
   // Search shortcut
   if ((e.ctrlKey || e.metaKey) && e.key === '/') {
     e.preventDefault();
-    lazyLoadModule(() => import('./src/features/search/search.js')).then(module => {
-      if (module && module.focusSearch) module.focusSearch();
-    });
+    familyTreeSearch.focusSearch();
   }
 });
 
@@ -112,9 +95,7 @@ class FamilyTreeAPI {
   
   async search(query) {
     try {
-      const sanitizedQuery = SecurityUtils.sanitizeText(query);
-      const searchModule = await lazyLoadModule(() => import('./src/features/search/search.js'));
-      return searchModule ? searchModule.searchFor(sanitizedQuery) : null;
+      return familyTreeSearch.searchFor(String(query));
     } catch (error) {
       console.error('Search failed:', error);
       return null;

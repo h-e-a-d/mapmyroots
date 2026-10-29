@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import '@/styles/content-pages.css';
 import { t, type Locale } from '@/i18n';
 
 export interface Props {
@@ -38,111 +39,111 @@ const breadcrumbSchema = JSON.stringify({
 >
     <div class="about-container">
       <div class="about-hero">
-        <h1 data-i18n="about.hero.title">About MapMyRoots</h1>
-        <p class="subtitle" data-i18n="about.hero.subtitle">Making family history preservation accessible, free, and privacy-focused for everyone.</p>
+        <h1>{t(locale, 'pages.about.hero.title')}</h1>
+        <p class="subtitle">{t(locale, 'pages.about.hero.subtitle')}</p>
       </div>
 
       <div class="mission-box">
-        <h2 data-i18n="about.mission.title">Our Mission</h2>
-        <p data-i18n="about.mission.content">To empower families worldwide to create, visualize, and preserve their family histories without barriers. We believe that documenting your heritage should be free, simple, and private - accessible to everyone, not just those who can afford expensive genealogy software.</p>
+        <h2>{t(locale, 'pages.about.mission.title')}</h2>
+        <p>{t(locale, 'pages.about.mission.content')}</p>
       </div>
 
       <div class="story-section">
-        <h2 data-i18n="about.story.title">Our Story</h2>
-        <p data-i18n="about.story.paragraph1">MapMyRoots was born from a simple frustration: why is creating a family tree so expensive and complicated? Most genealogy services charge monthly fees, lock your data behind paywalls, and make the process overwhelming for beginners.</p>
-        <p data-i18n="about.story.paragraph2">We created MapMyRoots to solve this problem. Launched in 2023, our platform provides a completely free, intuitive family tree builder that respects your privacy. Your data stays on your device - we never see it, we never store it, and we never sell it.</p>
-        <p data-i18n="about.story.paragraph3">Since our launch, families around the world have used MapMyRoots to preserve their heritage. From students completing school projects to grandparents documenting multiple generations, our tool serves families in their journey to understand where they come from.</p>
+        <h2>{t(locale, 'pages.about.story.title')}</h2>
+        <p>{t(locale, 'pages.about.story.paragraph1')}</p>
+        <p>{t(locale, 'pages.about.story.paragraph2')}</p>
+        <p>{t(locale, 'pages.about.story.paragraph3')}</p>
       </div>
 
       <div class="values-grid">
         <div class="value-card">
           <div class="value-icon">🔒</div>
-          <h3 data-i18n="about.values.privacy.title">Privacy First</h3>
-          <p data-i18n="about.values.privacy.content">Your family tree data never leaves your device. We use your browser's storage (IndexedDB) to keep everything private and secure. No servers, no remote databases, no data collection - just you and your family history.</p>
+          <h3>{t(locale, 'pages.about.values.privacy.title')}</h3>
+          <p>{t(locale, 'pages.about.values.privacy.content')}</p>
         </div>
 
         <div class="value-card">
           <div class="value-icon">💯</div>
-          <h3 data-i18n="about.values.free.title">100% Free Forever</h3>
-          <p data-i18n="about.values.free.content">No subscriptions, no premium tiers, no hidden costs. All features are free and always will be. Family history preservation shouldn't require a monthly payment.</p>
+          <h3>{t(locale, 'pages.about.values.free.title')}</h3>
+          <p>{t(locale, 'pages.about.values.free.content')}</p>
         </div>
 
         <div class="value-card">
           <div class="value-icon">✨</div>
-          <h3 data-i18n="about.values.simple.title">Simple & Intuitive</h3>
-          <p data-i18n="about.values.simple.content">We focus on making family tree creation easy for everyone. Drag-and-drop interface, visual canvas, and straightforward controls mean you can start building immediately - no training required.</p>
+          <h3>{t(locale, 'pages.about.values.simple.title')}</h3>
+          <p>{t(locale, 'pages.about.values.simple.content')}</p>
         </div>
 
         <div class="value-card">
           <div class="value-icon">🌍</div>
-          <h3 data-i18n="about.values.accessible.title">Accessible to All</h3>
-          <p data-i18n="about.values.accessible.content">No registration required. Works on any device with a browser. Available in multiple languages. We believe everyone should be able to document their family story, regardless of technical skill or resources.</p>
+          <h3>{t(locale, 'pages.about.values.accessible.title')}</h3>
+          <p>{t(locale, 'pages.about.values.accessible.content')}</p>
         </div>
 
         <div class="value-card">
           <div class="value-icon">🎨</div>
-          <h3 data-i18n="about.values.beautiful.title">Beautiful Design</h3>
-          <p data-i18n="about.values.beautiful.content">Your family history deserves to be presented beautifully. Our interactive canvas, customizable styles, and high-resolution exports make your family trees stunning works of art.</p>
+          <h3>{t(locale, 'pages.about.values.beautiful.title')}</h3>
+          <p>{t(locale, 'pages.about.values.beautiful.content')}</p>
         </div>
 
         <div class="value-card">
           <div class="value-icon">🔓</div>
-          <h3 data-i18n="about.values.ownership.title">Your Data, Your Control</h3>
-          <p data-i18n="about.values.ownership.content">Export your family tree anytime in multiple formats (JSON, PDF, images). No vendor lock-in, no restrictions. Your data belongs to you, period.</p>
+          <h3>{t(locale, 'pages.about.values.ownership.title')}</h3>
+          <p>{t(locale, 'pages.about.values.ownership.content')}</p>
         </div>
       </div>
 
       <div class="stats-section">
-        <h2 data-i18n="about.stats.title">MapMyRoots by the Numbers</h2>
+        <h2>{t(locale, 'pages.about.stats.title')}</h2>
         <div class="stats-grid">
           <div class="stat-item">
             <div class="stat-number">3</div>
-            <div class="stat-label" data-i18n="about.stats.formats">Export Formats</div>
+            <div class="stat-label">{t(locale, 'pages.about.stats.formats')}</div>
           </div>
           <div class="stat-item">
             <div class="stat-number">100%</div>
-            <div class="stat-label" data-i18n="about.stats.free">Free Forever</div>
+            <div class="stat-label">{t(locale, 'pages.about.stats.free')}</div>
           </div>
           <div class="stat-item">
             <div class="stat-number">0</div>
-            <div class="stat-label" data-i18n="about.stats.accounts">Accounts Required</div>
+            <div class="stat-label">{t(locale, 'pages.about.stats.accounts')}</div>
           </div>
           <div class="stat-item">
             <div class="stat-number">4</div>
-            <div class="stat-label" data-i18n="about.stats.languages">Languages</div>
+            <div class="stat-label">{t(locale, 'pages.about.stats.languages')}</div>
           </div>
         </div>
       </div>
 
       <div class="story-section">
-        <h2 data-i18n="about.why_free.title">Why Is MapMyRoots Free?</h2>
-        <p data-i18n="about.why_free.paragraph1">Great question! We believe family history preservation is a fundamental human activity that shouldn't be monetized. Unlike other genealogy services, we don't charge because:</p>
-        <ul style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-left: 2rem;">
-          <li data-i18n="about.why_free.reason1"><strong>Privacy-focused architecture:</strong> Since your data stays on your device, we don't need expensive servers or databases</li>
-          <li data-i18n="about.why_free.reason2"><strong>No historical records:</strong> We focus on tree visualization, not genealogical research databases</li>
-          <li data-i18n="about.why_free.reason3"><strong>Sustainable model:</strong> Our lean operation and efficient technology keep costs minimal</li>
-          <li data-i18n="about.why_free.reason4"><strong>Community-driven:</strong> We're committed to serving families, not shareholders</li>
+        <h2>{t(locale, 'pages.about.why_free.title')}</h2>
+        <p>{t(locale, 'pages.about.why_free.paragraph1')}</p>
+        <ul>
+          <li set:html={t(locale, 'pages.about.why_free.reason1')} />
+          <li set:html={t(locale, 'pages.about.why_free.reason2')} />
+          <li set:html={t(locale, 'pages.about.why_free.reason3')} />
+          <li set:html={t(locale, 'pages.about.why_free.reason4')} />
         </ul>
-        <p data-i18n="about.why_free.paragraph2">We will never introduce paid features, subscriptions, or premium tiers. MapMyRoots will remain 100% free, forever.</p>
+        <p>{t(locale, 'pages.about.why_free.paragraph2')}</p>
       </div>
 
       <div class="story-section">
-        <h2 data-i18n="about.technology.title">Our Technology</h2>
-        <p data-i18n="about.technology.paragraph1">MapMyRoots is built with modern web technologies to ensure a fast, secure, and reliable experience:</p>
-        <ul style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-left: 2rem;">
-          <li data-i18n="about.technology.canvas"><strong>HTML5 Canvas:</strong> Smooth, responsive family tree visualization</li>
-          <li data-i18n="about.technology.localstorage"><strong>IndexedDB:</strong> Secure, local data storage on your device</li>
-          <li data-i18n="about.technology.responsive"><strong>Responsive Design:</strong> Works perfectly on desktop, tablet, and mobile</li>
-          <li data-i18n="about.technology.export"><strong>Advanced Export:</strong> High-resolution PNG, PDF, and JSON formats</li>
-          <li data-i18n="about.technology.i18n"><strong>Internationalization:</strong> Multi-language support for global accessibility</li>
+        <h2>{t(locale, 'pages.about.technology.title')}</h2>
+        <p>{t(locale, 'pages.about.technology.paragraph1')}</p>
+        <ul>
+          <li set:html={t(locale, 'pages.about.technology.canvas')} />
+          <li set:html={t(locale, 'pages.about.technology.localstorage')} />
+          <li set:html={t(locale, 'pages.about.technology.responsive')} />
+          <li set:html={t(locale, 'pages.about.technology.export')} />
+          <li set:html={t(locale, 'pages.about.technology.i18n')} />
         </ul>
       </div>
 
       <div class="cta-section">
-        <h2 data-i18n="about.cta.title">Start Your Family Tree Today</h2>
-        <p data-i18n="about.cta.content">Join the families who trust MapMyRoots to preserve their family history. No registration required, completely free, and your data stays private.</p>
+        <h2>{t(locale, 'pages.about.cta.title')}</h2>
+        <p>{t(locale, 'pages.about.cta.content')}</p>
         <a href="/builder" class="btn-primary btn-large">
-          <span data-i18n="about.cta.button">Start Building Free</span>
+          <span>{t(locale, 'pages.about.cta.button')}</span>
         </a>
       </div>
     </div>

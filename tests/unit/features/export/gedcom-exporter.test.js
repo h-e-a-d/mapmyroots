@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateGEDCOMText } from '../../../../src/features/export/exporter.js';
+import { generateGEDCOMText } from '../../../../src/features/export/gedcom-exporter.js';
 
 const base = (overrides = {}) => ({
   id: 'p1',

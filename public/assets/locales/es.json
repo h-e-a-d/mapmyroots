@@ -363,7 +363,11 @@
           "change": "Cambiar foto",
           "hint": "JPG, PNG o WebP · máx 500 KB · almacenado localmente"
         },
-        "tabs": { "details": "Detalles", "photo": "Foto", "documents": "Documentos" },
+        "tabs": {
+          "details": "Detalles",
+          "photo": "Foto",
+          "documents": "Documentos"
+        },
         "cropper": {
           "drag_hint": "Arrastra para reposicionar · Desplaza o pellizca para hacer zoom",
           "zoom": "Zoom",
@@ -375,7 +379,12 @@
           "add": "Añadir documento",
           "title": "Título",
           "type": "Tipo",
-          "types": { "certificate": "Certificado", "photo": "Foto", "letter": "Carta", "other": "Otro" },
+          "types": {
+            "certificate": "Certificado",
+            "photo": "Foto",
+            "letter": "Carta",
+            "other": "Otro"
+          },
           "date": "Fecha (AAAA o AAAA-MM-DD)",
           "place": "Lugar",
           "description": "Descripción",
@@ -727,13 +736,405 @@
       "meta": {
         "title": "Sobre nosotros - MapMyRoots | Constructor de árbol genealógico gratuito",
         "description": "Conozca MapMyRoots - nuestra misión de hacer accesible la preservación de la historia familiar para todos."
+      },
+      "hero": {
+        "title": "Acerca de MapMyRoots",
+        "subtitle": "Hacemos que preservar la historia familiar sea accesible, gratuito y respetuoso con la privacidad para todos."
+      },
+      "mission": {
+        "title": "Nuestra misión",
+        "content": "Ayudar a familias de todo el mundo a crear, visualizar y preservar su historia familiar sin barreras. Creemos que documentar tu herencia debe ser gratuito, sencillo y privado: accesible para todos, no solo para quienes pueden pagar un costoso software de genealogía."
+      },
+      "story": {
+        "title": "Nuestra historia",
+        "paragraph1": "MapMyRoots nació de una frustración sencilla: ¿por qué crear un árbol genealógico es tan caro y complicado? La mayoría de los servicios de genealogía cobran cuotas mensuales, bloquean tus datos tras muros de pago y hacen que el proceso resulte abrumador para los principiantes.",
+        "paragraph2": "Creamos MapMyRoots para resolver este problema. Lanzada en 2023, nuestra plataforma ofrece un creador de árboles genealógicos completamente gratuito e intuitivo que respeta tu privacidad. Tus datos se quedan en tu dispositivo: nunca los vemos, nunca los almacenamos y nunca los vendemos.",
+        "paragraph3": "Desde nuestro lanzamiento, familias de todo el mundo han usado MapMyRoots para preservar su herencia. Desde estudiantes que hacen proyectos escolares hasta abuelos que documentan varias generaciones, nuestra herramienta acompaña a las familias en el camino de descubrir de dónde vienen."
+      },
+      "values": {
+        "privacy": {
+          "title": "La privacidad primero",
+          "content": "Los datos de tu árbol genealógico nunca salen de tu dispositivo. Usamos el almacenamiento de tu navegador (IndexedDB) para mantener todo privado y seguro. Sin servidores, sin bases de datos remotas, sin recopilación de datos: solo tú y tu historia familiar."
+        },
+        "free": {
+          "title": "100 % gratis para siempre",
+          "content": "Sin suscripciones, sin niveles premium, sin costes ocultos. Todas las funciones son gratuitas y siempre lo serán. Preservar la historia familiar no debería requerir un pago mensual."
+        },
+        "simple": {
+          "title": "Sencillo e intuitivo",
+          "content": "Nos enfocamos en que crear un árbol genealógico sea fácil para todos. La interfaz de arrastrar y soltar, el lienzo visual y los controles claros te permiten empezar de inmediato, sin necesidad de formación."
+        },
+        "accessible": {
+          "title": "Accesible para todos",
+          "content": "No requiere registro. Funciona en cualquier dispositivo con navegador. Disponible en varios idiomas. Creemos que todos deberían poder documentar la historia de su familia, sin importar sus conocimientos técnicos o recursos."
+        },
+        "beautiful": {
+          "title": "Diseño atractivo",
+          "content": "Tu historia familiar merece presentarse de forma hermosa. Nuestro lienzo interactivo, los estilos personalizables y las exportaciones en alta resolución convierten tus árboles genealógicos en auténticas obras de arte."
+        },
+        "ownership": {
+          "title": "Tus datos, tu control",
+          "content": "Exporta tu árbol genealógico en cualquier momento en varios formatos (JSON, PDF, imágenes). Sin dependencia de proveedores ni restricciones. Tus datos te pertenecen, sin más."
+        }
+      },
+      "stats": {
+        "title": "MapMyRoots en cifras",
+        "formats": "Formatos de exportación",
+        "free": "Gratis para siempre",
+        "accounts": "Cuentas necesarias",
+        "languages": "Idiomas"
+      },
+      "why_free": {
+        "title": "¿Por qué MapMyRoots es gratis?",
+        "paragraph1": "¡Buena pregunta! Creemos que preservar la historia familiar es una actividad humana fundamental que no debería monetizarse. A diferencia de otros servicios de genealogía, no cobramos porque:",
+        "reason1": "<strong>Arquitectura centrada en la privacidad:</strong> como tus datos se quedan en tu dispositivo, no necesitamos servidores ni bases de datos costosos",
+        "reason2": "<strong>Sin registros históricos:</strong> nos centramos en la visualización de árboles, no en bases de datos de investigación genealógica",
+        "reason3": "<strong>Modelo sostenible:</strong> nuestra operación ligera y una tecnología eficiente mantienen los costes al mínimo",
+        "reason4": "<strong>Impulsado por la comunidad:</strong> nos comprometemos a servir a las familias, no a los accionistas",
+        "paragraph2": "Nunca introduciremos funciones de pago, suscripciones ni niveles premium. MapMyRoots seguirá siendo 100 % gratis, para siempre."
+      },
+      "technology": {
+        "title": "Nuestra tecnología",
+        "paragraph1": "MapMyRoots está construido con tecnologías web modernas para ofrecer una experiencia rápida, segura y fiable:",
+        "canvas": "<strong>HTML5 Canvas:</strong> visualización fluida y ágil del árbol genealógico",
+        "localstorage": "<strong>IndexedDB:</strong> almacenamiento de datos local y seguro en tu dispositivo",
+        "responsive": "<strong>Diseño adaptable:</strong> funciona perfectamente en ordenador, tableta y móvil",
+        "export": "<strong>Exportación avanzada:</strong> formatos PNG, PDF y JSON en alta resolución",
+        "i18n": "<strong>Internacionalización:</strong> soporte multilingüe para una accesibilidad global"
+      },
+      "cta": {
+        "title": "Empieza tu árbol genealógico hoy",
+        "content": "Únete a las familias que confían en MapMyRoots para preservar su historia familiar. Sin registro, completamente gratis y con tus datos siempre privados.",
+        "button": "Empieza gratis"
       }
     },
     "contact": {
       "meta": {
         "title": "Contáctanos - MapMyRoots",
         "description": "Contáctenos en MapMyRoots - Obtenga soporte para nuestro constructor de árbol genealógico gratuito o envíenos sus comentarios."
+      },
+      "hero": {
+        "title": "Contacto",
+        "subtitle": "¿Tienes preguntas o comentarios? ¡Nos encantaría saber de ti!"
+      },
+      "email": {
+        "title": "Soporte por correo electrónico",
+        "description": "Envíanos un correo y te responderemos lo antes posible."
+      },
+      "faq": {
+        "title": "Preguntas frecuentes",
+        "description": "Consulta nuestras preguntas frecuentes para obtener respuestas rápidas.",
+        "link": "Ver preguntas frecuentes"
+      },
+      "resources": {
+        "title": "Recursos",
+        "description": "Explora nuestro glosario y tutoriales para aprender más.",
+        "link": "Ver recursos"
+      },
+      "response": {
+        "title": "Tiempo de respuesta",
+        "content": "Normalmente respondemos a los correos en un plazo de 24 a 48 horas en días laborables. Para respuestas inmediatas, consulta nuestras preguntas frecuentes."
       }
+    },
+    "privacy": {
+      "title": "Política de privacidad",
+      "last_updated": "Última actualización: 29 de octubre de 2026",
+      "tldr": {
+        "title": "En resumen: la privacidad primero:",
+        "content": "Los datos de tu árbol genealógico nunca salen de tu dispositivo. Se guardan localmente en el almacenamiento de tu navegador (IndexedDB). No tenemos acceso a tus datos y no podemos verlos. Tú tienes el control total."
+      },
+      "introduction": {
+        "title": "1. Introducción",
+        "content": "MapMyRoots («nosotros», «nuestro» o «nos») se compromete a proteger tu privacidad. Esta Política de privacidad explica cómo tratamos la información cuando usas nuestro creador gratuito de árboles genealógicos en mapmyroots.com (el «Servicio»)."
+      },
+      "data_collection": {
+        "title": "2. Recopilación y almacenamiento de datos",
+        "family_tree": {
+          "title": "2.1 Datos del árbol genealógico",
+          "content": "Todos los datos del árbol genealógico que creas (nombres, fechas, relaciones, fotos, notas) se almacenan <strong>localmente en tu dispositivo</strong>, en el almacenamiento de tu navegador (IndexedDB). Estos datos:",
+          "local": "Nunca salen de tu dispositivo ni de tu navegador",
+          "no_upload": "No se suben a nuestros servidores",
+          "no_access": "No son accesibles para nosotros ni para terceros",
+          "control": "Permanecen bajo tu control total",
+          "export": "Pueden exportarse y eliminarse en cualquier momento"
+        },
+        "analytics": {
+          "title": "2.2 Datos analíticos",
+          "content": "Usamos Google Analytics 4 (cargado mediante Google Tag Manager) y Cloudflare Web Analytics para recopilar estadísticas de uso anónimas y agregadas que nos ayudan a mejorar el Servicio. Esto incluye:",
+          "pages": "Páginas visitadas",
+          "referrer": "Sitio web de referencia",
+          "device": "Tipo de dispositivo y navegador",
+          "location": "Ubicación aproximada (a nivel de país o ciudad)",
+          "features": "Uso de funciones en el editor (por ejemplo, que se añadió una persona o se exportó un árbol)",
+          "no_content": "<strong>Importante:</strong> los eventos analíticos solo registran que se realizó una acción. Nunca incluyen nombres, fechas, notas, fotos ni ningún otro contenido de tu árbol genealógico."
+        },
+        "cookies": {
+          "title": "2.3 Cookies",
+          "content": "Usamos los siguientes tipos de cookies:",
+          "essential": {
+            "title": "Cookies esenciales:",
+            "content": "Necesarias para que el Servicio funcione (por ejemplo, para guardar tu preferencia de idioma)"
+          },
+          "analytics": "<strong>Cookies analíticas:</strong> Google Analytics establece las cookies <code>_ga</code> y <code>_ga_*</code> para distinguir visitas y sesiones. Caducan en un máximo de 2 años. Cloudflare Web Analytics no usa cookies."
+        }
+      },
+      "no_account": {
+        "title": "3. No se requiere cuenta",
+        "content": "MapMyRoots no te pide crear una cuenta ni proporcionar información personal, como:",
+        "email": "Dirección de correo electrónico",
+        "name": "Nombre",
+        "payment": "Información de pago",
+        "phone": "Número de teléfono",
+        "anonymous": "Puedes usar el Servicio de forma completamente anónima."
+      },
+      "data_security": {
+        "title": "4. Seguridad de los datos",
+        "content": "Como los datos de tu árbol genealógico se almacenan localmente en tu dispositivo:",
+        "responsible": "Eres responsable de proteger tu dispositivo",
+        "export": "Te recomendamos exportar regularmente los datos de tu árbol como copia de seguridad",
+        "browser": "Tus datos están sujetos a las políticas de seguridad y almacenamiento de tu navegador",
+        "clear": "Borrar los datos de tu navegador eliminará tu árbol genealógico"
+      },
+      "third_party": {
+        "title": "5. Servicios de terceros",
+        "content": "Usamos los siguientes servicios de terceros:",
+        "google": {
+          "title": "Google Tag Manager y Google Analytics:",
+          "content": "Para estadísticas de uso anónimas. Consulta la <a href=\"https://policies.google.com/privacy\" target=\"_blank\" rel=\"noopener\">Política de privacidad de Google</a>"
+        },
+        "cloudflare": "<strong>Cloudflare Web Analytics:</strong> para estadísticas de uso anónimas y sin cookies. Consulta la <a href=\"https://www.cloudflare.com/privacypolicy/\" target=\"_blank\" rel=\"noopener\">Política de privacidad de Cloudflare</a>",
+        "fonts": {
+          "title": "Fuentes alojadas por nosotros:",
+          "content": "Alojamos todas las fuentes nosotros mismos; no se realizan solicitudes de fuentes externas."
+        }
+      },
+      "your_rights": {
+        "title": "6. Tus derechos",
+        "intro": "Tienes el control total de tus datos:",
+        "access": {
+          "title": "Acceso:",
+          "content": "Consulta tus datos en cualquier momento en la aplicación"
+        },
+        "export": {
+          "title": "Exportación:",
+          "content": "Descarga los datos de tu árbol genealógico en formato JSON, PDF o imagen"
+        },
+        "delete": {
+          "title": "Eliminación:",
+          "content": "Borra todos los datos con el botón «Borrar todos los datos» de la configuración"
+        },
+        "modify": {
+          "title": "Modificación:",
+          "content": "Edita cualquier información de tu árbol genealógico en cualquier momento"
+        }
+      },
+      "children": {
+        "title": "7. Privacidad de los menores",
+        "content": "MapMyRoots no recopila a sabiendas información personal de los usuarios. Como no recopilamos datos personales, usuarios de todas las edades pueden usar el Servicio. No obstante, recomendamos la supervisión de los padres para menores de 13 años."
+      },
+      "international": {
+        "title": "8. Usuarios internacionales",
+        "content": "MapMyRoots está disponible en todo el mundo. Como tus datos se almacenan localmente en tu dispositivo, nunca cruzan fronteras internacionales a través de nuestro Servicio. Los datos analíticos agregados y anónimos procesados por Google y Cloudflare pueden transferirse internacionalmente de acuerdo con sus respectivas políticas de privacidad."
+      },
+      "data_retention": {
+        "title": "9. Conservación de los datos",
+        "content": "Los datos de tu árbol genealógico permanecen en tu dispositivo hasta que:",
+        "clear_browser": "Borres el almacenamiento del sitio en tu navegador",
+        "clear_app": "Uses la función «Borrar todos los datos» de la aplicación",
+        "uninstall": "Desinstales tu navegador",
+        "export": "Te recomendamos encarecidamente exportar tus datos con regularidad para evitar pérdidas accidentales."
+      },
+      "changes": {
+        "title": "10. Cambios en esta política",
+        "content": "Podemos actualizar esta Política de privacidad periódicamente. Te informaremos de cualquier cambio actualizando la fecha de «Última actualización» al principio de esta política. Te animamos a revisarla periódicamente."
+      },
+      "gdpr": {
+        "title": "11. Cumplimiento del RGPD",
+        "content": "Para los usuarios de la Unión Europea, cumplimos con el Reglamento General de Protección de Datos (RGPD):",
+        "local": "<strong>Minimización de datos:</strong> solo tratamos los datos mínimos necesarios (analíticas anónimas)",
+        "control": "<strong>Control del usuario:</strong> tienes el control total de los datos de tu árbol genealógico",
+        "transparency": "<strong>Transparencia:</strong> esta política explica claramente nuestras prácticas de datos",
+        "consent": "<strong>Consentimiento:</strong> al usar nuestro Servicio, aceptas las analíticas descritas"
+      },
+      "ccpa": {
+        "title": "12. Derechos de privacidad en California (CCPA)",
+        "content": "MapMyRoots no vende información personal. Los residentes de California tienen derecho a:",
+        "know": "Saber qué datos personales se recopilan (ninguno de tu árbol genealógico)",
+        "delete": "Solicitar la eliminación de datos personales",
+        "opt_out": "Oponerse a la venta de datos (no vendemos datos)"
+      },
+      "contact": {
+        "title": "13. Contacto",
+        "intro": "Si tienes alguna pregunta sobre esta Política de privacidad, contáctanos:",
+        "email_label": "Correo electrónico:",
+        "website_label": "Sitio web:"
+      },
+      "meta": {
+        "title": "Política de privacidad - MapMyRoots",
+        "description": "Política de privacidad de MapMyRoots. Los datos de tu árbol genealógico se almacenan localmente en tu dispositivo: nunca los vemos, nunca los guardamos en nuestros servidores y nunca los compartimos."
+      }
+    },
+    "terms": {
+      "title": "Términos del servicio",
+      "last_updated": "Última actualización: 1 de enero de 2025",
+      "intro": "<strong>¡Bienvenido a MapMyRoots!</strong> Estos términos describen tus derechos y responsabilidades al usar nuestro creador gratuito de árboles genealógicos. Al usar nuestro Servicio, aceptas estos términos.",
+      "acceptance": {
+        "title": "1. Aceptación de los términos",
+        "content": "Al acceder y usar MapMyRoots (el «Servicio»), aceptas y te comprometes a cumplir los términos y disposiciones de este acuerdo. Si no estás de acuerdo con estos Términos del servicio, no uses el Servicio."
+      },
+      "description": {
+        "title": "2. Descripción del servicio",
+        "intro": "MapMyRoots ofrece un creador de árboles genealógicos gratuito y basado en la web que permite a los usuarios:",
+        "create": "Crear y visualizar árboles genealógicos",
+        "store": "Guardar información de los miembros de la familia localmente en su dispositivo",
+        "export": "Exportar los datos del árbol genealógico en varios formatos",
+        "customize": "Personalizar y dar estilo a los árboles genealógicos",
+        "free": "El Servicio se ofrece de forma completamente gratuita, sin funciones premium ni suscripciones."
+      },
+      "account": {
+        "title": "3. No se requiere cuenta",
+        "content": "MapMyRoots no exige a los usuarios crear una cuenta. Todos los datos del árbol genealógico se almacenan localmente en tu dispositivo, en el almacenamiento de tu navegador (IndexedDB). Eres responsable de hacer copias de seguridad de tus datos exportándolos con regularidad."
+      },
+      "acceptable_use": {
+        "title": "4. Uso aceptable",
+        "permitted": {
+          "title": "4.1 Uso permitido",
+          "content": "Puedes usar el Servicio para cualquier fin lícito relacionado con la creación y gestión de árboles genealógicos, incluidos:",
+          "personal": "Investigación personal de la historia familiar",
+          "education": "Proyectos educativos",
+          "reunions": "Reuniones y eventos familiares",
+          "preservation": "Preservación de la historia familiar"
+        },
+        "prohibited": {
+          "title": "4.2 Uso prohibido",
+          "intro": "Te comprometes a NO:",
+          "harm": "Usar el Servicio de cualquier forma que pueda dañarlo, desactivarlo o perjudicarlo",
+          "unauthorized": "Intentar obtener acceso no autorizado a cualquier parte del Servicio",
+          "interfere": "Interferir en el Servicio o los servidores, o interrumpirlos",
+          "automated": "Usar sistemas automatizados para acceder al Servicio de forma que envíen más solicitudes de las que una persona podría producir razonablemente",
+          "reverse": "Aplicar ingeniería inversa, descompilar o desensamblar cualquier parte del Servicio",
+          "violate": "Infringir las leyes o normativas aplicables",
+          "infringe": "Vulnerar los derechos de propiedad intelectual de terceros"
+        }
+      },
+      "data_ownership": {
+        "title": "5. Propiedad y responsabilidad de los datos",
+        "your_data": {
+          "title": "5.1 Tus datos",
+          "content": "Conservas todos los derechos sobre los datos del árbol genealógico que creas. Como los datos se almacenan localmente en tu dispositivo:",
+          "ownership": "Eres propietario de todos los datos del árbol genealógico que creas",
+          "control": "Tienes el control total de tus datos",
+          "responsibility": "Eres responsable de la exactitud de la información que introduces",
+          "backup": "Eres responsable de hacer copias de seguridad de tus datos",
+          "loss": "No somos responsables de ninguna pérdida de datos"
+        },
+        "privacy": {
+          "title": "5.2 Privacidad e información personal",
+          "content": "Eres responsable de asegurarte de que tienes derecho a usar y compartir cualquier información personal sobre las personas de tu árbol genealógico. Respeta los derechos de privacidad y obtén el consentimiento adecuado al compartir árboles genealógicos que contengan información personal de personas vivas."
+        }
+      },
+      "intellectual_property": {
+        "title": "6. Propiedad intelectual",
+        "our": {
+          "title": "6.1 Nuestra propiedad intelectual",
+          "content": "El Servicio, incluidos su diseño, código, gráficos e interfaz de usuario, es propiedad de MapMyRoots y está protegido por leyes de derechos de autor, marcas y otras leyes de propiedad intelectual. No puedes copiar, modificar ni distribuir ninguna parte del Servicio sin permiso."
+        },
+        "open_source": {
+          "title": "6.2 Código abierto",
+          "content": "Algunos componentes del Servicio pueden estar sujetos a licencias de código abierto. Dichos componentes se ofrecen bajo sus respectivas licencias de código abierto."
+        }
+      },
+      "disclaimers": {
+        "title": "7. Exenciones y limitaciones de responsabilidad",
+        "as_is": {
+          "title": "7.1 Servicio «tal cual»",
+          "content": "EL SERVICIO SE PROPORCIONA «TAL CUAL» Y «SEGÚN DISPONIBILIDAD», SIN GARANTÍAS DE NINGÚN TIPO, EXPRESAS O IMPLÍCITAS, INCLUIDAS, ENTRE OTRAS, LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN FIN DETERMINADO O NO INFRACCIÓN."
+        },
+        "no_guarantee": {
+          "title": "7.2 Sin garantía",
+          "content": "No garantizamos que:",
+          "uninterrupted": "El Servicio funcione sin interrupciones ni errores",
+          "bugs": "Todos los fallos o errores se corrijan",
+          "secure": "El Servicio sea completamente seguro o esté libre de virus",
+          "accuracy": "Los resultados sean exactos o fiables"
+        },
+        "liability": {
+          "title": "7.3 Limitación de responsabilidad",
+          "content": "EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY, MAPMYROOTS NO SERÁ RESPONSABLE DE NINGÚN DAÑO INDIRECTO, INCIDENTAL, ESPECIAL, CONSECUENTE O PUNITIVO, NI DE NINGUNA PÉRDIDA DE BENEFICIOS O INGRESOS, YA SEA DIRECTA O INDIRECTA, NI DE NINGUNA PÉRDIDA DE DATOS, USO, FONDO DE COMERCIO U OTRAS PÉRDIDAS INTANGIBLES DERIVADAS DE:",
+          "access": "Tu acceso al Servicio o su uso, o la imposibilidad de acceder a él o usarlo",
+          "third_party": "Cualquier conducta o contenido de terceros",
+          "unauthorized": "Cualquier acceso, uso o alteración no autorizados de tus datos"
+        }
+      },
+      "data_loss": {
+        "title": "8. Pérdida de datos",
+        "content": "Como los datos de tu árbol genealógico se almacenan localmente en tu dispositivo, no podemos recuperar datos perdidos. Los datos pueden perderse si:",
+        "clear": "Borras la caché o el almacenamiento del sitio de tu navegador",
+        "uninstall": "Desinstalas tu navegador",
+        "device": "Tu dispositivo sufre una avería o daños",
+        "reset": "Restableces tu dispositivo a la configuración de fábrica",
+        "backup": "<strong>Importante:</strong> exporta y haz copias de seguridad de los datos de tu árbol genealógico con regularidad para evitar pérdidas."
+      },
+      "availability": {
+        "title": "9. Disponibilidad del servicio",
+        "content": "Nos esforzamos por ofrecer acceso continuo al Servicio, pero no garantizamos una disponibilidad ininterrumpida. El Servicio puede no estar disponible temporalmente debido a:",
+        "maintenance": "Mantenimiento programado",
+        "technical": "Dificultades técnicas",
+        "circumstances": "Circunstancias ajenas a nuestro control"
+      },
+      "modifications": {
+        "title": "10. Modificaciones del servicio y de los términos",
+        "service": {
+          "title": "10.1 Cambios en el servicio",
+          "content": "Nos reservamos el derecho de modificar, suspender o interrumpir cualquier parte del Servicio en cualquier momento y sin previo aviso. No somos responsables ante ti ni ante terceros por ninguna modificación, suspensión o interrupción del Servicio."
+        },
+        "terms": {
+          "title": "10.2 Cambios en los términos",
+          "content": "Podemos actualizar estos Términos del servicio periódicamente. Te informaremos de cualquier cambio actualizando la fecha de «Última actualización». Si sigues usando el Servicio después de los cambios, se entenderá que aceptas los nuevos términos."
+        }
+      },
+      "termination": {
+        "title": "11. Terminación",
+        "content": "Nos reservamos el derecho de terminar o suspender el acceso al Servicio de inmediato, sin previo aviso y por cualquier motivo, incluido, entre otros, el incumplimiento de estos Términos. Como no se requiere cuenta, la terminación consistiría en bloquear el acceso desde determinadas direcciones IP o en aplicar otras restricciones técnicas."
+      },
+      "external_links": {
+        "title": "12. Enlaces externos",
+        "content": "El Servicio puede contener enlaces a sitios web o servicios de terceros. No somos responsables del contenido, las políticas de privacidad ni las prácticas de sitios web de terceros. Accedes a sitios web de terceros bajo tu propia responsabilidad."
+      },
+      "indemnification": {
+        "title": "13. Indemnización",
+        "content": "Aceptas indemnizar y eximir de responsabilidad a MapMyRoots, sus afiliados y sus respectivos directivos, administradores, empleados y agentes frente a cualquier reclamación, daño, pérdida, responsabilidad y gasto (incluidos los honorarios legales) derivados de:",
+        "use": "Tu uso del Servicio",
+        "violation": "Tu incumplimiento de estos Términos",
+        "rights": "Tu vulneración de cualquier derecho de un tercero",
+        "user_content": "El contenido que crees o compartas con el Servicio"
+      },
+      "governing_law": {
+        "title": "14. Legislación aplicable",
+        "content": "Estos Términos se regirán e interpretarán de acuerdo con la legislación aplicable, sin tener en cuenta sus normas sobre conflictos de leyes. Cualquier disputa derivada de estos Términos o del Servicio se resolverá conforme a la jurisdicción aplicable."
+      },
+      "severability": {
+        "title": "15. Divisibilidad",
+        "content": "Si alguna disposición de estos Términos se considera inválida o inaplicable, las demás disposiciones seguirán plenamente vigentes."
+      },
+      "entire_agreement": {
+        "title": "16. Acuerdo completo",
+        "content": "Estos Términos del servicio, junto con nuestra Política de privacidad, constituyen el acuerdo completo entre tú y MapMyRoots en relación con el uso del Servicio."
+      },
+      "contact": {
+        "title": "17. Información de contacto",
+        "intro": "Si tienes alguna pregunta sobre estos Términos del servicio, contáctanos:",
+        "email_label": "Correo electrónico:",
+        "website_label": "Sitio web:"
+      },
+      "thank_you": "<strong>¡Gracias por usar MapMyRoots!</strong> Nos comprometemos a ofrecer una herramienta gratuita y respetuosa con la privacidad para preservar la historia familiar. Al usar nuestro Servicio, aceptas estos términos y nuestro compromiso de mantener tus datos privados y seguros en tu dispositivo.",
+      "meta": {
+        "title": "Términos del servicio - MapMyRoots",
+        "description": "Términos del servicio de MapMyRoots. Lee los términos y condiciones para usar nuestro creador gratuito de árboles genealógicos."
+      }
+    },
+    "legal": {
+      "translation_notice": "Esta traducción se ofrece solo como referencia. Si difiere de la versión en inglés, prevalece la versión en inglés."
     }
   }
 }

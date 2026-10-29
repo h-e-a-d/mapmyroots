@@ -48,7 +48,7 @@ cleanup   │
 
 ---
 
-## Current status (as of 2026-05)
+## Current status (as of 2026-10)
 
 | Phase | Status |
 |---|---|
@@ -57,7 +57,7 @@ cleanup   │
 | 2 — Cloudflare Pages setup | **Done** |
 | 3 — SEO infrastructure | **Done** |
 | 4 — PWA & performance | **Done** |
-| 5 — Feature parity & improvements | **In progress** (5.2 / 5.3 / 5.4 / 5.5 done; 5.1 open) |
+| 5 — Feature parity & improvements | **In progress** (5.2–5.5 done, plus tree-chart view, document attachments, rich person fields; 5.1 and 5.6 open) |
 | 6 — SEO content growth | **Ongoing** |
 | Deferred — Cloud foundation | Not scheduled |
 
@@ -331,6 +331,14 @@ Build/restore functionality that's claimed but missing, or genuinely valuable. E
 - View-only mode in builder (no editing UI).
 - This bridges the gap until full cloud sync arrives.
 
+### Task 5.6 — Cookie consent (Consent Mode v2)
+
+**Status:** Open. Added 2026-10 when GTM → GA4 was restored.
+
+- GA4 sets `_ga` / `_ga_*` cookies on every page, and EU visitors currently get them without opting in.
+- Add a lightweight consent banner that sets Google Consent Mode v2 defaults (`analytics_storage: 'denied'`) before the GTM snippet in `GoogleTagManager.astro`, and updates on accept. Cloudflare Web Analytics is cookieless and needs no consent.
+- Translate the banner into all four locales. Update `privacy.data_collection.cookies` and `privacy.gdpr.consent`, which currently claims consent "by using our Service".
+
 ### Verification per task
 Each task: feature works in dev, has tests if it's logic-heavy, FAQ/docs updated if user-facing, Lighthouse still passing.
 
@@ -387,7 +395,7 @@ This phase will need its own roadmap document when it's time. For now: do not sc
 - [x] Real OG/Twitter/icon images present; sharing previews correctly on Slack, Twitter, Discord, iMessage.
 - [x] PWA installable on iOS/Android/desktop; offline mode works for the builder.
 - [x] All existing tests (vitest + playwright) green.
-- [x] No GTM/GA4 in network tab; Cloudflare Web Analytics tracking pageviews.
+- [x] No GTM/GA4 in network tab; Cloudflare Web Analytics tracking pageviews. *(Superseded 2026-10: GTM → GA4 was deliberately restored alongside Cloudflare Web Analytics; see Task 5.6 for the consent gap this opens.)*
 - [ ] Contact form deferred to Phase 5; for now `contact.astro` remains a static page with a `mailto:` link as fallback. (Phase 5.1 still open.)
 
 ---
