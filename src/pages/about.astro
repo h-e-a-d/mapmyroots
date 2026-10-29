@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import '@/styles/content-pages.css';
 import { t, type Locale } from '@/i18n';
 
 export interface Props {
@@ -117,7 +118,7 @@ const breadcrumbSchema = JSON.stringify({
       <div class="story-section">
         <h2>{t(locale, 'pages.about.why_free.title')}</h2>
         <p>{t(locale, 'pages.about.why_free.paragraph1')}</p>
-        <ul style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-left: 2rem;">
+        <ul>
           <li set:html={t(locale, 'pages.about.why_free.reason1')} />
           <li set:html={t(locale, 'pages.about.why_free.reason2')} />
           <li set:html={t(locale, 'pages.about.why_free.reason3')} />
@@ -129,7 +130,7 @@ const breadcrumbSchema = JSON.stringify({
       <div class="story-section">
         <h2>{t(locale, 'pages.about.technology.title')}</h2>
         <p>{t(locale, 'pages.about.technology.paragraph1')}</p>
-        <ul style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-left: 2rem;">
+        <ul>
           <li set:html={t(locale, 'pages.about.technology.canvas')} />
           <li set:html={t(locale, 'pages.about.technology.localstorage')} />
           <li set:html={t(locale, 'pages.about.technology.responsive')} />
