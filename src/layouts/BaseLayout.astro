@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import SEO from '@/components/SEO.astro';
+import GoogleTagManager from '@/components/GoogleTagManager.astro';
 import type { Locale } from '@/i18n';
 
 export interface Props {
@@ -47,6 +48,8 @@ const {
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
+    <GoogleTagManager />
+
     <SEO
       title={title}
       description={description}
@@ -87,6 +90,7 @@ const {
 
   </head>
   <body class:list={['no-animations', bodyClass]}>
+    <GoogleTagManager noscript />
 
     <a href="#main" class="skip-link">Skip to main content</a>
 

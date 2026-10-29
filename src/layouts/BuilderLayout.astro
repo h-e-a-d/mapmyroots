@@ -4,6 +4,7 @@ import '@/styles/modal.css';
 import '@/styles/photo-tabs.css';
 
 import SEO from '@/components/SEO.astro';
+import GoogleTagManager from '@/components/GoogleTagManager.astro';
 import type { Locale } from '@/i18n';
 
 export interface Props {
@@ -26,6 +27,8 @@ const { title, description, canonicalPath, locale = 'en', hreflangs, jsonLd = []
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <GoogleTagManager />
 
     <SEO
       title={title}
@@ -61,6 +64,7 @@ const { title, description, canonicalPath, locale = 'en', hreflangs, jsonLd = []
     </style>
   </head>
   <body>
+    <GoogleTagManager noscript />
     <div id="offlineBadge" class="offline-badge hidden" role="status" aria-live="polite">
       <span aria-hidden="true">📡</span>
       <span>Offline — your tree is saved locally</span>

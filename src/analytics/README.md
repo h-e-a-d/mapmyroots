@@ -16,8 +16,11 @@ The analytics system consists of three main components:
 
 ### Prerequisites
 
-- Google Tag Manager (GTM) is already installed in `index.html` and `builder.html`
-- GTM Container ID: `GTM-MNZ4MJB7`
+- Google Tag Manager (GTM) is loaded by `src/components/GoogleTagManager.astro`, included in
+  `src/layouts/BaseLayout.astro` and `src/layouts/BuilderLayout.astro`
+- GTM Container ID: `GTM-MNZ4MJB7` → GA4 Measurement ID: `G-907C1C66Z1`
+- CSP allowances for GTM/GA domains live in `public/_headers`
+- `AnalyticsIntegration` is initialised in the app-init script of `src/pages/builder.astro`
 
 ### GA4 Configuration
 
