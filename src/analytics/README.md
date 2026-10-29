@@ -6,11 +6,13 @@ This analytics system tracks user interactions and events in the MapMyRoots fami
 
 ## Architecture
 
-The analytics system consists of three main components:
+Events flow: feature code → `EventBus` → `AnalyticsIntegration` → `analyticsService` → `window.dataLayer` → GTM → GA4.
 
-1. **analytics-service.js** - Core service that handles event tracking
-2. **analytics-integration.js** - Integrates with the application's event bus
-3. **Event emissions** - Added throughout the application codebase
+1. **analytics-service.js**: builds event payloads and pushes them to `dataLayer`
+2. **analytics-integration.js**: subscribes to EventBus events and calls the matching `track*` method. Only one integration may bind a given bus; a second `init()` is refused, so events are never double-counted.
+3. **Event emissions**: `appContext.getEventBus().emit(...)` calls throughout the app
+
+Static pages (homepage etc.) push a few engagement events directly through `gtmTrack()` in `src/ui/components/homepage.js`.
 
 ## Google Analytics Setup
 
@@ -20,18 +22,19 @@ The analytics system consists of three main components:
   `src/layouts/BaseLayout.astro` and `src/layouts/BuilderLayout.astro`
 - GTM Container ID: `GTM-MNZ4MJB7` → GA4 Measurement ID: `G-907C1C66Z1`
 - CSP allowances for GTM/GA domains live in `public/_headers`
-- `AnalyticsIntegration` is initialised in the app-init script of `src/pages/builder.astro`
+- `AnalyticsIntegration` is initialised once, in `tree.js` (builder bootstrap)
 
-### GA4 Configuration
+### GTM container configuration (in tagmanager.google.com, not in code)
 
-1. **Create GA4 Property** in Google Analytics
-2. **Set up GTM Tag**:
-   - Tag Type: Google Analytics: GA4 Event
-   - Measurement ID: Your GA4 Measurement ID (G-XXXXXXXXXX)
-   - Event Name: `{{Event}}` (use built-in Event variable)
-   - Event Parameters: Add custom parameters from dataLayer
+1. **Google tag** with ID `G-907C1C66Z1`, trigger **All Pages**: page views
+2. **GA4 Event** tag for app events:
+   - Measurement ID: `G-907C1C66Z1`
+   - Event Name: `{{Event}}` (built-in Event variable)
+   - Event Parameters: map the dataLayer keys you want as custom dimensions (`category`, `export_format`, …)
+   - Trigger: **Custom Event**, event name `.*`, "Use regex matching" on
+3. **Submit → Publish** the container version. Unpublished changes never reach the live site.
 
-3. **Configure Trigger**: Set to fire on all custom events
+Verify with GTM **Preview** on the live site, then GA4 **Realtime** or **DebugView**.
 
 ## Event Taxonomy
 
@@ -599,7 +602,7 @@ this.listen('custom:event', (data) => {
 
 ### Development Mode
 
-In development (localhost), events are logged to console instead of being sent to GA:
+On `localhost` / `127.0.0.1`, events are logged to the console and queued in memory, never pushed to `dataLayer`. `tree.js` also loads `debug-helper.js` there (run `analyticsDebug.runAll()` in the console).
 
 ```
 [Analytics] person_created {event_name: "person_created", category: "person_management", ...}
@@ -652,7 +655,8 @@ Set up goals in GA4 for key actions:
 - No personally identifiable information (PII) is tracked
 - All `person_id` values are internal application IDs
 - User data (names, dates) never sent to analytics
-- Compliant with GDPR, CCPA
+- GA sets the `_ga` / `_ga_*` cookies; this is disclosed in the privacy policy (`src/pages/privacy.astro`, section 2)
+- There is no cookie-consent banner / Consent Mode v2 yet. EU visitors get GA cookies without opt-in, which is a known compliance gap.
 
 ## Best Practices
 
@@ -670,11 +674,9 @@ Set up goals in GA4 for key actions:
 3. Use GTM Preview mode to debug
 4. Check browser console for errors
 
-**Development mode stuck:**
-```javascript
-// Force production mode
-window.location.hostname = 'production-domain.com';
-```
+**No events locally:** expected, because development mode never pushes to `dataLayer` (see above). Test against a deployed preview URL with GTM Preview instead.
+
+**Events counted twice:** check that nothing else creates an `AnalyticsIntegration` for the app bus (the console warns *"Another integration is already bound to this event bus"*).
 
 ## Analytics Folder Structure
 
@@ -682,7 +684,8 @@ window.location.hostname = 'production-domain.com';
 src/analytics/
 ├── analytics-service.js      # Core tracking service
 ├── analytics-integration.js  # Event bus integration
-└── README.md                  # This documentation
+├── debug-helper.js           # Dev-only console helpers (analyticsDebug.runAll())
+└── README.md                 # This documentation
 ```
 
 ## Support
@@ -695,5 +698,4 @@ For questions or issues with analytics:
 
 ---
 
-**Last Updated:** January 2025
-**Version:** 1.0.0
+**Last Updated:** October 2026

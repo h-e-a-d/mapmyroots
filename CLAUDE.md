@@ -4,7 +4,7 @@ Guidance for Claude Code (and other AI agents) working in this repository.
 
 ## Project at a glance
 
-MapMyRoots is a free, client-side family tree builder. Vanilla JavaScript with ES modules, Canvas-based rendering, LocalStorage/IndexedDB persistence. Built on Astro + Cloudflare Pages. No backend (Phase 6 of [`docs/ROADMAP.md`](docs/ROADMAP.md), deferred indefinitely). Active work is Phase 5 feature development.
+MapMyRoots is a free, client-side family tree builder. Vanilla JavaScript with ES modules, Canvas-based rendering, LocalStorage/IndexedDB persistence. Built on Astro + Cloudflare Pages. No backend (the "Deferred — Cloud Foundation" track in [`docs/ROADMAP.md`](docs/ROADMAP.md) is deferred indefinitely). Active work is Phase 5 feature development; Phase 6 (SEO content) runs in parallel.
 
 ## Workflows
 
@@ -35,16 +35,16 @@ Use when the user points you at an existing task file.
 ### Architecture patterns
 
 - **Event-driven communication.** Use the `EventBus` from `src/utils/event-bus.js` instead of window globals.
-- **Security first.** Never use `innerHTML` directly. Use `SecurityUtils` (`src/utils/security-utils.js`) for DOM manipulation and `SecurityUtils.sanitizeText()` for any user input.
+- **Security first.** Never put dynamic values into `innerHTML` (`tests/unit/innerhtml-guard.test.js` enforces this). Build nodes and set `textContent`, or use `SecurityUtils` (`src/utils/security-utils.js`). `SecurityUtils.sanitizeText()` HTML-escapes, so use it only when the result goes into HTML markup. Never pass its output to `textContent` or `.value`, or users will see literal entities like `&#39;`.
 - **Resilient operations.** Wrap fallible operations in `RetryManager` (`src/utils/error-handling.js`).
 - **Validate at boundaries.** All loaded data must pass schema validation before processing or storage.
 - **Accessibility.** Keyboard navigation and ARIA labels on every interactive element. WCAG 2.1 AA target.
 
 ### File organization
 
-- Modal CSS lives in `src/ui/styles/modal.css`, never in `style.css`.
-- Homepage-only CSS lives in `homepage.css`, never in `style.css`.
-- Translation strings live in `assets/locales/*.json`. New user-visible strings require all four locales (en, es, ru, de).
+- Modal CSS lives in `src/styles/modal.css`, never in `src/styles/global.css`.
+- Homepage-only CSS lives in `src/styles/homepage.css`, never in `global.css`.
+- Translation strings live in `public/assets/locales/*.json`. New user-visible strings require all four locales (en, es, ru, de).
 - Files over 500 lines are a smell — prefer splitting by responsibility.
 
 ### Code patterns
@@ -101,10 +101,11 @@ Loaded data must include `version` or `persons`. Anything else is rejected with 
 
 ### Translation strings
 
-- Build-time strings (Astro pages) use `t(locale, 'key.path')` from `src/i18n/`.
+- Build-time strings (Astro pages) use `t(locale, 'key.path')` from `src/i18n/`. Static-page text lives under `pages.<page>.*`. Don't add `data-i18n` to static pages: the language switcher navigates to `/de/...` and the other localized URLs instead of translating in place.
 - Runtime strings (builder UI) continue to use the existing `data-i18n` attributes resolved by `src/features/i18n/i18n.js`.
+- `tests/unit/i18n-keys.test.js` fails if a `data-i18n*` or `t(locale, '…')` key is missing, or if the four locale files' key sets differ.
 - Missing keys fall back to English with a dev-mode warning. Adding a new user-visible string still requires updating all four locale JSONs (Phase 0 rule unchanged).
 
 ## Roadmap awareness
 
-Phases 0–4 of [`docs/ROADMAP.md`](docs/ROADMAP.md) (pre-migration cleanup, Astro, Cloudflare Pages, SEO, PWA) are complete. Current work is Phase 5 (feature parity and improvements). Phase 6 (cloud/accounts) is deferred indefinitely — don't introduce cloud/backend dependencies.
+Phases 0–4 of [`docs/ROADMAP.md`](docs/ROADMAP.md) (pre-migration cleanup, Astro, Cloudflare Pages, SEO, PWA) are complete. Current work is Phase 5 (feature parity and improvements). Cloud/accounts are deferred indefinitely — don't introduce cloud/backend dependencies.
