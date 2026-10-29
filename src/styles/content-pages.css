@@ -208,8 +208,11 @@
   font-size: 2.25rem;
 }
 
-.contact-card h3 {
+/* h2 for heading order (h1 → h2); sized like a card title, not a section heading */
+.contact-container .contact-card h2 {
+  font-family: var(--font-primary);
   font-size: 1.15rem;
+  margin-bottom: 0;
 }
 
 .contact-card p {
