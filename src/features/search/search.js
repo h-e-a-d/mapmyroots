@@ -25,15 +25,6 @@ class FamilyTreeSearch {
     this.searchClose = document.getElementById('searchClose');
     this.suggestions = document.getElementById('searchSuggestions');
     
-    // Debug: Log what elements were found
-    console.log('=== SEARCH INIT DEBUG ===');
-    console.log('searchContainer:', !!this.searchContainer);
-    console.log('searchField:', !!this.searchField);
-    console.log('searchBtn:', !!this.searchBtn);
-    console.log('searchClose:', !!this.searchClose);
-    console.log('suggestions:', !!this.suggestions);
-    console.log('=== END SEARCH INIT DEBUG ===');
-    
     if (!this.searchContainer || !this.searchField || !this.searchBtn) {
       devError('Search elements not found');
       return;
@@ -651,29 +642,6 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
-
-// Enhanced global utility functions
-window.familyTreeSearchUtils = {
-  // Search for a person and center on them
-  findAndCenter: (query) => {
-    familyTreeSearch.searchFor(query);
-  },
-  
-  // Center on a specific person by ID
-  centerOnPerson: (personId) => {
-    return familyTreeSearch.selectPersonById(personId);
-  },
-  
-  // Focus the search field
-  focusSearch: () => {
-    familyTreeSearch.focusSearch();
-  },
-  
-  // Get current search suggestions
-  getCurrentSuggestions: () => {
-    return familyTreeSearch.currentSuggestions;
-  }
-};
 
 function devLog(...args) {
   if (import.meta.env.DEV) {

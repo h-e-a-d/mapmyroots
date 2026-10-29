@@ -1117,11 +1117,7 @@ import BuilderLayout from '@/layouts/BuilderLayout.astro';
     import { rebuildTableView } from '@/ui/components/table.js';
     import { initTreeChartView } from '@/features/tree-chart/tree-chart-view.js';
     import { appContext, EVENTS } from '@/utils/event-bus.js';
-    import AnalyticsIntegration from '@/analytics/analytics-integration.js';
     import '@/features/tree-chart/styles/tree-chart.css';
-
-    // Forward app events to GTM's dataLayer (container is loaded by BuilderLayout)
-    new AnalyticsIntegration(appContext.getEventBus()).init();
 
     document.addEventListener('DOMContentLoaded', async () => {
       if (window.i18n) {

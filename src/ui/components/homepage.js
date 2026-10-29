@@ -905,61 +905,6 @@ if (window.matchMedia) {
   trackAccessibilityFeatures();
 }
 
-// Service Worker registration for PWA (disabled for local development)
-// Uncomment when deploying to a server with HTTPS
-/*
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('SW registered: ', registration);
-        gtmTrack('service_worker', {
-          status: 'registered',
-          scope: registration.scope,
-          locale: window.i18n ? window.i18n.getLocale() : 'unknown',
-          timestamp: new Date().toISOString()
-        });
-      })
-      .catch(registrationError => {
-        console.log('SW registration failed: ', registrationError);
-        gtmTrack('service_worker', {
-          status: 'failed',
-          error: registrationError.message,
-          locale: window.i18n ? window.i18n.getLocale() : 'unknown',
-          timestamp: new Date().toISOString()
-        });
-      });
-  });
-}
-*/
-
-// Export functions for testing/debugging
-if (typeof window !== 'undefined') {
-  window.familyTreeHomepage = {
-    gtmTrack,
-    trackTimeOnPage,
-    trackScrollDepth,
-    trackEngagement,
-    trackDeviceInfo,
-    initializeI18n,
-    updateAnalyticsLocale,
-    engagementEvents: () => engagementEvents,
-    maxScrollDepth: () => maxScrollDepth
-  };
-}
-
-// Initialize engagement tracking for various interactions
-document.addEventListener('click', () => trackEngagement('click'));
-document.addEventListener('keydown', () => trackEngagement('keydown'));
-document.addEventListener('scroll', () => trackEngagement('scroll'), { passive: true });
-
-devLog('🌳 MapMyRoots homepage analytics initialized successfully');
-
-function devLog(...args) {
-  if (import.meta.env.DEV) {
-    console.log(...args);
-  }
-}
 function devWarn(...args) {
   if (import.meta.env.DEV) {
     console.warn(...args);
