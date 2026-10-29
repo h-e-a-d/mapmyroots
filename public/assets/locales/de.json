@@ -253,7 +253,11 @@
           "change": "Foto ändern",
           "hint": "JPG, PNG oder WebP · max 500 KB · lokal gespeichert"
         },
-        "tabs": { "details": "Details", "photo": "Foto", "documents": "Dokumente" },
+        "tabs": {
+          "details": "Details",
+          "photo": "Foto",
+          "documents": "Dokumente"
+        },
         "cropper": {
           "drag_hint": "Ziehen zum Verschieben · Scrollen oder Zwei-Finger-Zoom",
           "zoom": "Zoom",
@@ -265,7 +269,12 @@
           "add": "Dokument hinzufügen",
           "title": "Titel",
           "type": "Typ",
-          "types": { "certificate": "Urkunde", "photo": "Foto", "letter": "Brief", "other": "Sonstiges" },
+          "types": {
+            "certificate": "Urkunde",
+            "photo": "Foto",
+            "letter": "Brief",
+            "other": "Sonstiges"
+          },
           "date": "Datum (JJJJ oder JJJJ-MM-TT)",
           "place": "Ort",
           "description": "Beschreibung",
@@ -727,13 +736,405 @@
       "meta": {
         "title": "Über uns - MapMyRoots | Kostenloser Stammbaum-Builder",
         "description": "Erfahren Sie mehr über MapMyRoots - unsere Mission, die Bewahrung der Familiengeschichte für alle zugänglich zu machen."
+      },
+      "hero": {
+        "title": "Über MapMyRoots",
+        "subtitle": "Wir machen die Bewahrung der Familiengeschichte für alle zugänglich, kostenlos und datenschutzfreundlich."
+      },
+      "mission": {
+        "title": "Unsere Mission",
+        "content": "Wir möchten Familien weltweit befähigen, ihre Familiengeschichte ohne Hürden zu erstellen, zu visualisieren und zu bewahren. Wir sind überzeugt, dass die Dokumentation Ihrer Herkunft kostenlos, einfach und privat sein sollte – zugänglich für alle, nicht nur für diejenigen, die sich teure Genealogie-Software leisten können."
+      },
+      "story": {
+        "title": "Unsere Geschichte",
+        "paragraph1": "MapMyRoots entstand aus einer einfachen Frustration: Warum ist es so teuer und kompliziert, einen Stammbaum zu erstellen? Die meisten Genealogie-Dienste verlangen monatliche Gebühren, sperren Ihre Daten hinter Bezahlschranken und machen den Einstieg für Anfänger unnötig schwer.",
+        "paragraph2": "Wir haben MapMyRoots entwickelt, um dieses Problem zu lösen. Seit dem Start im Jahr 2023 bietet unsere Plattform einen völlig kostenlosen, intuitiven Stammbaum-Editor, der Ihre Privatsphäre respektiert. Ihre Daten bleiben auf Ihrem Gerät – wir sehen sie nie, wir speichern sie nie und wir verkaufen sie nie.",
+        "paragraph3": "Seit unserem Start nutzen Familien auf der ganzen Welt MapMyRoots, um ihr Erbe zu bewahren. Von Schülern, die an Schulprojekten arbeiten, bis zu Großeltern, die mehrere Generationen dokumentieren – unser Werkzeug begleitet Familien auf dem Weg zu ihren Wurzeln."
+      },
+      "values": {
+        "privacy": {
+          "title": "Datenschutz zuerst",
+          "content": "Ihre Stammbaumdaten verlassen niemals Ihr Gerät. Wir nutzen den Speicher Ihres Browsers (IndexedDB), damit alles privat und sicher bleibt. Keine Server, keine entfernten Datenbanken, keine Datensammlung – nur Sie und Ihre Familiengeschichte."
+        },
+        "free": {
+          "title": "Für immer 100 % kostenlos",
+          "content": "Keine Abonnements, keine Premium-Stufen, keine versteckten Kosten. Alle Funktionen sind kostenlos und bleiben es auch. Die Bewahrung der Familiengeschichte sollte keine monatliche Zahlung erfordern."
+        },
+        "simple": {
+          "title": "Einfach und intuitiv",
+          "content": "Wir legen Wert darauf, dass die Erstellung eines Stammbaums für alle einfach ist. Dank Drag-and-Drop-Oberfläche, visueller Arbeitsfläche und übersichtlicher Bedienung können Sie sofort loslegen – ganz ohne Einarbeitung."
+        },
+        "accessible": {
+          "title": "Für alle zugänglich",
+          "content": "Keine Registrierung erforderlich. Funktioniert auf jedem Gerät mit Browser. Verfügbar in mehreren Sprachen. Wir sind überzeugt, dass alle ihre Familiengeschichte dokumentieren können sollten – unabhängig von technischen Kenntnissen oder Mitteln."
+        },
+        "beautiful": {
+          "title": "Schönes Design",
+          "content": "Ihre Familiengeschichte verdient eine schöne Darstellung. Unsere interaktive Arbeitsfläche, anpassbare Stile und hochauflösende Exporte machen Ihre Stammbäume zu eindrucksvollen Kunstwerken."
+        },
+        "ownership": {
+          "title": "Ihre Daten, Ihre Kontrolle",
+          "content": "Exportieren Sie Ihren Stammbaum jederzeit in mehreren Formaten (JSON, PDF, Bilder). Keine Anbieterbindung, keine Einschränkungen. Ihre Daten gehören Ihnen – Punkt."
+        }
+      },
+      "stats": {
+        "title": "MapMyRoots in Zahlen",
+        "formats": "Exportformate",
+        "free": "Für immer kostenlos",
+        "accounts": "Benötigte Konten",
+        "languages": "Sprachen"
+      },
+      "why_free": {
+        "title": "Warum ist MapMyRoots kostenlos?",
+        "paragraph1": "Gute Frage! Wir sind überzeugt, dass die Bewahrung der Familiengeschichte eine grundlegende menschliche Tätigkeit ist, mit der man kein Geld verdienen sollte. Anders als andere Genealogie-Dienste verlangen wir keine Gebühren, weil:",
+        "reason1": "<strong>Datenschutzorientierte Architektur:</strong> Da Ihre Daten auf Ihrem Gerät bleiben, brauchen wir keine teuren Server oder Datenbanken",
+        "reason2": "<strong>Keine historischen Archive:</strong> Wir konzentrieren uns auf die Visualisierung von Stammbäumen, nicht auf genealogische Recherchedatenbanken",
+        "reason3": "<strong>Nachhaltiges Modell:</strong> Unser schlanker Betrieb und effiziente Technik halten die Kosten minimal",
+        "reason4": "<strong>Gemeinschaftsorientiert:</strong> Wir dienen Familien, nicht Aktionären",
+        "paragraph2": "Wir werden niemals kostenpflichtige Funktionen, Abonnements oder Premium-Stufen einführen. MapMyRoots bleibt für immer 100 % kostenlos."
+      },
+      "technology": {
+        "title": "Unsere Technologie",
+        "paragraph1": "MapMyRoots basiert auf modernen Webtechnologien und bietet so ein schnelles, sicheres und zuverlässiges Erlebnis:",
+        "canvas": "<strong>HTML5 Canvas:</strong> Flüssige, reaktionsschnelle Darstellung des Stammbaums",
+        "localstorage": "<strong>IndexedDB:</strong> Sichere, lokale Datenspeicherung auf Ihrem Gerät",
+        "responsive": "<strong>Responsives Design:</strong> Funktioniert perfekt auf Desktop, Tablet und Smartphone",
+        "export": "<strong>Erweiterter Export:</strong> Hochauflösende PNG-, PDF- und JSON-Formate",
+        "i18n": "<strong>Internationalisierung:</strong> Mehrsprachige Unterstützung für weltweite Zugänglichkeit"
+      },
+      "cta": {
+        "title": "Beginnen Sie noch heute mit Ihrem Stammbaum",
+        "content": "Schließen Sie sich den Familien an, die MapMyRoots ihre Familiengeschichte anvertrauen. Keine Registrierung, völlig kostenlos, und Ihre Daten bleiben privat.",
+        "button": "Kostenlos starten"
       }
     },
     "contact": {
       "meta": {
         "title": "Kontakt - MapMyRoots",
         "description": "Kontaktieren Sie MapMyRoots - Holen Sie sich Support für unseren kostenlosen Stammbaum-Builder oder senden Sie uns Ihr Feedback."
+      },
+      "hero": {
+        "title": "Kontakt",
+        "subtitle": "Haben Sie Fragen oder Feedback? Wir freuen uns, von Ihnen zu hören!"
+      },
+      "email": {
+        "title": "E-Mail-Support",
+        "description": "Schreiben Sie uns eine E-Mail, und wir melden uns so schnell wie möglich bei Ihnen."
+      },
+      "faq": {
+        "title": "FAQ",
+        "description": "In unseren häufig gestellten Fragen finden Sie schnelle Antworten.",
+        "link": "Zu den FAQ"
+      },
+      "resources": {
+        "title": "Ressourcen",
+        "description": "Entdecken Sie unser Glossar und unsere Anleitungen, um mehr zu erfahren.",
+        "link": "Ressourcen ansehen"
+      },
+      "response": {
+        "title": "Antwortzeit",
+        "content": "Wir antworten in der Regel innerhalb von 24–48 Stunden an Werktagen. Für sofortige Antworten sehen Sie sich unsere FAQ an."
       }
+    },
+    "privacy": {
+      "title": "Datenschutzerklärung",
+      "last_updated": "Zuletzt aktualisiert: 29. Oktober 2026",
+      "tldr": {
+        "title": "Kurz gesagt – Datenschutz zuerst:",
+        "content": "Ihre Stammbaumdaten verlassen niemals Ihr Gerät. Sie werden lokal im Speicher Ihres Browsers (IndexedDB) gespeichert. Wir haben keinen Zugriff auf Ihre Daten und können sie nicht einsehen. Sie behalten die volle Kontrolle."
+      },
+      "introduction": {
+        "title": "1. Einleitung",
+        "content": "MapMyRoots („wir“, „unser“ oder „uns“) verpflichtet sich zum Schutz Ihrer Privatsphäre. Diese Datenschutzerklärung erläutert, wie wir mit Informationen umgehen, wenn Sie unseren kostenlosen Stammbaum-Editor unter mapmyroots.com (der „Dienst“) nutzen."
+      },
+      "data_collection": {
+        "title": "2. Datenerhebung und -speicherung",
+        "family_tree": {
+          "title": "2.1 Stammbaumdaten",
+          "content": "Alle von Ihnen erstellten Stammbaumdaten (Namen, Daten, Beziehungen, Fotos, Notizen) werden <strong>lokal auf Ihrem Gerät</strong> im Speicher Ihres Browsers (IndexedDB) gespeichert. Diese Daten:",
+          "local": "Verlassen niemals Ihr Gerät oder Ihren Browser",
+          "no_upload": "Werden nicht auf unsere Server hochgeladen",
+          "no_access": "Sind weder für uns noch für Dritte zugänglich",
+          "control": "Bleiben vollständig unter Ihrer Kontrolle",
+          "export": "Können jederzeit exportiert und gelöscht werden"
+        },
+        "analytics": {
+          "title": "2.2 Analysedaten",
+          "content": "Wir verwenden Google Analytics 4 (eingebunden über den Google Tag Manager) und Cloudflare Web Analytics, um anonyme, aggregierte Nutzungsstatistiken zu erheben, die uns helfen, den Dienst zu verbessern. Dazu gehören:",
+          "pages": "Besuchte Seiten",
+          "referrer": "Verweisende Website",
+          "device": "Gerätetyp und Browser",
+          "location": "Ungefährer Standort (Land/Stadt)",
+          "features": "Nutzung von Funktionen im Editor (z. B. dass eine Person hinzugefügt oder ein Stammbaum exportiert wurde)",
+          "no_content": "<strong>Wichtig:</strong> Analyseereignisse erfassen nur, dass eine Aktion stattgefunden hat. Sie enthalten niemals Namen, Daten, Notizen, Fotos oder andere Inhalte aus Ihrem Stammbaum."
+        },
+        "cookies": {
+          "title": "2.3 Cookies",
+          "content": "Wir verwenden die folgenden Arten von Cookies:",
+          "essential": {
+            "title": "Notwendige Cookies:",
+            "content": "Erforderlich, damit der Dienst funktioniert (z. B. zum Speichern Ihrer Spracheinstellung)"
+          },
+          "analytics": "<strong>Analyse-Cookies:</strong> Google Analytics setzt die Cookies <code>_ga</code> und <code>_ga_*</code>, um Besuche und Sitzungen zu unterscheiden. Sie laufen nach höchstens 2 Jahren ab. Cloudflare Web Analytics verwendet keine Cookies."
+        }
+      },
+      "no_account": {
+        "title": "3. Kein Konto erforderlich",
+        "content": "MapMyRoots verlangt nicht, dass Sie ein Konto erstellen oder persönliche Informationen angeben, wie zum Beispiel:",
+        "email": "E-Mail-Adresse",
+        "name": "Name",
+        "payment": "Zahlungsinformationen",
+        "phone": "Telefonnummer",
+        "anonymous": "Sie können den Dienst vollständig anonym nutzen."
+      },
+      "data_security": {
+        "title": "4. Datensicherheit",
+        "content": "Da Ihre Stammbaumdaten lokal auf Ihrem Gerät gespeichert werden:",
+        "responsible": "Sind Sie für die Sicherheit Ihres Geräts verantwortlich",
+        "export": "Empfehlen wir, Ihre Stammbaumdaten regelmäßig als Sicherung zu exportieren",
+        "browser": "Unterliegen Ihre Daten den Sicherheits- und Speicherrichtlinien Ihres Browsers",
+        "clear": "Löscht das Entfernen Ihrer Browserdaten auch Ihren Stammbaum"
+      },
+      "third_party": {
+        "title": "5. Dienste Dritter",
+        "content": "Wir nutzen die folgenden Dienste Dritter:",
+        "google": {
+          "title": "Google Tag Manager & Google Analytics:",
+          "content": "Für anonyme Nutzungsstatistiken. Siehe <a href=\"https://policies.google.com/privacy\" target=\"_blank\" rel=\"noopener\">Datenschutzerklärung von Google</a>"
+        },
+        "cloudflare": "<strong>Cloudflare Web Analytics:</strong> Für anonyme, cookiefreie Nutzungsstatistiken. Siehe <a href=\"https://www.cloudflare.com/privacypolicy/\" target=\"_blank\" rel=\"noopener\">Datenschutzerklärung von Cloudflare</a>",
+        "fonts": {
+          "title": "Selbst gehostete Schriftarten:",
+          "content": "Wir hosten alle Schriftarten selbst – es werden keine externen Schriftanfragen gestellt."
+        }
+      },
+      "your_rights": {
+        "title": "6. Ihre Rechte",
+        "intro": "Sie haben die volle Kontrolle über Ihre Daten:",
+        "access": {
+          "title": "Zugriff:",
+          "content": "Sehen Sie Ihre Daten jederzeit in der Anwendung ein"
+        },
+        "export": {
+          "title": "Export:",
+          "content": "Laden Sie Ihre Stammbaumdaten als JSON, PDF oder Bild herunter"
+        },
+        "delete": {
+          "title": "Löschen:",
+          "content": "Löschen Sie alle Daten über die Schaltfläche „Alle Daten löschen“ in den Einstellungen"
+        },
+        "modify": {
+          "title": "Ändern:",
+          "content": "Bearbeiten Sie jederzeit beliebige Informationen in Ihrem Stammbaum"
+        }
+      },
+      "children": {
+        "title": "7. Datenschutz für Kinder",
+        "content": "MapMyRoots erhebt wissentlich keine personenbezogenen Daten von Nutzern. Da wir keine personenbezogenen Daten erheben, können Nutzer jeden Alters den Dienst verwenden. Wir empfehlen jedoch für Nutzer unter 13 Jahren die Aufsicht durch die Eltern."
+      },
+      "international": {
+        "title": "8. Internationale Nutzer",
+        "content": "MapMyRoots ist weltweit verfügbar. Da Ihre Daten lokal auf Ihrem Gerät gespeichert werden, überschreiten sie über unseren Dienst niemals Landesgrenzen. Aggregierte, anonyme Analysedaten, die von Google und Cloudflare verarbeitet werden, können gemäß deren jeweiligen Datenschutzrichtlinien international übermittelt werden."
+      },
+      "data_retention": {
+        "title": "9. Speicherdauer",
+        "content": "Ihre Stammbaumdaten verbleiben auf Ihrem Gerät, bis Sie:",
+        "clear_browser": "Den Website-Speicher Ihres Browsers löschen",
+        "clear_app": "Die Funktion „Alle Daten löschen“ in der Anwendung verwenden",
+        "uninstall": "Ihren Browser deinstallieren",
+        "export": "Wir empfehlen dringend, Ihre Daten regelmäßig zu exportieren, um versehentlichen Verlust zu vermeiden."
+      },
+      "changes": {
+        "title": "10. Änderungen dieser Erklärung",
+        "content": "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Über Änderungen informieren wir, indem wir das Datum „Zuletzt aktualisiert“ oben in dieser Erklärung anpassen. Wir empfehlen Ihnen, diese Erklärung regelmäßig zu lesen."
+      },
+      "gdpr": {
+        "title": "11. DSGVO-Konformität",
+        "content": "Für Nutzer in der Europäischen Union halten wir die Datenschutz-Grundverordnung (DSGVO) ein:",
+        "local": "<strong>Datenminimierung:</strong> Wir verarbeiten nur die minimal notwendigen Daten (anonyme Analysen)",
+        "control": "<strong>Kontrolle durch die Nutzer:</strong> Sie haben die volle Kontrolle über Ihre Stammbaumdaten",
+        "transparency": "<strong>Transparenz:</strong> Diese Erklärung beschreibt unsere Datenpraktiken klar und verständlich",
+        "consent": "<strong>Einwilligung:</strong> Durch die Nutzung unseres Dienstes willigen Sie in die beschriebenen Analysen ein"
+      },
+      "ccpa": {
+        "title": "12. Datenschutzrechte in Kalifornien (CCPA)",
+        "content": "MapMyRoots verkauft keine personenbezogenen Daten. Einwohner Kaliforniens haben das Recht:",
+        "know": "Zu erfahren, welche personenbezogenen Daten erhoben werden (keine aus Ihrem Stammbaum)",
+        "delete": "Die Löschung personenbezogener Daten zu verlangen",
+        "opt_out": "Dem Verkauf von Daten zu widersprechen (wir verkaufen keine Daten)"
+      },
+      "contact": {
+        "title": "13. Kontakt",
+        "intro": "Wenn Sie Fragen zu dieser Datenschutzerklärung haben, kontaktieren Sie uns bitte:",
+        "email_label": "E-Mail:",
+        "website_label": "Website:"
+      },
+      "meta": {
+        "title": "Datenschutzerklärung - MapMyRoots",
+        "description": "Datenschutzerklärung von MapMyRoots. Ihre Stammbaumdaten werden lokal auf Ihrem Gerät gespeichert – wir sehen sie nie, speichern sie nie auf unseren Servern und geben sie nie weiter."
+      }
+    },
+    "terms": {
+      "title": "Nutzungsbedingungen",
+      "last_updated": "Zuletzt aktualisiert: 1. Januar 2025",
+      "intro": "<strong>Willkommen bei MapMyRoots!</strong> Diese Bedingungen beschreiben Ihre Rechte und Pflichten bei der Nutzung unseres kostenlosen Stammbaum-Editors. Durch die Nutzung unseres Dienstes stimmen Sie diesen Bedingungen zu.",
+      "acceptance": {
+        "title": "1. Annahme der Bedingungen",
+        "content": "Durch den Zugriff auf und die Nutzung von MapMyRoots („Dienst“) akzeptieren Sie die Bedingungen und Bestimmungen dieser Vereinbarung und erklären sich mit ihnen einverstanden. Wenn Sie diesen Nutzungsbedingungen nicht zustimmen, nutzen Sie den Dienst bitte nicht."
+      },
+      "description": {
+        "title": "2. Beschreibung des Dienstes",
+        "intro": "MapMyRoots bietet einen kostenlosen, webbasierten Stammbaum-Editor, mit dem Nutzer:",
+        "create": "Stammbäume erstellen und visualisieren können",
+        "store": "Informationen über Familienmitglieder lokal auf ihrem Gerät speichern können",
+        "export": "Stammbaumdaten in verschiedenen Formaten exportieren können",
+        "customize": "Stammbäume anpassen und gestalten können",
+        "free": "Der Dienst wird völlig kostenlos bereitgestellt, ohne Premium-Funktionen oder Abonnements."
+      },
+      "account": {
+        "title": "3. Kein Konto erforderlich",
+        "content": "MapMyRoots verlangt von Nutzern kein Konto. Alle Stammbaumdaten werden lokal auf Ihrem Gerät im Speicher Ihres Browsers (IndexedDB) gespeichert. Sie sind dafür verantwortlich, Ihre Daten durch regelmäßigen Export zu sichern."
+      },
+      "acceptable_use": {
+        "title": "4. Zulässige Nutzung",
+        "permitted": {
+          "title": "4.1 Erlaubte Nutzung",
+          "content": "Sie dürfen den Dienst für jeden rechtmäßigen Zweck im Zusammenhang mit der Erstellung und Verwaltung von Stammbäumen nutzen, darunter:",
+          "personal": "Persönliche Familienforschung",
+          "education": "Bildungsprojekte",
+          "reunions": "Familientreffen und Veranstaltungen",
+          "preservation": "Bewahrung der Familiengeschichte"
+        },
+        "prohibited": {
+          "title": "4.2 Verbotene Nutzung",
+          "intro": "Sie verpflichten sich, Folgendes NICHT zu tun:",
+          "harm": "Den Dienst auf eine Weise zu nutzen, die ihn beschädigen, deaktivieren oder beeinträchtigen könnte",
+          "unauthorized": "Zu versuchen, unbefugten Zugriff auf Teile des Dienstes zu erlangen",
+          "interfere": "Den Dienst oder die Server zu stören oder zu unterbrechen",
+          "automated": "Automatisierte Systeme zu verwenden, die mehr Anfragen an den Dienst senden, als ein Mensch vernünftigerweise erzeugen könnte",
+          "reverse": "Teile des Dienstes zurückzuentwickeln, zu dekompilieren oder zu disassemblieren",
+          "violate": "Gegen geltende Gesetze oder Vorschriften zu verstoßen",
+          "infringe": "Geistige Eigentumsrechte anderer zu verletzen"
+        }
+      },
+      "data_ownership": {
+        "title": "5. Dateneigentum und Verantwortung",
+        "your_data": {
+          "title": "5.1 Ihre Daten",
+          "content": "Sie behalten alle Rechte an den von Ihnen erstellten Stammbaumdaten. Da die Daten lokal auf Ihrem Gerät gespeichert werden:",
+          "ownership": "Gehören Ihnen alle von Ihnen erstellten Stammbaumdaten",
+          "control": "Haben Sie die volle Kontrolle über Ihre Daten",
+          "responsibility": "Sind Sie für die Richtigkeit der von Ihnen eingegebenen Informationen verantwortlich",
+          "backup": "Sind Sie für die Sicherung Ihrer Daten verantwortlich",
+          "loss": "Haften wir nicht für Datenverluste"
+        },
+        "privacy": {
+          "title": "5.2 Privatsphäre und personenbezogene Daten",
+          "content": "Sie sind dafür verantwortlich sicherzustellen, dass Sie berechtigt sind, personenbezogene Daten über Personen in Ihrem Stammbaum zu verwenden und weiterzugeben. Bitte respektieren Sie die Privatsphäre anderer und holen Sie die entsprechende Einwilligung ein, wenn Sie Stammbäume mit personenbezogenen Daten lebender Personen teilen."
+        }
+      },
+      "intellectual_property": {
+        "title": "6. Geistiges Eigentum",
+        "our": {
+          "title": "6.1 Unser geistiges Eigentum",
+          "content": "Der Dienst, einschließlich Design, Code, Grafiken und Benutzeroberfläche, ist Eigentum von MapMyRoots und durch Urheber-, Marken- und andere Gesetze zum Schutz des geistigen Eigentums geschützt. Sie dürfen Teile des Dienstes ohne Erlaubnis weder kopieren noch verändern oder verbreiten."
+        },
+        "open_source": {
+          "title": "6.2 Open Source",
+          "content": "Bestimmte Komponenten des Dienstes können Open-Source-Lizenzen unterliegen. Diese Komponenten werden unter ihren jeweiligen Open-Source-Lizenzen bereitgestellt."
+        }
+      },
+      "disclaimers": {
+        "title": "7. Haftungsausschlüsse und Haftungsbeschränkungen",
+        "as_is": {
+          "title": "7.1 Dienst „wie besehen“",
+          "content": "DER DIENST WIRD „WIE BESEHEN“ UND „WIE VERFÜGBAR“ OHNE JEGLICHE AUSDRÜCKLICHE ODER STILLSCHWEIGENDE GEWÄHRLEISTUNG BEREITGESTELLT, EINSCHLIESSLICH, ABER NICHT BESCHRÄNKT AUF DIE GEWÄHRLEISTUNG DER MARKTGÄNGIGKEIT, DER EIGNUNG FÜR EINEN BESTIMMTEN ZWECK ODER DER NICHTVERLETZUNG VON RECHTEN."
+        },
+        "no_guarantee": {
+          "title": "7.2 Keine Garantie",
+          "content": "Wir garantieren nicht, dass:",
+          "uninterrupted": "Der Dienst unterbrechungs- oder fehlerfrei ist",
+          "bugs": "Alle Fehler behoben werden",
+          "secure": "Der Dienst vollständig sicher oder frei von Viren ist",
+          "accuracy": "Die Ergebnisse genau oder zuverlässig sind"
+        },
+        "liability": {
+          "title": "7.3 Haftungsbeschränkung",
+          "content": "SOWEIT GESETZLICH ZULÄSSIG, HAFTET MAPMYROOTS NICHT FÜR INDIREKTE, ZUFÄLLIGE, BESONDERE, FOLGE- ODER STRAFSCHÄDEN ODER FÜR ENTGANGENE GEWINNE ODER UMSÄTZE, OB DIREKT ODER INDIREKT ENTSTANDEN, ODER FÜR DEN VERLUST VON DATEN, NUTZUNGSMÖGLICHKEITEN, GOODWILL ODER ANDEREN IMMATERIELLEN VERLUSTEN, DIE ENTSTEHEN DURCH:",
+          "access": "Ihren Zugriff auf oder Ihre Nutzung des Dienstes bzw. die Unmöglichkeit des Zugriffs oder der Nutzung",
+          "third_party": "Verhalten oder Inhalte Dritter",
+          "unauthorized": "Unbefugten Zugriff auf Ihre Daten sowie deren unbefugte Nutzung oder Veränderung"
+        }
+      },
+      "data_loss": {
+        "title": "8. Datenverlust",
+        "content": "Da Ihre Stammbaumdaten lokal auf Ihrem Gerät gespeichert werden, können wir verlorene Daten nicht wiederherstellen. Daten können verloren gehen, wenn Sie:",
+        "clear": "Den Cache oder Website-Speicher Ihres Browsers löschen",
+        "uninstall": "Ihren Browser deinstallieren",
+        "device": "Einen Geräteausfall oder eine Beschädigung erleiden",
+        "reset": "Ihr Gerät auf die Werkseinstellungen zurücksetzen",
+        "backup": "<strong>Wichtig:</strong> Exportieren und sichern Sie Ihre Stammbaumdaten regelmäßig, um Verluste zu vermeiden."
+      },
+      "availability": {
+        "title": "9. Verfügbarkeit des Dienstes",
+        "content": "Wir bemühen uns um einen durchgehenden Zugang zum Dienst, garantieren jedoch keine unterbrechungsfreie Verfügbarkeit. Der Dienst kann vorübergehend nicht verfügbar sein aufgrund von:",
+        "maintenance": "Geplanter Wartung",
+        "technical": "Technischen Schwierigkeiten",
+        "circumstances": "Umständen außerhalb unserer Kontrolle"
+      },
+      "modifications": {
+        "title": "10. Änderungen des Dienstes und der Bedingungen",
+        "service": {
+          "title": "10.1 Änderungen des Dienstes",
+          "content": "Wir behalten uns das Recht vor, Teile des Dienstes jederzeit ohne Vorankündigung zu ändern, auszusetzen oder einzustellen. Wir haften weder Ihnen noch Dritten gegenüber für eine Änderung, Aussetzung oder Einstellung des Dienstes."
+        },
+        "terms": {
+          "title": "10.2 Änderungen der Bedingungen",
+          "content": "Wir können diese Nutzungsbedingungen von Zeit zu Zeit aktualisieren. Über Änderungen informieren wir, indem wir das Datum „Zuletzt aktualisiert“ anpassen. Wenn Sie den Dienst nach Änderungen weiter nutzen, gilt dies als Zustimmung zu den neuen Bedingungen."
+        }
+      },
+      "termination": {
+        "title": "11. Beendigung",
+        "content": "Wir behalten uns das Recht vor, den Zugang zum Dienst jederzeit ohne vorherige Ankündigung und aus beliebigem Grund zu beenden oder auszusetzen, insbesondere bei einem Verstoß gegen diese Bedingungen. Da kein Konto erforderlich ist, würde eine Beendigung durch das Sperren bestimmter IP-Adressen oder andere technische Beschränkungen erfolgen."
+      },
+      "external_links": {
+        "title": "12. Externe Links",
+        "content": "Der Dienst kann Links zu Websites oder Diensten Dritter enthalten. Wir sind nicht verantwortlich für die Inhalte, Datenschutzrichtlinien oder Praktiken von Websites Dritter. Der Zugriff auf Websites Dritter erfolgt auf Ihr eigenes Risiko."
+      },
+      "indemnification": {
+        "title": "13. Freistellung",
+        "content": "Sie verpflichten sich, MapMyRoots, seine verbundenen Unternehmen sowie deren jeweilige leitende Angestellte, Direktoren, Mitarbeiter und Beauftragte von allen Ansprüchen, Schäden, Verlusten, Verbindlichkeiten und Kosten (einschließlich Anwaltskosten) freizustellen und schadlos zu halten, die entstehen aus:",
+        "use": "Ihrer Nutzung des Dienstes",
+        "violation": "Ihrem Verstoß gegen diese Bedingungen",
+        "rights": "Ihrer Verletzung von Rechten Dritter",
+        "user_content": "Inhalten, die Sie mit dem Dienst erstellen oder teilen"
+      },
+      "governing_law": {
+        "title": "14. Anwendbares Recht",
+        "content": "Diese Bedingungen unterliegen dem anwendbaren Recht und werden nach diesem ausgelegt, unter Ausschluss der Kollisionsnormen. Streitigkeiten im Zusammenhang mit diesen Bedingungen oder dem Dienst werden gemäß der zuständigen Gerichtsbarkeit beigelegt."
+      },
+      "severability": {
+        "title": "15. Salvatorische Klausel",
+        "content": "Sollte eine Bestimmung dieser Bedingungen ungültig oder nicht durchsetzbar sein, bleiben die übrigen Bestimmungen voll wirksam."
+      },
+      "entire_agreement": {
+        "title": "16. Gesamte Vereinbarung",
+        "content": "Diese Nutzungsbedingungen bilden zusammen mit unserer Datenschutzerklärung die gesamte Vereinbarung zwischen Ihnen und MapMyRoots über die Nutzung des Dienstes."
+      },
+      "contact": {
+        "title": "17. Kontaktinformationen",
+        "intro": "Wenn Sie Fragen zu diesen Nutzungsbedingungen haben, kontaktieren Sie uns bitte:",
+        "email_label": "E-Mail:",
+        "website_label": "Website:"
+      },
+      "thank_you": "<strong>Vielen Dank, dass Sie MapMyRoots nutzen!</strong> Wir möchten ein kostenloses, datenschutzfreundliches Werkzeug zur Bewahrung der Familiengeschichte bieten. Durch die Nutzung unseres Dienstes stimmen Sie diesen Bedingungen und unserem Versprechen zu, Ihre Daten privat und sicher auf Ihrem Gerät zu halten.",
+      "meta": {
+        "title": "Nutzungsbedingungen - MapMyRoots",
+        "description": "Nutzungsbedingungen von MapMyRoots. Lesen Sie die Bedingungen für die Nutzung unseres kostenlosen Stammbaum-Editors."
+      }
+    },
+    "legal": {
+      "translation_notice": "Diese Übersetzung dient nur der Information. Bei Abweichungen von der englischen Fassung ist die englische Fassung maßgeblich."
     }
   }
 }
