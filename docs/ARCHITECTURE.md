@@ -136,5 +136,5 @@ Guard tests that protect cross-cutting rules:
 1. **`tree-engine.js` (~2,300 lines) and `modal.js` (~1,500)** mix data, persistence, UI wiring and modal logic. Split them by responsibility, but only behind stronger e2e coverage of add, edit and delete person flows.
 2. **`window.*` globals** (`treeCore`, `notifications`, `modalUtils`, …) are still how many UI modules talk to the core. Migrate them to EventBus or service lookups as files are touched.
 3. **Hardcoded English UI strings** remain in some builder code paths, e.g. share-dialog notifications and export notifications.
-4. **Static-page CSS:** the About, Contact and legal page classes (`about-container`, `legal-container`, `value-card`, …) have no styles, so those pages render with the base typography only.
+4. **Static-page CSS (user-visible):** header, nav, footer and language-switcher styles live in `homepage.css`, which only `index.astro` imports. As a result, About, Contact, Privacy, Terms, Glossary and Offline render unstyled in production. Their own classes (`about-container`, `legal-container`, `value-card`, …) have no styles anywhere either. Fix: move the shared chrome rules into a stylesheet imported by `Header.astro`/`Footer.astro`, then style the content pages.
 5. **Snapshot undo** holds up to 50 full copies of the tree. If very large trees become common, switch to diffs.
