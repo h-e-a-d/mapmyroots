@@ -67,7 +67,7 @@ class NotificationManager {
     // Create close button
     const closeBtn = document.createElement('button');
     closeBtn.className = 'notification-close';
-    closeBtn.innerHTML = '×';
+    closeBtn.textContent = '×';
     closeBtn.addEventListener('click', () => this.remove(id));
 
     // Assemble notification

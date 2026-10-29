@@ -337,10 +337,13 @@ class LanguageSwitcher {
         option.classList.add('active');
       }
 
-      option.innerHTML = `
-        <span class="language-flag">${data.flag}</span>
-        <span data-i18n="languages.${code === 'en' ? 'english' : code === 'es' ? 'spanish' : code}">${data.name}</span>
-      `;
+      // Language names are endonyms, so they are not run through i18n.
+      const flag = document.createElement('span');
+      flag.className = 'language-flag';
+      flag.textContent = data.flag;
+      const name = document.createElement('span');
+      name.textContent = data.name;
+      option.append(flag, name);
 
       option.addEventListener('click', (e) => {
         e.preventDefault();

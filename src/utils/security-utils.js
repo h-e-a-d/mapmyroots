@@ -54,10 +54,12 @@ export class SecurityUtils {
       .substring(0, 1000); // Limit length
   }
 
-  // Safe alternative to innerHTML
+  // Safe alternative to innerHTML. textContent never parses markup, so the
+  // value is assigned as-is; HTML-escaping it here would show literal
+  // entities (e.g. "O&#39;Brien").
   static setTextContent(element, content) {
     if (!element) return;
-    element.textContent = this.sanitizeText(content);
+    element.textContent = content == null ? '' : String(content);
   }
 
   // Safe HTML creation for trusted content
@@ -71,7 +73,8 @@ export class SecurityUtils {
       } else if (key === 'id') {
         element.id = value;
       } else if (key.startsWith('data-')) {
-        element.setAttribute(key, this.sanitizeText(String(value)));
+        // setAttribute stores the value verbatim and never parses it as HTML.
+        element.setAttribute(key, String(value));
       } else if (key === 'role' || key.startsWith('aria-')) {
         element.setAttribute(key, value);
       }
