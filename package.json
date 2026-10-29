@@ -51,6 +51,7 @@
     "canvaskit-wasm": "^0.41.1",
     "dompurify": "^3.3.0",
     "fflate": "^0.8.2",
+    "jspdf": "4.2.1",
     "parse-gedcom": "^2.0.1",
     "pdfjs-dist": "^4.10.38"
   }
