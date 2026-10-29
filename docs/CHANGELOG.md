@@ -2,6 +2,12 @@
 
 Summary of significant changes, newest first. Git history has the details.
 
+## October 2026: Static-page styling
+
+- About, Contact, Privacy, Terms, Glossary and Offline rendered without header, navigation or content styles, because that CSS lived only in the homepage stylesheet. Shared chrome moved to `site.css` (loaded by `BaseLayout`), and the content pages got `content-pages.css`. The homepage's computed styles are unchanged.
+- The mobile menu opened with zero height on every page, including the homepage: the header's `backdrop-filter` makes it the containing block for the fixed-position menu. The menu is now sized explicitly.
+- The hidden skip link peeked 2px into the top of the homepage. Fixed.
+
 ## October 2026: Site audit
 
 - **PDF export fixed in production.** `/builder` was sent two CSP headers, and the stricter one blocked the CDN that jsPDF loaded from. jsPDF is now a bundled, pinned npm dependency, and `_headers` has a single policy.

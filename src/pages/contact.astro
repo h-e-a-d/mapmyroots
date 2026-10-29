@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import '@/styles/content-pages.css';
 import { t, localizedPath, type Locale } from '@/i18n';
 
 export interface Props {
@@ -36,21 +37,21 @@ const breadcrumbSchema = JSON.stringify({
       <div class="contact-grid">
         <div class="contact-card">
           <div class="contact-icon">📧</div>
-          <h3>{t(locale, 'pages.contact.email.title')}</h3>
+          <h2>{t(locale, 'pages.contact.email.title')}</h2>
           <p>{t(locale, 'pages.contact.email.description')}</p>
           <a href="mailto:support@mapmyroots.com">support@mapmyroots.com</a>
         </div>
 
         <div class="contact-card">
           <div class="contact-icon">❓</div>
-          <h3>{t(locale, 'pages.contact.faq.title')}</h3>
+          <h2>{t(locale, 'pages.contact.faq.title')}</h2>
           <p>{t(locale, 'pages.contact.faq.description')}</p>
           <a href={`${localizedPath(locale, '/')}#faq`}>{t(locale, 'pages.contact.faq.link')}</a>
         </div>
 
         <div class="contact-card">
           <div class="contact-icon">📚</div>
-          <h3>{t(locale, 'pages.contact.resources.title')}</h3>
+          <h2>{t(locale, 'pages.contact.resources.title')}</h2>
           <p>{t(locale, 'pages.contact.resources.description')}</p>
           <a href="/glossary">{t(locale, 'pages.contact.resources.link')}</a>
         </div>

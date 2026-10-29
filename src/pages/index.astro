@@ -80,6 +80,7 @@ const faqSchema = JSON.stringify({
   description={description}
   canonicalPath="/"
   locale={locale}
+  bodyClass="page-home"
   jsonLd={[softwareSchema, orgSchema, ...(locale === 'en' ? [faqSchema] : [])]}
 >
     <section class="hero" aria-labelledby="hero-title">

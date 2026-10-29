@@ -44,6 +44,8 @@ Use when the user points you at an existing task file.
 
 - Modal CSS lives in `src/styles/modal.css`, never in `src/styles/global.css`.
 - Homepage-only CSS lives in `src/styles/homepage.css`, never in `global.css`.
+- Shared site chrome (skip link, header, nav, mobile menu, buttons) lives in `src/styles/site.css`, which `BaseLayout.astro` loads on every static page. Never put it back in `homepage.css`; only the homepage loads that file.
+- About/Contact/Privacy/Terms styles live in `src/styles/content-pages.css`, which only those pages import. `tests/unit/static-page-styles.test.js` fails if a class used in `Header.astro` or those pages has no rule.
 - Translation strings live in `public/assets/locales/*.json`. New user-visible strings require all four locales (en, es, ru, de).
 - Files over 500 lines are a smell — prefer splitting by responsibility.
 
