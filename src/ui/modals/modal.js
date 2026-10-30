@@ -171,6 +171,7 @@ export function openModalForEdit(personId, retryCount = 0) {
 
     // Clear all form fields
     clearForm();
+    mountMarriagesList([], '');
 
     // No existing relationships
     setTimeout(() => updateSearchableSelects({}), 100);
@@ -198,6 +199,22 @@ let birthDateHandle = null;
 let deathDateHandle = null;
 let marriagesListHandle = null;
 
+// Mounts the marriages rows (one empty row when there are none). clearForm() empties the mount
+// on every open and close, so the add path must call this too or "Add person" has no spouse picker.
+function mountMarriagesList(marriages, currentPersonId) {
+  const marriagesMount = document.getElementById('personMarriagesMount');
+  if (!marriagesMount) return;
+  marriagesMount.innerHTML = '';
+  marriagesListHandle = createMarriagesList({
+    container: marriagesMount,
+    marriages,
+    getAllPersons: () => Array.from(window.treeCore?.personData?.values() || []),
+    currentPersonId,
+    confirmSpouseChange: showSpouseChangeConfirmation,
+    t
+  });
+}
+
 // Helper function to populate form fields
 function populateFormFields(node, personData) {
   document.getElementById('personName').value = node?.name || personData?.name || '';
@@ -219,19 +236,7 @@ function populateFormFields(node, personData) {
   mountEvent('Birth', birth, (h) => { birthDateHandle = h; });
   mountEvent('Death', death, (h) => { deathDateHandle = h; });
 
-  const allPersons = Array.from(window.treeCore?.personData?.values() || []);
-  const marriagesMount = document.getElementById('personMarriagesMount');
-  if (marriagesMount) {
-    marriagesMount.innerHTML = '';
-    marriagesListHandle = createMarriagesList({
-      container: marriagesMount,
-      marriages: Array.isArray(personData?.marriages) ? personData.marriages : [],
-      getAllPersons: () => Array.from(window.treeCore?.personData?.values() || []),
-      currentPersonId: personData?.id || node?.id || '',
-      confirmSpouseChange: showSpouseChangeConfirmation,
-      t
-    });
-  }
+  mountMarriagesList(Array.isArray(personData?.marriages) ? personData.marriages : [], personData?.id || node?.id || '');
 
   const notesEl = document.getElementById('personNotes');
   if (notesEl) notesEl.value = personData?.notes || '';
