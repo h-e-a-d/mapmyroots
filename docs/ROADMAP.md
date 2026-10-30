@@ -263,7 +263,7 @@ Make the site a real installable PWA with offline support for the builder. Add p
 7. **Image optimization pass.** Convert `assets/images/tree.webp` and the builder screenshot to AVIF + WebP via Astro's `<Image>` component. Lazy-load below-the-fold images (already on most).
 8. **Self-hosted font subsetting.** Current Inter and Playfair WOFF2s are full-Latin sets. Subset to actually-used glyphs with `glyphhanger` or similar. Should drop ~30% font weight.
 9. **Lighthouse-CI budget enforcement.** Update `lighthouserc.js` thresholds to: Performance ≥ 95, A11y ≥ 95, SEO ≥ 95, Best Practices ≥ 100, total JS ≤ 50KB on marketing pages, total JS ≤ 300KB gzipped on builder page.
-10. **A11y audit.** Run `axe-core` against every page. Fix any violations. Confirm keyboard navigation works on builder modals (the README claims this — verify).
+10. **A11y audit.** Run `axe-core` against every page (ad hoc: `npx @axe-core/cli <url>`; it is no longer a dependency, and Lighthouse CI gates accessibility ≥ 0.95). Fix any violations. Confirm keyboard navigation works on builder modals (the README claims this — verify).
 
 ### Verification
 - Mobile Safari/Chrome shows "Add to Home Screen" / install prompt.

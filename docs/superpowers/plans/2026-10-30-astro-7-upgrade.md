@@ -98,4 +98,4 @@ The remaining advisories are dev-only: vitest 3.2.4 (`tinypool` critical, fixed 
   - Lighthouse homepage performance 0.86 (Astro 5: 0.76–0.89)
 - **Remaining build warnings (3):** "Could not render `/de` from route `/de/`" (also `/es`, `/ru`). The i18n fallback route for a locale root is skipped because the real localized homepage exists. Output is correct.
 
-**PR 3 (dev tooling):** not started.
+**PR 3 (dev tooling, `fix/shortcuts-and-dev-tooling`):** vitest 5, `@axe-core/cli` removed, audit 30 → 24 with 0 critical. `@lhci/cli` stays at 0.13: 0.15.1 (latest) still has the same Puppeteer/proxy advisories, and a Lighthouse major would shift the CI gate's scores.

@@ -2,6 +2,13 @@
 
 Summary of significant changes, newest first. Git history has the details.
 
+## October 2026: Keyboard shortcuts and dev tooling
+
+- **Keyboard shortcuts dropped quick presses.** The 100 ms debounce in `tree.js` started on the modifier keydown, so a P, G or / pressed within 100 ms of Cmd/Ctrl was ignored: Cmd/Ctrl+Shift+P (PDF), Cmd/Ctrl+Shift+G (GEDCOM) and Cmd/Ctrl+/ (search) all failed. The debounce now starts only when a shortcut fires, and auto-repeat is ignored.
+- **Shortcuts on non-Latin layouts.** With a Russian layout, Cmd+Shift+P reports `key: "З"` and never matched. `src/utils/shortcut-keys.js` falls back to the physical key when the layout doesn't produce a Latin letter (Latin layouts such as AZERTY keep the printed letter).
+- New e2e spec `keyboard-shortcuts.spec.js` (fast presses, Ctrl and Cmd). It fails on the old code.
+- **Dev tooling:** vitest 3 → 5 (clears the critical `tinypool`/vitest advisories; two constructor mocks updated for Vitest 4's arrow-function rule). Removed the unused `@axe-core/cli`. `npm audit`: 30 → 24, critical 3 → 0, production 0. The remaining highs are all `@lhci/cli`'s Puppeteer/proxy chain (CI only; 0.15 does not clear them).
+
 ## October 2026: Astro 7 and dependency updates
 
 - **Astro 5.18 → 7.4** (Vite 8, Rolldown). `npm audit`: 69 → 30 advisories, and production dependencies 18 → 0. All remaining advisories are dev tooling (vitest, `@axe-core/cli`, `@lhci/cli`).

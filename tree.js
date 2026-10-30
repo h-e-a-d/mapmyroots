@@ -8,6 +8,7 @@ import analyticsService from './src/analytics/analytics-service.js';
 import AnalyticsIntegration from './src/analytics/analytics-integration.js';
 import { migrateLocalStorageToIndexedDb } from './src/data/migrations/localstorage-to-indexeddb.js';
 import { familyTreeSearch } from './src/features/search/search.js';
+import { shortcutLetter } from './src/utils/shortcut-keys.js';
 
 // Load debug helper in development
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -53,38 +54,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// Keyboard shortcuts with debouncing
-let keyPressTimeout;
+// Keyboard shortcuts. The debounce only starts once a shortcut fires: the modifier keydowns
+// themselves used to start it, which swallowed a P or G pressed within 100 ms of Cmd/Ctrl.
+let shortcutCooldown = null;
 document.addEventListener('keydown', (e) => {
-  if (keyPressTimeout) return; // Prevent rapid key presses
-  
-  keyPressTimeout = setTimeout(() => {
-    keyPressTimeout = null;
-  }, 100);
-  
-  // Export shortcuts
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
-    switch (e.key) {
-      case 'G':
-        e.preventDefault();
-        lazyLoadModule(() => import('./src/features/export/exporter.js')).then(module => {
-          if (module && module.exportGEDCOM) module.exportGEDCOM();
-        });
-        break;
-      case 'P':
-        e.preventDefault();
-        lazyLoadModule(() => import('./src/features/export/exporter.js')).then(module => {
-          if (module && module.exportCanvasPDF) module.exportCanvasPDF();
-        });
-        break;
-    }
+  if (!(e.ctrlKey || e.metaKey) || e.repeat || shortcutCooldown) return;
+
+  let action = null;
+  if (e.shiftKey) {
+    const letter = shortcutLetter(e);
+    if (letter === 'g') action = (module) => module?.exportGEDCOM?.();
+    if (letter === 'p') action = (module) => module?.exportCanvasPDF?.();
   }
 
-  // Search shortcut
-  if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+  if (action) {
+    e.preventDefault();
+    lazyLoadModule(() => import('./src/features/export/exporter.js')).then(action);
+  } else if (e.key === '/') {
     e.preventDefault();
     familyTreeSearch.focusSearch();
+  } else {
+    return;
   }
+
+  shortcutCooldown = setTimeout(() => {
+    shortcutCooldown = null;
+  }, 100);
 });
 
 // Public API using service locator pattern (replaces window globals)

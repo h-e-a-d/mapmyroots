@@ -21,10 +21,9 @@ vi.mock('../../../src/utils/event-bus.js', () => ({
 }));
 
 vi.mock('../../../src/features/tree-chart/tree-chart-renderer.js', () => ({
-  TreeChartRenderer: vi.fn().mockImplementation(() => ({
-    render: vi.fn(),
-    applyHighlight: vi.fn()
-  }))
+  TreeChartRenderer: vi.fn(function () {
+    return { render: vi.fn(), applyHighlight: vi.fn() };
+  })
 }));
 vi.mock('../../../src/features/tree-chart/tree-chart-layout.js', () => ({
   runLayout: vi.fn().mockReturnValue({ nodes: [], edges: [] })
