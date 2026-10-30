@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { join } from 'path';
+import { openBuilder, personCount } from './helpers.js';
 
 const TINY_GED_PATH = join(process.cwd(), 'tests/fixtures/gedcom/tiny.ged');
 
 test.describe('GEDCOM import', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/builder');
-    await page.waitForLoadState('networkidle');
+    await openBuilder(page);
   });
 
   test('opens modal, parses fixture, imports 3 persons, closes modal', async ({ page }) => {
@@ -32,7 +32,7 @@ test.describe('GEDCOM import', () => {
     await gedcomImportBtn.click();
 
     await expect(modal).toHaveClass(/hidden/, { timeout: 5000 });
-    await expect(page.locator('#personCount')).toHaveText('3', { timeout: 5000 });
+    await expect.poll(() => personCount(page)).toBe(3);
   });
 
   test('cancel button closes the modal without importing', async ({ page }) => {

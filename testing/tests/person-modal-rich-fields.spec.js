@@ -1,12 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { openBuilder, openAddPersonModal, selectGender, personCount, openEditModalFor } from './helpers.js';
 
 test.describe('person modal — rich fields', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/builder');
-    await page.waitForLoadState('networkidle');
-    // Open add-person modal
-    await page.locator('#addPersonBtn').click();
-    await expect(page.locator('#personModal')).not.toHaveClass(/hidden/);
+    await openBuilder(page);
+    await openAddPersonModal(page);
   });
 
   test('birth date section is visible in modal', async ({ page }) => {
@@ -44,29 +42,29 @@ test.describe('person modal — rich fields', () => {
   });
 
   test('saves person with birth year and verifies person count', async ({ page }) => {
-    await page.locator('#genderMale').check();
+    await selectGender(page, 'male');
     await page.locator('#personName').fill('Anna');
     await page.locator('#personBirthDate').fill('1930');
     await page.locator('#personBirthDate').press('Tab');
 
     await page.locator('#savePerson').click();
     await expect(page.locator('#personModal')).toHaveClass(/hidden/, { timeout: 5000 });
-    await expect(page.locator('#personCount')).toHaveText('1', { timeout: 5000 });
+    await expect.poll(() => personCount(page)).toBe(1);
   });
 
   test('saves person with full birth date dd.mm.yyyy', async ({ page }) => {
-    await page.locator('#genderFemale').check();
+    await selectGender(page, 'female');
     await page.locator('#personName').fill('Maria');
     await page.locator('#personBirthDate').fill('15.06.1945');
     await page.locator('#personBirthDate').press('Tab');
 
     await page.locator('#savePerson').click();
     await expect(page.locator('#personModal')).toHaveClass(/hidden/, { timeout: 5000 });
-    await expect(page.locator('#personCount')).toHaveText('1', { timeout: 5000 });
+    await expect.poll(() => personCount(page)).toBe(1);
   });
 
   test('saves birth place when revealed', async ({ page }) => {
-    await page.locator('#genderMale').check();
+    await selectGender(page, 'male');
     await page.locator('#personName').fill('Georg');
     await page.locator('#personBirthPlaceReveal').click();
     await page.locator('#personBirthPlace').fill('Berlin');
@@ -82,7 +80,7 @@ test.describe('person modal — rich fields', () => {
   });
 
   test('invalid date blocks save and shows validation error', async ({ page }) => {
-    await page.locator('#genderMale').check();
+    await selectGender(page, 'male');
     await page.locator('#personName').fill('Otto');
     await page.locator('#personBirthDate').fill('not-a-date');
     await page.locator('#personBirthDate').press('Tab');
@@ -94,17 +92,14 @@ test.describe('person modal — rich fields', () => {
 
   test('re-opening edit modal pre-populates birth year', async ({ page }) => {
     // Add first person
-    await page.locator('#genderMale').check();
+    await selectGender(page, 'male');
     await page.locator('#personName').fill('Ivan');
     await page.locator('#personBirthDate').fill('1910');
     await page.locator('#personBirthDate').press('Tab');
     await page.locator('#savePerson').click();
     await expect(page.locator('#personModal')).toHaveClass(/hidden/, { timeout: 5000 });
 
-    // Click the person node to open edit modal
-    const node = page.locator('.person-group, [data-person-id]').first();
-    await node.dblclick();
-    await expect(page.locator('#personModal')).not.toHaveClass(/hidden/, { timeout: 5000 });
+    await openEditModalFor(page, 'Ivan');
 
     // Birth date should be pre-populated
     await expect(page.locator('#personBirthDate')).toHaveValue('1910');

@@ -97,7 +97,8 @@ Loaded data must include `version` or `persons`. Anything else is rejected with 
 ## Testing expectations
 
 - Unit tests live in `tests/unit/` and run via `npm test` (Vitest + jsdom).
-- E2E tests live in `testing/tests/` and run via `npm run test:e2e` (Playwright).
+- E2E tests live in `testing/tests/` and run via `npm run test:e2e` (Playwright). They default to the production URL; for a local build run `npm run build && npx astro preview --port 4321` and set `PLAYWRIGHT_BASE_URL=http://localhost:4321`. CI runs the "Desktop Chrome" project only.
+- Builder e2e specs use the helpers in `testing/tests/helpers.js` (`openBuilder`, `addPersonViaUi`, `selectGender`, `openEditModalFor`, `personCount`). The gender radios are `pointer-events: none`, so click the card, not the input. Person nodes are canvas-drawn, so find them through `window.treeCore.renderer`.
 - Adding a new module: add at least one expected-use test, one edge case, one failure case.
 - Adding a user-visible string: confirm all four locales have a translation.
 
