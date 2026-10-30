@@ -36,7 +36,7 @@
     "@types/node": "^24.0.10",
     "@vite-pwa/astro": "^1.2.0",
     "@vitest/ui": "^3.2.4",
-    "astro": "^5.18.2",
+    "astro": "^7.4.4",
     "fake-indexeddb": "^6.2.5",
     "jsdom": "^27.0.0",
     "typescript": "^5.9.3",
@@ -44,11 +44,19 @@
     "workbox-window": "^7.4.0"
   },
   "dependencies": {
-    "astro-og-canvas": "^0.11.1",
+    "astro-og-canvas": "^0.13.2",
     "dompurify": "^3.3.0",
     "fflate": "^0.8.3",
     "jspdf": "4.2.1",
     "parse-gedcom": "^2.0.1",
     "pdfjs-dist": "^4.10.38"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "overrides": {
+    "@vite-pwa/astro": {
+      "astro": "$astro"
+    }
   }
 }

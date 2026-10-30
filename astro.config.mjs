@@ -2,10 +2,13 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import AstroPWA from '@vite-pwa/astro';
+import { sitemapFilter } from './src/config/sitemap-filter.mjs';
 
 export default defineConfig({
   site: 'https://mapmyroots.com',
   output: 'static',
+  // Astro 7 defaults to 'jsx', which drops spaces between adjacent inline elements. Keep the old output.
+  compressHTML: true,
   trailingSlash: 'ignore',
   i18n: {
     defaultLocale: 'en',
@@ -25,7 +28,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/offline') && !page.includes('/view'),
+      filter: sitemapFilter,
       changefreq: 'weekly',
       priority: 0.7,
       i18n: {
@@ -88,12 +91,27 @@ export default defineConfig({
   ],
   vite: {
     build: {
-      sourcemap: true
+      sourcemap: true,
+      // Vite 8 raised the browser default to "baseline widely available" (e.g. Safari 16.4), which
+      // emits range media queries (width<=1024px) that older iOS Safari ignores. Keep Vite 6's
+      // targets. Astro emits CSS from its server build, so cssTarget has to be set here.
+      cssTarget: ['edge88', 'firefox78', 'chrome87', 'safari14'],
+      rolldownOptions: {
+        treeshake: {
+          // Mark info-level logging as pure so the production bundle drops it.
+          // console.warn / console.error are intentionally kept. (Vite 8 bundles with Rolldown;
+          // the old esbuild.pure setting is ignored.)
+          manualPureFunctions: ['console.log', 'console.debug', 'console.info']
+        }
+      }
     },
-    esbuild: {
-      // Mark info-level logging as pure so minification drops it from prod bundles.
-      // console.warn / console.error are intentionally kept.
-      pure: ['console.log', 'console.debug', 'console.info']
+    environments: {
+      client: {
+        build: {
+          // Same browser targets for client JS. Client-only: Astro's server build sets its own.
+          target: ['edge88', 'firefox78', 'chrome87', 'safari14']
+        }
+      }
     }
   }
 });
