@@ -2,6 +2,15 @@
 
 Summary of significant changes, newest first. Git history has the details.
 
+## October 2026: Astro 7 and dependency updates
+
+- **Astro 5.18 → 7.4** (Vite 8, Rolldown). `npm audit`: 69 → 30 advisories, and production dependencies 18 → 0. All remaining advisories are dev tooling (vitest, `@axe-core/cli`, `@lhci/cli`).
+- Rendering is unchanged: computed styles of every element on 11 pages at 1440 px and 390 px match the Astro 5 build. The sitemap, OG images and service worker precache are identical.
+- Migration: glossary moved to the content layer (`src/content.config.ts`, `glob()` loader, `id` replaces `slug`). `astro-og-canvas` 0.13 (`param` option removed). `compressHTML: true` keeps the old whitespace. Console stripping moved from `esbuild.pure` (ignored by Vite 8) to Rolldown `treeshake.manualPureFunctions`. CSS/JS browser targets pinned to Vite 6's (Safari 14+): Vite 8's newer default emits range media queries that iOS Safari < 16.4 ignores.
+- Sitemap: Astro 7 passes i18n fallback redirects to `@astrojs/sitemap`. `sitemap-filter.mjs` keeps them out.
+- **Fixed:** every static page threw `devLog is not defined` from `homepage.js` (live since at least May 2026). The handler it aborted (runtime re-translation and a custom `page_view` push) had never run in production and was removed rather than revived.
+- CI and Lighthouse workflows use Node 22. Cloudflare Pages already builds on Node 22.23.4 (verified 2026-10-30).
+
 ## October 2026: E2E suite repair
 
 - **Add person had no marriages row.** The marriages list was only mounted when editing, so a new person's modal showed a "Marriages" label with nothing under it and no spouse picker. It now shows one empty row, as the design spec says.

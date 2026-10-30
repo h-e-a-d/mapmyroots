@@ -6,7 +6,7 @@ How MapMyRoots is put together today. For conventions, see [`/CLAUDE.md`](../CLA
 
 ## Overview
 
-- **Static site.** Astro 5 pre-renders every page at build time and Cloudflare Pages serves them. There is no backend.
+- **Static site.** Astro 7 pre-renders every page at build time and Cloudflare Pages serves them. There is no backend.
 - **Client-side builder.** `/builder` runs as a vanilla-JS app on an HTML canvas. All tree data lives in the visitor's browser (IndexedDB, with a localStorage fallback).
 - **Four locales.** en (default, unprefixed), de, es, ru (`/de/...` and so on) for the homepage, About, Contact, Privacy and Terms. The builder translates itself at runtime.
 
@@ -31,7 +31,8 @@ src/pages/*.astro                 src/pages/builder.astro  (markup only)
 - Localized routes are thin wrappers. For example, `src/pages/de/about.astro` renders `<About locale="de" />`.
 - Page text comes from `t(locale, 'pages.<page>.*')` (`src/i18n/index.ts`) at build time, so each locale's HTML is fully translated. Strings containing inline markup (`<strong>`, links) are rendered with `set:html`. They come only from our own locale files.
 - On static pages, the language switcher navigates to the localized URL. It doesn't translate in place.
-- The glossary is an Astro content collection (`src/content/glossary`).
+- The glossary is an Astro content collection: Markdown in `src/content/glossary`, loaded by the `glob()` loader in `src/content.config.ts`. Entries are addressed by `id` (the file name).
+- **Sitemap:** `@astrojs/sitemap` with `src/config/sitemap-filter.mjs`, which keeps i18n fallback redirects (`/de/builder/` and so on) out of the sitemap.
 - **CSS:** `BaseLayout` loads `global.css` (builder styles, also loaded here) and `site.css` (header, nav, mobile menu, buttons). The homepage adds `homepage.css`; About, Contact, Privacy and Terms add `content-pages.css`. Glossary and Offline use scoped `<style>` blocks, as do `Header.astro` (language dropdown) and `Footer.astro`.
 
 ## Builder runtime
@@ -137,4 +138,5 @@ Guard tests that protect cross-cutting rules:
 1. **`tree-engine.js` (~2,300 lines) and `modal.js` (~1,500)** mix data, persistence, UI wiring and modal logic. Split them by responsibility, but only behind stronger e2e coverage of add, edit and delete person flows.
 2. **`window.*` globals** (`treeCore`, `notifications`, `modalUtils`, …) are still how many UI modules talk to the core. Migrate them to EventBus or service lookups as files are touched.
 3. **Hardcoded English UI strings** remain in some builder code paths, e.g. share-dialog notifications and export notifications.
-4. **Snapshot undo** holds up to 50 full copies of the tree. If very large trees become common, switch to diffs.
+4. **The service worker is built but never registered.** `@vite-pwa/astro` generates `sw.js` (110 precached files, `/offline` fallback), but nothing outputs its registration snippet (`injectRegister: 'inline'` needs the layout to render `pwaInfo`), so offline support has never been active in production. Registered by hand in a test, its offline routing is wrong (`/about/` serves the offline page, `/de/privacy/` serves the homepage). Fix the routing before enabling registration. `@vite-pwa/astro` also needs an npm `overrides` entry for Astro 7 (vite-pwa/astro#72); drop it when upstream widens the peer range.
+5. **Snapshot undo** holds up to 50 full copies of the tree. If very large trees become common, switch to diffs.

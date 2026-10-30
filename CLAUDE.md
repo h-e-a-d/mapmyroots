@@ -4,7 +4,7 @@ Guidance for Claude Code (and other AI agents) working in this repository.
 
 ## Project at a glance
 
-MapMyRoots is a free, client-side family tree builder. Vanilla JavaScript with ES modules, Canvas-based rendering, LocalStorage/IndexedDB persistence. Built on Astro + Cloudflare Pages. No backend (the "Deferred — Cloud Foundation" track in [`docs/ROADMAP.md`](docs/ROADMAP.md) is deferred indefinitely). Active work is Phase 5 feature development; Phase 6 (SEO content) runs in parallel.
+MapMyRoots is a free, client-side family tree builder (Astro 7, Node ≥ 22.23.4 per `.nvmrc`). Vanilla JavaScript with ES modules, Canvas-based rendering, LocalStorage/IndexedDB persistence. Built on Astro + Cloudflare Pages. No backend (the "Deferred — Cloud Foundation" track in [`docs/ROADMAP.md`](docs/ROADMAP.md) is deferred indefinitely). Active work is Phase 5 feature development; Phase 6 (SEO content) runs in parallel.
 
 ## Workflows
 

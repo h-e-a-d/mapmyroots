@@ -31,7 +31,7 @@ npm run dev       # http://localhost:4321
 
 ## Tech stack
 
-- Astro 5 (Vite-based) on Cloudflare Pages
+- Astro 7 (Vite 8) on Cloudflare Pages; Node ≥ 22.23.4 (`.nvmrc`)
 - HTML5, CSS3, vanilla JavaScript (ES modules)
 - Canvas API for rendering; IndexedDB for persistence
 - `@vite-pwa/astro` for installable PWA + offline support

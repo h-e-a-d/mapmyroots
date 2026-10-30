@@ -70,3 +70,32 @@ The remaining advisories are dev-only: vitest 3.2.4 (`tinypool` critical, fixed 
 1. Are you OK changing `NODE_VERSION` in the Cloudflare dashboard (step 0)? Without it, production builds will fail after merge.
 2. If the `overrides` approach doesn't hold up for the PWA plugin, should I stop at Astro 5.18 plus PR 1, or proceed to the local `workbox-build` integration?
 3. Remove `@axe-core/cli` (PR 3)?
+
+## Outcome (executed 2026-10-30)
+
+**PR 1 (#6, `chore/deps-safe`):** non-breaking fixes, fflate 0.8.3, astro 5.18.2. Audit 69 → 35, prod 18 → 5. CI green.
+
+**PR 2 (`chore/astro-7`):**
+- **Node:** Cloudflare Pages already ran Node 22.23.4 with no `NODE_VERSION` set. The "20" in `CLOUDFLARE_PAGES_SETUP.md` was stale, so no dashboard change was needed. CI moved to Node 22; `.nvmrc` and `engines` were added.
+- **PWA plugin:** `@vite-pwa/astro` installs with an `overrides` entry. The generated `sw.js` is equivalent (110 precache entries, `/offline` fallback).
+- **Found while verifying (all pre-existing):**
+  - **The service worker is never registered**, so offline support has never been live. When registered by hand, its offline routing is wrong. Recorded as ARCHITECTURE known debt #4; not changed here.
+  - **`devLog is not defined` on every static page.** Fixing it would have revived a runtime i18n and `page_view` handler that never ran in production (wrong-language risk, GA4 double-count), so that handler was removed.
+  - GA4 beacons to `stats.g.doubleclick.net` are blocked by `connect-src`. Left as is (Google Signals data).
+- **Upgrade-specific fixes:**
+  - `astro-og-canvas` `param` removed
+  - sitemap fallback-redirect filter (with unit test)
+  - `compressHTML: true`
+  - Rolldown `manualPureFunctions` (178 → 2 `console.log` in the bundle)
+  - CSS/JS targets pinned (range media queries 14 → 0)
+  - dead CommonJS export in `ui-modals.js` removed
+- **Verification against an Astro 5 build of the same commit:**
+  - computed styles: 11 pages × 2 widths, 0 real differences
+  - HTML DOM: text and attributes identical; whitespace differs only inside `<head>`
+  - sitemap byte-identical; OG images identical
+  - local CSP check: no violations from site code
+  - tests: 294 unit, 29/29 e2e ×5 runs, `astro check` 0 errors
+  - Lighthouse homepage performance 0.86 (Astro 5: 0.76–0.89)
+- **Remaining build warnings (3):** "Could not render `/de` from route `/de/`" (also `/es`, `/ru`). The i18n fallback route for a locale root is skipped because the real localized homepage exists. Output is correct.
+
+**PR 3 (dev tooling):** not started.

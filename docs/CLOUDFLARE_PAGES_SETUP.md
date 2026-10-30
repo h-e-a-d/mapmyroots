@@ -17,7 +17,7 @@ One-time setup for deploying the MapMyRoots site to Cloudflare Pages. Most of th
 | Build command | `npm run build` |
 | Build output directory | `dist` |
 | Root directory | (leave blank — repo root) |
-| Node version | `20` |
+| Node version | `22` (from `.nvmrc`; Astro 7 needs ≥ 22.23.4) |
 
 If "Astro" preset isn't available, use "None" with the values above.
 
@@ -25,7 +25,7 @@ Environment variables (production):
 
 | Variable | Value | Notes |
 |----------|-------|-------|
-| `NODE_VERSION` | `20` | Some build environments need this set explicitly |
+| `NODE_VERSION` | (unset) | Not needed: the v3 build image uses Node 22 and reads `.nvmrc`. Verified 2026-10-30: production builds ran on Node 22.23.4. |
 
 ## Custom domains
 
