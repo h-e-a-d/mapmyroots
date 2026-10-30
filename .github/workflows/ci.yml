@@ -90,7 +90,9 @@ jobs:
 
       - run: npm run build
 
+      # Only Chromium is installed above, so run only the Chromium-based desktop project.
+      # Running every configured project (Firefox, WebKit, iPad, ...) cannot launch here.
       - run: |
           npx astro preview --port 4321 &
-          sleep 3
-          PLAYWRIGHT_BASE_URL=http://localhost:4321 npm run test:e2e
+          for i in $(seq 1 30); do curl -sf http://localhost:4321 >/dev/null && break; sleep 1; done
+          PLAYWRIGHT_BASE_URL=http://localhost:4321 npm run test:e2e -- --project="Desktop Chrome"

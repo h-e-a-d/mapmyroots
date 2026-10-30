@@ -2,6 +2,13 @@
 
 Summary of significant changes, newest first. Git history has the details.
 
+## October 2026: E2E suite repair
+
+- **Add person had no marriages row.** The marriages list was only mounted when editing, so a new person's modal showed a "Marriages" label with nothing under it and no spouse picker. It now shows one empty row, as the design spec says.
+- **Builder view buttons were dead for the first second.** `builder-page.ts` waited a fixed 1000 ms before wiring the sidebar, view buttons and tree chart. It now waits for the tree core and sets `body[data-builder-ready]`.
+- **E2E suite passes (29/29 on Desktop Chrome, three runs in a row).** The earlier failures were test bugs (clicking `pointer-events: none` radios, a `window.appContext` that doesn't exist, reading a stale counter, selectors for canvas nodes that aren't in the DOM), now fixed through shared helpers.
+- **CI e2e job finishes.** It ran six browser projects with only Chromium installed and was cancelled on every run. It now runs Desktop Chrome only, with one retry.
+
 ## October 2026: Static-page styling
 
 - About, Contact, Privacy, Terms, Glossary and Offline rendered without header, navigation or content styles, because that CSS lived only in the homepage stylesheet. Shared chrome moved to `site.css` (loaded by `BaseLayout`), and the content pages got `content-pages.css`. The homepage's computed styles are unchanged.

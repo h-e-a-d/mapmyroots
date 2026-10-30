@@ -122,7 +122,7 @@ GTM container `GTM-MNZ4MJB7` loads GA4 on every page (`GoogleTagManager.astro`).
 | Kind | Location | Command |
 |---|---|---|
 | Unit (Vitest + jsdom) | `tests/unit/` | `npm test` |
-| E2E (Playwright) | `testing/tests/` | `npm run test:e2e` (needs `npm run build` + `npx astro preview`) |
+| E2E (Playwright, Desktop Chrome in CI) | `testing/tests/` (helpers in `helpers.js`) | `PLAYWRIGHT_BASE_URL=http://localhost:4321 npm run test:e2e -- --project="Desktop Chrome"` (needs `npm run build` + `npx astro preview --port 4321`) |
 | Types | — | `npm run check` |
 | Lighthouse | `.github/workflows/lighthouse.yml` | CI only |
 

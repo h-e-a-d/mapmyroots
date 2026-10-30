@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { openBuilder, openAddPersonModal, selectGender, personCount, openEditModalFor } from './helpers.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -7,10 +8,8 @@ const FIXTURE = path.resolve(__dirname, '../fixtures/sample-avatar.jpg');
 
 test.describe('avatar cropper', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/builder');
-    await page.waitForLoadState('networkidle');
-    await page.locator('#addPersonBtn').click();
-    await expect(page.locator('#personModal')).not.toHaveClass(/hidden/);
+    await openBuilder(page);
+    await openAddPersonModal(page);
   });
 
   test('photo tab is present and switchable', async ({ page }) => {
@@ -21,7 +20,7 @@ test.describe('avatar cropper', () => {
 
   test('upload shows cropper canvas', async ({ page }) => {
     await page.locator('#personName').fill('Test Avatar');
-    await page.locator('#genderMale').check();
+    await selectGender(page, 'male');
     await page.locator('#tab-photo-btn').click();
     await page.locator('#personPhotoInput').setInputFiles(FIXTURE);
     await expect(page.locator('.avatar-cropper-canvas')).toBeVisible({ timeout: 8000 });
@@ -30,7 +29,7 @@ test.describe('avatar cropper', () => {
 
   test('upload, save, reopen — transform retained', async ({ page }) => {
     await page.locator('#personName').fill('Crop Person');
-    await page.locator('#genderFemale').check();
+    await selectGender(page, 'female');
     await page.locator('#tab-photo-btn').click();
     await page.locator('#personPhotoInput').setInputFiles(FIXTURE);
     await expect(page.locator('.avatar-cropper-canvas')).toBeVisible({ timeout: 8000 });
@@ -48,16 +47,14 @@ test.describe('avatar cropper', () => {
     expect(transform).not.toBeNull();
     expect(transform.scale).toBeGreaterThanOrEqual(1.5);
 
-    await page.locator('#personCount').waitFor({ state: 'visible' });
-    await page.locator('canvas#familyTreeCanvas').dblclick();
-    await expect(page.locator('#personModal')).not.toHaveClass(/hidden/, { timeout: 5000 });
+    await openEditModalFor(page, 'Crop Person');
     await page.locator('#tab-photo-btn').click();
     await expect(page.locator('.avatar-cropper-canvas')).toBeVisible({ timeout: 8000 });
   });
 
   test('remove photo clears the cropper', async ({ page }) => {
     await page.locator('#personName').fill('Removable');
-    await page.locator('#genderMale').check();
+    await selectGender(page, 'male');
     await page.locator('#tab-photo-btn').click();
     await page.locator('#personPhotoInput').setInputFiles(FIXTURE);
     await expect(page.locator('.avatar-cropper-canvas')).toBeVisible({ timeout: 8000 });
