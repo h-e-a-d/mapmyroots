@@ -1,17 +1,17 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const terms = await getCollection('glossary');
   return terms.map((term) => ({
-    params: { slug: term.slug },
+    params: { slug: term.id },
     props: { term }
   }));
 }
 
 const { term } = Astro.props;
-const { Content } = await term.render();
+const { Content } = await render(term);
 
 const breadcrumbSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -19,7 +19,7 @@ const breadcrumbSchema = JSON.stringify({
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://mapmyroots.com/" },
     { "@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://mapmyroots.com/glossary" },
-    { "@type": "ListItem", "position": 3, "name": term.data.title, "item": `https://mapmyroots.com/glossary/${term.slug}` }
+    { "@type": "ListItem", "position": 3, "name": term.data.title, "item": `https://mapmyroots.com/glossary/${term.id}` }
   ]
 });
 
@@ -28,7 +28,7 @@ const definedTermSchema = JSON.stringify({
   "@type": "DefinedTerm",
   "name": term.data.title,
   "description": term.data.description,
-  "url": `https://mapmyroots.com/glossary/${term.slug}`,
+  "url": `https://mapmyroots.com/glossary/${term.id}`,
   "inDefinedTermSet": "https://mapmyroots.com/glossary"
 });
 
@@ -37,7 +37,7 @@ const articleSchema = JSON.stringify({
   "@type": "Article",
   "headline": term.data.title,
   "description": term.data.description,
-  "url": `https://mapmyroots.com/glossary/${term.slug}`,
+  "url": `https://mapmyroots.com/glossary/${term.id}`,
   "author": {
     "@type": "Organization",
     "name": "MapMyRoots",
@@ -60,7 +60,7 @@ const related = term.data.relatedTerms.length > 0
 <BaseLayout
   title={`${term.data.title} - Genealogy Glossary | MapMyRoots`}
   description={term.data.description}
-  canonicalPath={`/glossary/${term.slug}`}
+  canonicalPath={`/glossary/${term.id}`}
   ogImage={new URL('/og/glossary.png', 'https://mapmyroots.com').toString()}
   hreflangs={['en']}
   jsonLd={[breadcrumbSchema, definedTermSchema, articleSchema]}
@@ -84,7 +84,7 @@ const related = term.data.relatedTerms.length > 0
         <h2>Related terms</h2>
         <ul>
           {related.filter(Boolean).map((r: any) => (
-            <li><a href={`/glossary/${r.slug}`}>{r.data.title}</a></li>
+            <li><a href={`/glossary/${r.id}`}>{r.data.title}</a></li>
           ))}
         </ul>
       </section>

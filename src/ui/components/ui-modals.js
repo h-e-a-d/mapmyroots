@@ -1255,11 +1255,7 @@ dynamicModalObserver.observe(document.body, {
 });
 
 // Export for external use
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = ModalUXEnhancer;
-} else if (typeof window !== 'undefined') {
-  window.ModalUXEnhancer = ModalUXEnhancer;
-}
+window.ModalUXEnhancer = ModalUXEnhancer;
 
 // Add global utility functions
 window.modalUtils = {

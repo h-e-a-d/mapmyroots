@@ -32,7 +32,7 @@ const definedTermSetSchema = JSON.stringify({
     "@type": "DefinedTerm",
     "name": t.data.title,
     "description": t.data.description,
-    "url": `https://mapmyroots.com/glossary/${t.slug}`
+    "url": `https://mapmyroots.com/glossary/${t.id}`
   }))
 });
 ---
@@ -60,7 +60,7 @@ const definedTermSetSchema = JSON.stringify({
         <ul class="glossary-list">
           {grouped[letter].map((term) => (
             <li>
-              <a href={`/glossary/${term.slug}`}>
+              <a href={`/glossary/${term.id}`}>
                 <strong>{term.data.title}</strong>
                 <span>{term.data.description}</span>
               </a>
