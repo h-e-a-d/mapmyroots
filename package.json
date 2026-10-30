@@ -28,15 +28,15 @@
   },
   "homepage": "https://mapmyroots.com",
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@astrojs/sitemap": "^3.7.2",
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/sitemap": "^3.7.4",
     "@axe-core/cli": "^4.11.3",
     "@lhci/cli": "^0.13.0",
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.10",
     "@vite-pwa/astro": "^1.2.0",
     "@vitest/ui": "^3.2.4",
-    "astro": "^5.18.1",
+    "astro": "^5.18.2",
     "fake-indexeddb": "^6.2.5",
     "jsdom": "^27.0.0",
     "typescript": "^5.9.3",
@@ -46,7 +46,7 @@
   "dependencies": {
     "astro-og-canvas": "^0.11.1",
     "dompurify": "^3.3.0",
-    "fflate": "^0.8.2",
+    "fflate": "^0.8.3",
     "jspdf": "4.2.1",
     "parse-gedcom": "^2.0.1",
     "pdfjs-dist": "^4.10.38"
