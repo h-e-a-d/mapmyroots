@@ -20,7 +20,7 @@ const base = locale === 'en' ? '' : `/${locale}`;
     </div>
 
     <div class="footer-col">
-      <h3>{t(locale, 'footer.product.title')}</h3>
+      <h2>{t(locale, 'footer.product.title')}</h2>
       <ul>
         <li><a href="/builder">{t(locale, 'footer.product.builder')}</a></li>
         <li><a href={`${base}/#features`}>{t(locale, 'footer.product.features')}</a></li>
@@ -30,7 +30,7 @@ const base = locale === 'en' ? '' : `/${locale}`;
     </div>
 
     <div class="footer-col">
-      <h3>{t(locale, 'footer.company.title')}</h3>
+      <h2>{t(locale, 'footer.company.title')}</h2>
       <ul>
         <li><a href={localizedPath(locale, '/about')}>{t(locale, 'footer.company.about')}</a></li>
         <li><a href={localizedPath(locale, '/contact')}>{t(locale, 'footer.company.contact')}</a></li>
@@ -40,7 +40,7 @@ const base = locale === 'en' ? '' : `/${locale}`;
     </div>
 
     <div class="footer-col">
-      <h3>{t(locale, 'footer.resources.title')}</h3>
+      <h2>{t(locale, 'footer.resources.title')}</h2>
       <ul>
         <li><a href={localizedPath(locale, '/glossary')}>{t(locale, 'footer.resources.glossary')}</a></li>
       </ul>
@@ -83,7 +83,7 @@ const base = locale === 'en' ? '' : `/${locale}`;
   @media (max-width: 768px) {
     .footer-inner { grid-template-columns: 1fr 1fr; }
   }
-  .footer-col h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .footer-col h2 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; }
   .footer-col ul { list-style: none; padding: 0; margin: 0; }
   .footer-col ul li { margin-bottom: 0.5rem; }
   .footer-col ul li a {
