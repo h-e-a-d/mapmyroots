@@ -10,77 +10,11 @@ function gtmTrack(eventName, eventData = {}) {
   }
 }
 
-// Initialize i18n system
-async function initializeI18n() {
-  devLog('🌍 Initializing i18n system...');
-  
-  try {
-    if (window.i18n) {
-      // Initialize with default locale
-      const success = await window.i18n.init({
-        // Optional: Configure Google Sheets integration here
-        // googleSheets: {
-        //   sheetId: 'YOUR_SHEET_ID',
-        //   apiKey: 'YOUR_API_KEY',
-        //   range: 'Translations!A:Z'
-        // }
-      });
-      
-      if (success) {
-        devLog('✅ i18n initialized successfully');
-        
-        // Track initialization
-        gtmTrack('i18n_initialized', {
-          locale: window.i18n.getLocale(),
-          available_locales: window.i18n.getAvailableLocales(),
-          timestamp: new Date().toISOString()
-        });
-        
-        // Add observer for locale changes
-        window.i18n.addObserver((event, data) => {
-          if (event === 'localeChanged') {
-            gtmTrack('locale_changed', {
-              previous_locale: data.oldLocale,
-              new_locale: data.newLocale,
-              method: 'programmatic',
-              timestamp: new Date().toISOString()
-            });
-            
-            // Update page analytics with new locale
-            updateAnalyticsLocale(data.newLocale);
-          }
-        });
-        
-        return true;
-      } else {
-        devError('❌ Failed to initialize i18n');
-        return false;
-      }
-    } else {
-      devWarn('⚠️ i18n not available, skipping internationalization');
-      return false;
-    }
-  } catch (error) {
-    devError('❌ Error initializing i18n:', error);
-    gtmTrack('i18n_error', {
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
-    return false;
-  }
-}
-
-// Update analytics data with current locale
-function updateAnalyticsLocale(locale) {
-  // Update any locale-specific analytics data
-  if (window.dataLayer) {
-    window.dataLayer.push({
-      event: 'config_update',
-      locale: locale,
-      language: locale.split('-')[0]
-    });
-  }
-}
+// Static pages are translated at build time (see CLAUDE.md), so the runtime translator is not
+// initialized here. Until 2026-10 an undefined devLog() call made this module's i18n/page_view
+// handler throw on every static page, so that code never ran in production. It was removed rather
+// than revived: it re-translated pages from the locale saved in localStorage (an English choice
+// would turn /de/ English) and pushed a custom page_view that would double-count in GA4.
 
 // Enhanced mobile menu functionality
 const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
@@ -814,61 +748,6 @@ document.addEventListener('pause', (e) => {
   }
 }, true);
 
-// Device and browser information tracking
-const trackDeviceInfo = () => {
-  const deviceInfo = {
-    user_agent: navigator.userAgent,
-    screen_resolution: `${screen.width}x${screen.height}`,
-    viewport_size: `${window.innerWidth}x${window.innerHeight}`,
-    color_depth: screen.colorDepth,
-    pixel_ratio: window.devicePixelRatio || 1,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    language: navigator.language,
-    platform: navigator.platform,
-    cookie_enabled: navigator.cookieEnabled,
-    online: navigator.onLine,
-    locale: window.i18n ? window.i18n.getLocale() : 'unknown'
-  };
-  
-  if (navigator.connection) {
-    deviceInfo.connection = {
-      effective_type: navigator.connection.effectiveType,
-      downlink: navigator.connection.downlink,
-      rtt: navigator.connection.rtt
-    };
-  }
-  
-  return deviceInfo;
-};
-
-// Initialize comprehensive page tracking
-document.addEventListener('DOMContentLoaded', async () => {
-  devLog('🚀 Initializing MapMyRoots homepage...');
-  
-  // Initialize i18n first
-  await initializeI18n();
-  
-  const deviceInfo = trackDeviceInfo();
-  
-  gtmTrack('page_view', {
-    page_title: document.title,
-    page_url: window.location.href,
-    page_referrer: document.referrer,
-    timestamp: new Date().toISOString(),
-    ...deviceInfo
-  });
-  
-  // Track page load completion
-  if (document.readyState === 'complete') {
-    gtmTrack('page_ready', {
-      page_url: window.location.href,
-      ready_state: 'complete',
-      locale: window.i18n ? window.i18n.getLocale() : 'unknown',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
 // A/B testing support (placeholder for future use)
 const initializeABTesting = () => {
   // This function can be used to implement A/B testing
@@ -913,5 +792,13 @@ function devWarn(...args) {
 function devError(...args) {
   if (import.meta.env.DEV) {
     console.error(...args);
+  }
+}
+
+// Dev-only logging, same as the other modules. Without this definition every static page threw
+// "devLog is not defined" from the header script.
+function devLog(...args) {
+  if (import.meta.env.DEV) {
+    console.log(...args);
   }
 }
