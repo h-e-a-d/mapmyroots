@@ -32,7 +32,7 @@ function makeIdbRepo(initialPersons = []) {
 let mockIdbInstance;
 
 vi.mock('../../../../src/data/repositories/indexed-db-repository.js', () => ({
-  IndexedDBRepository: vi.fn().mockImplementation(() => mockIdbInstance),
+  IndexedDBRepository: vi.fn(function () { return mockIdbInstance; }),
 }));
 
 // ── Test suite ───────────────────────────────────────────────────────────────
