@@ -18,12 +18,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupDragAndDrop();
   setupCacheIndicator();
 
-  setTimeout(() => {
+  // These need the tree core that tree.js creates after its async IndexedDB migration. Wait for it
+  // instead of a fixed delay, which left the view buttons dead for the first second. Give up after
+  // 5 s and initialize anyway so the UI never stays inert.
+  const deadline = Date.now() + 5000;
+  const initWhenReady = () => {
+    if (!window.treeCore?.personData && Date.now() < deadline) {
+      setTimeout(initWhenReady, 50);
+      return;
+    }
     initializeSidebar();
     initializeEnhancedSettings();
     initializeEnhancedCacheIndicator();
     initTreeChartView(document.getElementById('treeChartView'));
-  }, 1000);
+    document.body.dataset.builderReady = 'true';
+  };
+  initWhenReady();
 });
 
 function setupDragAndDrop() {
